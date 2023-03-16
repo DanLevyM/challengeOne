@@ -1,12 +1,15 @@
 <template>
-    <div class="hero-film">
+    <div>
         <picture class="cover-img">
             <source media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)"
                 srcset="https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg">
             <img alt="" loading="lazy"
                 src="https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg">
         </picture>
-        <div class="container">
+        <div class="container hero-film">
+            <img width="100" class="hero-film__poster"
+                src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
+                alt="Le Roi Lion">
             <div class="hero-film-content">
                 <h1 class="mb-md-1">Le Roi Lion</h1>
                 <div class="hero-film__subtitle mb-2 f-inline f-ai-center f-wrap">
@@ -15,31 +18,15 @@
                     <span class="label label--dark mr-2"> Famille </span>
                     <span class="label label--dark mr-2">1h58</span>
                 </div>
-                <div class="f hero-film__body"><img width="100" class="hero-film__poster"
-                        src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
-                        alt="Le Roi Lion">
-                    <div>
-                        <p class="ft-tertiary ft-500 c-white-70"> Sortie : 17 juil. 2019 </p>
 
-                        <div>
-                            <p class="ft-tertiary c-white-70"> De <strong>Jon Favreau</strong><!----><!----> avec
-                                <strong>Jean Reno, Rayane Bensetti, Sabrina Ouazani</strong><!----><!---->
-                            </p>
-                            <p class="hero-film__desc ft-default c-white-70"> Au fond de la savane africaine, tous les
-                                animaux célèbrent la naissance de Simba, leur futur roi. Les mois passent. Simba
-                                idolâtre
-                                son père, le roi Mufasa, qui prend à cœur de lui faire comprendre les enjeux de sa
-                                royale
-                                destinée. Mais tout le monde ne semble pas de cet avis. Scar, le frère de Mufasa,
-                                l'ancien
-                                héritier du trône, a ses propres plans. La bataille pour la prise de contrôle de la
-                                Terre
-                                des Lions est ravagée par la trahison, la tragédie et le drame, ce qui finit par
-                                entraîner
-                                l'exil de Simba. Avec l'aide de deux nouveaux amis, Timon et Pumbaa, le jeune lion va
-                                devoir
-                                trouver comment grandir et reprendre ce qui lui revient de droit… </p><!---->
-                        </div>
+                <div>
+                    <p class="ft-tertiary ft-500 c-white-70"> Sortie : {{ movie.release_date }} </p>
+
+                    <div>
+                        <p class="ft-tertiary c-white-70"> De <strong>{{ movie.director }}</strong> avec
+                            <strong>Jean Reno, Rayane Bensetti, Sabrina Ouazani</strong>
+                        </p>
+                        <p class="hero-film__desc ft-default c-white-70"> {{ movie.description }} </p>
                     </div>
                 </div>
             </div>
@@ -154,96 +141,38 @@ export default {
 </script>
 
 <style lang="scss">
-.hero-film {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
 .cover-img {
     position: absolute;
     top: 0;
     right: 0;
-    width: 50%;
-    height: 100%;
+    // display: flex;
+    background-image: url('https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg');
+    background-size: cover;
+    background-position: center center;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 100vh;
+    /* ajuster la hauteur selon vos besoins */
+}
+
+.hero-film-content {
+    width: 40%;
+}
+
+.cover-img {
     z-index: -1;
-    object-fit: cover;
+    width: 60%
 }
 
-@media (max-width: 767px) {
-    .hero-film {
-        flex-direction: column;
-    }
-
-    .cover-img {
-        position: static;
-        width: 100%;
-        height: auto;
-        margin-bottom: 24px;
-    }
-
-    .container {
-        width: 100%;
-        background: none;
-        padding: 0;
-    }
-}
-
-// Hero film
-// .hero-film {
-//     position: relative;
-// }
-
-// .hero-film {
-//     // position: relative;
-//     display: flex;
-//     align-items: center;
-//   position: relative;
-//     // align-items: flex-start;
-// }
-
-// .cover-img {
-//     // width: 100%;
-//     // height: 100vh;
-//     position: absolute;
-//   top: 0;
-//   right: 0;
-//   width: 50%;
-//   height: 100%;
-//   z-index: -1;
-//   object-fit: cover;
-// }
-
-// .hero-film:before {
-//     content: '';
-//     position: absolute;
-//     top: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 100%;
-//     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
-//     z-index: 1;
-// }
-
-// .cover-img {
-//     position: absolute;
-//     top: 0;
-//     right: 0;
-//     bottom: 0;
-//     left: 0;
-//     z-index: 0;
-// }
-
-.container {
-    // position: relative;
-    // z-index: 2;
-    //     width: 100%;
-    //   background: linear-gradient(to bottom, transparent 0%, #000000 100%);
-}
-
-/* Ajouter la propriété max-width pour une meilleure expérience responsive */
-.hero-film img {
-    max-width: 100%;
+.cover-img::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--black) 0%, transparent 44%);
+    z-index: 1;
 }
 
 .comment-contents {
