@@ -2,12 +2,34 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\TicketRepository;
+use App\Entity\Seance;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TicketRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\PaymentController;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+// use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext:['groups' => ['read:item:ticket']],
+    operations: [
+        new Get(),
+        new Post(
+            controller: PaymentController::class,
+            uriTemplate: "/payment/{id}",
+            uriVariables: ['id' => new Link(
+                fromClass: Seance::class,
+                toProperty: 'seance_id',
+            )],
+        )
+    ]
+)]
 class Ticket
 {
     #[ORM\Id]
@@ -16,14 +38,17 @@ class Ticket
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $price = null;
-
+    #[Groups('read:item:ticket')]
+    private ?float $price = null;
+    
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('read:item:ticket')]
     private ?User $user_id = null;
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('read:item:ticket')]
     private ?Seance $seance_id = null;
 
     #[ORM\Column(nullable: true)]
@@ -34,7 +59,7 @@ class Ticket
         return $this->id;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?float
     {
         return $this->price;
     }

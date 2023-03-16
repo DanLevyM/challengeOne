@@ -19,8 +19,8 @@ class ReviewFixture extends Fixture implements DependentFixtureInterface
         $review = new Review();
         $review->setTitle('très bon');
         $review->setDescription('Super film vraiment trop bien');
-        $review->setUserId($user);
-        $review->setUserVerif($userVerif);
+        $review->setUserAdmin($user);
+        $review->setUserAdminCheck($userVerif);
         $manager->persist($review);
 
         $manager->flush();

@@ -21,7 +21,8 @@ class SeanceFixture extends Fixture
         $seance->setEndTime(new \DateTime());
         $seance->setDate(new \DateTime());
         $seance->setMovieroomId($movieRoom);
-        $seance->setMovieId($movie);
+        $seance->setMovie($movie);
+        $seance->setPrice(mt_rand (10, 25));
         $manager->persist($seance);
         $manager->flush();
 
@@ -33,7 +34,8 @@ class SeanceFixture extends Fixture
         $seance->setEndTime(new \DateTime());
         $seance->setDate(new \DateTime());
         $seance->setMovieroomId($movieRoom1);
-        $seance->setMovieId($movie1);
+        $seance->setMovie($movie1);
+        $seance->setPrice(mt_rand (10, 25));
         $manager->persist($seance);
         $manager->flush();
     }

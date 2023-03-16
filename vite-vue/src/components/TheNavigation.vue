@@ -12,63 +12,71 @@ async function handleLogout() {
 </script>
 
 <template>
-    <nav id="nav" class="d-flex justify-content-between pt-3 pb-2">
-        <div>
-            <router-link to="/" class="p-2 m-3">Home</router-link>
-            <router-link to="/about" class="p-2 m-3">About</router-link>
-            <router-link to="/movies" class="p-2 m-3">Movies</router-link>
-            <router-link
-                :to="{ name: 'demo.show', params: { id: '1' } }"
-                class="p-2 m-3"
-                >Demo1</router-link
-            >
-            <router-link
-                :to="{ name: 'demo.show', params: { id: '2' } }"
-                class="p-2 m-3"
-                >Demo2</router-link
-            >
-        </div>
-        <div v-if="user.isLoggedIn">
-            <a href="#" class="p-2 m-3" v-on:click="handleLogout">Logout</a>
-        </div>
-        <div v-else>
-            <router-link to="/login" class="p-2 m-3">Login</router-link>
-            <router-link to="/register" class="p-2 m-3">Register</router-link>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="../../public/drolcinema.png" alt="DrolCinema">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav navbar-left me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/' }">
+                        <router-link class="nav-link" to="/">Films</router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/about' }">
+                        <router-link class="nav-link" to="/offres">Offres</router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/reservation' }">
+                        <router-link class="nav-link" to="/produits">Produits</router-link>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="nav-item"><a class="nav-link" href="/register" style="font-weight: bold">S'inscrire</a></li>
+                    <li class="nav-item"><span class="nav-link">|</span></li>
+                    <li class="nav-item"><a class="nav-link" href="/login" style="font-weight: bold">Se connecter</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
-    <hr />
 </template>
+
 
 <style>
 .router-link-active {
-    background-color: #d9e8f5;
-    border-radius: 4px;
+    color: white;
+    font-weight: bold;
 }
 
-nav > div a {
-    color: black;
-    text-decoration: none;
-    position: relative;
+.navbar {
+    background-color: transparent !important;
+}
+
+.nav-link {
+    color: white;
     transition: color 0.2s ease-in-out;
 }
 
-nav > div a:before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: black;
-    transform: scaleX(0);
-    transition: transform 0.2s ease-in-out;
+.nav-link:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
 }
 
-nav > div a:hover {
-    color: gray;
+.navbar-nav a:not(.active) {
+    color: #d3c4b8;
 }
 
-nav > div > a:hover:before {
-    transform: scaleX(1);
+.navbar-nav .nav-link:focus,
+.navbar-nav .nav-link:active {
+    color: #fff;
+    /* Couleur du texte */
+    background-color: transparent;
+    /* Couleur de fond */
+    outline: none;
+}
+
+.navbar-left li {
+    margin-right: 32px;
 }
 </style>

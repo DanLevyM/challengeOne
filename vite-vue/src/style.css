@@ -12,6 +12,8 @@
 
 body {
     min-height: 100vh;
+    background-color: #090a0b;
+    color: #ffffff;
 }
 
 img,
@@ -27,12 +29,23 @@ a {
     text-decoration: none;
 }
 
+.navbar {
+    background-color: #0E314C;
+}
+
 .booking {
     align-items: center;
     border-radius: 30px;
     background: rgb(170, 168, 168);
     width: 75%;
     padding: 2em;
+}
+
+.cover{
+    background-image: url('../../../public/cover.avif'); /* Chemin vers l'image de fond */
+    background-size: cover; /* Permet de couvrir toute la surface de la div */
+    background-position: center center; /* Centre l'image de fond horizontalement et verticalement */
+    background-repeat: no-repeat; /* Empêche la répétition de l'image de fond */
 }
 
 .ticket {   

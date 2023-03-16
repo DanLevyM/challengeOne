@@ -20,10 +20,6 @@ class Seance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'seances')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Movie $movie_id = null;
-
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $end_time = null;
 
@@ -40,6 +36,12 @@ class Seance
     #[ORM\OneToMany(mappedBy: 'seance_id', targetEntity: Ticket::class)]
     private Collection $tickets;
 
+    #[ORM\ManyToOne(inversedBy: 'seance')]
+    private ?Movie $movie = null;
+
+    #[ORM\Column]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -48,18 +50,6 @@ class Seance
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getMovieId(): ?Movie
-    {
-        return $this->movie_id;
-    }
-
-    public function setMovieId(?Movie $movie_id): self
-    {
-        $this->movie_id = $movie_id;
-
-        return $this;
     }
 
     public function getEndTime(): ?\DateTimeInterface
@@ -136,6 +126,30 @@ class Seance
                 $ticket->setSeanceId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMovie(): ?Movie
+    {
+        return $this->movie;
+    }
+
+    public function setMovie(?Movie $movie): self
+    {
+        $this->movie = $movie;
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
