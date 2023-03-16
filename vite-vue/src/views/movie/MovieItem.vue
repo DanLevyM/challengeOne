@@ -245,4 +245,23 @@ export default {
 .hero-film img {
     max-width: 100%;
 }
+
+.comment-contents {
+    border-color: grey;
+    border: solid;
+    border-radius: 10px;
+    padding: 1em;
+    margin: 1em;
+}
+
+.comment {
+    border-radius: 10px;
+    padding: 1em;
+    margin: 1em;
+    width: 100%;
+}
+
+.comment-content {
+    width: 100;
+}
 </style>

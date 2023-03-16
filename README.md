@@ -14,10 +14,16 @@ Start the client
   make startclient
 ```
 
-Seeders
+Init DB
+
+```
+  make db
+```
+
+Fixtures
 
 ```bash
-  make renew
+  make fixtures
 ```
 
 Build
