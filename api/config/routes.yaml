@@ -7,7 +7,3 @@ controllers:
 authentication_token:
     path: /authentication_token
     methods: ['POST']
-
-payment_intent:
-    path: /stripe
-    methods: ['POST']

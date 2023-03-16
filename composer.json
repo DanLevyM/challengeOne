@@ -1,6 +1,5 @@
 {
     "require": {
-        "stof/doctrine-extensions-bundle": "^1.7",
-        "stripe/stripe-php": "^10.5"
+        "stof/doctrine-extensions-bundle": "^1.7"
     }
 }
