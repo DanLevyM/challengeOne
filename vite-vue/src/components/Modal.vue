@@ -62,7 +62,7 @@
     width: 500px;
     margin: 0px auto;
     padding: 20px 30px;
-    background-color: #fff;
+    background-color: #1a191f;
     border-radius: 10px;
      
     transition: all 0.3s ease;
@@ -78,6 +78,7 @@
     text-align: right; */
     display: block;
     text-align: center;
+    align-items: center;
     margin-top: 50px;
     }
 
@@ -99,6 +100,7 @@
         left: 95%;
         cursor: pointer;
         font-size: 30px;
+        color: white;
     }
 
   

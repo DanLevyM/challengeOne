@@ -7,18 +7,26 @@ export default {
     components: {
     },
     setup () {
-        const data = ref([])
+      const userData = localStorage.getItem('access_token');
+      console.log("here");
+      console.log(userData);
+
+// Vérification si les données existent dans le localStorage
+
+    
+        const data = reactive([]);
         const user = ref({});
         const reviews_urls = ref({});
-        const reviews = reactive([]);
+        const reviews = ref({});
+        const users = ref({});
      
-        async function createNewReview(title, description) {
-          const formData = {}
+        async function createNewReview(title, description, verif) {
+          const formData = {};
           formData.title = title;
           formData.description = description;
-          formData.userId = "/users/2";
-          console.log(typeof(formData))
-          console.log(JSON.stringify({formData}))
+          //TODO remplacer /users/1 par les données de l'user loggé
+          formData.userId = "/users/1";
+          formData.userVerif = "/users/"+verif;
           const response = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: {
@@ -26,14 +34,40 @@ export default {
             },
             body: JSON.stringify(formData)
           });
-          console.log(response.json())
+         
           return await response.json();
         }
         
         onBeforeMount(async () => {
             try {
-                
+                //TODO faire en sorte que la liste des users soient seulement des admins
+                const res_users = await fetch(`${API_URL}/users`);
+                const data_users = await res_users.json();
+                users.value = data_users;
+                users.value = users["value"]["hydra:member"];
                 const res_reviews = await fetch(`${API_URL}/reviews`);
+                const data_reviews = await res_reviews.json();
+                reviews.value = data_reviews;
+                reviews.value = reviews["value"]["hydra:member"];
+                
+                for (let element of reviews.value){
+                  //TODO remplacer /users/1 par les données de l'user loggé
+                  if(element.userId == "/users/1"){
+                    data.push(element);
+                  }
+                }
+                
+                let i = 0;
+                for (let userNames of data){
+                  console.log(data[i].userVerif)
+                  const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
+                  const data_userNames = await res_userNames.json();
+                  let userName = data_userNames.firstname + " " + data_userNames.lastname; 
+                  data[i].userVerif = userName;
+                  i++;
+                }
+              
+                /*const res_reviews = await fetch(`${API_URL}/reviews`);
                 const data_reviews = await res_reviews.json();
                 reviews.value = data_reviews;
                 reviews.value = reviews["value"]["hydra:member"];
@@ -43,7 +77,8 @@ export default {
                     console.log(element);
                   }
                 }
-                console.log(data);
+                console.log(data);*/
+                //2 tests differents en bas est de base en com dans le push
                 /*const res_user = await fetch(`${API_URL}/users/1`);
                     const data_user = await res_user.json();
                     console.log( data_user);
@@ -67,7 +102,8 @@ export default {
         return {
             reviews,
             data,
-            createNewReview  
+            createNewReview,
+            users  
         }
     }      
          
@@ -78,27 +114,40 @@ export default {
 
 
 <template>
-  <div>
-    <table class="table table-hover">
+  <div class="bodyclass">
+    <table class="mainTable">
       <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Titre</th>
-          <th scope="col">Description</th>
+        <tr class="fit">
+          <th scope="col"><div class="thText">ID</div></th>
+          <th scope="col"><div class="thText">TITRE</div></th>
+          <th scope="col"><div class="thText">DESCRIPTION</div></th>
+          <th scope="col"><div class="thText">VALIDATEUR</div></th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="review in data" :key="review.id">
-          <th scope="row">{{ review["<target>"] }}</th>
-          <td>{{ review}}</td>
-          <td>{{ review  }}</td>
+      <tbody class="w-auto">
+        <tr v-for="review in data" :key="review.id" class="fit">
+          <td><div class="tableText">{{ review.id }}</div></td>
+          <td><div class="tableText">{{ review.title }}</div></td>
+          <td><div class="tableText">{{ review.description }}</div></td>
+          <td><div class="tableText">{{ review.userVerif }}</div></td>
         </tr>
         <tr>
           <td>
-            <form @submit.prevent="createNewReview(title, description)">
-              <input type="text" v-model="title" placeholder="Titre">
-              <input type="text" v-model="description" placeholder="Ecrire ici">
-              <button class="buttonAdd">Add review</button>    
+            <form @submit.prevent="createNewReview(title, description, verif)">
+              <span class="col-12 col-sm-6 col-lg-3">
+              <input class="formInput" type="text" v-model="title" placeholder="Titre">
+              </span>
+              <span class="col-12 col-sm-6 col-lg-3">
+              <input class="formInput" type="text" v-model="description" placeholder="Ecrire ici">
+              </span>
+              <span class="col-12 col-sm-6 col-lg-3">
+              <label class="formInput" for="admins-select">Choisir le modérateur:</label>
+              </span>
+              <select v-model="verif">
+                <option value="" disabled>--Choisir parmi la liste--</option>
+                <option v-for="user in users" :value="user.id" :key="user.id">{{ user.firstname }} {{ user.lastname }}</option>
+              </select>
+              <button class="buttonAdd">AJOUTER</button>    
             </form>
           </td>
         </tr>
@@ -111,65 +160,4 @@ export default {
 
 <style lang="css">
 
-  #button-container {
-    width: 100%;
-    display:block;
-    position:relative;
-    margin-top: 100px;
-    text-align: center;
-    height: auto;
-  }
-
-  #save {
-    color: #fff;
-    border-radius: 5px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-    width: 130px;
-    height: 40px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
-    text-align: center;
-  }
-
-  .buttonAction {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: cursor;
-    outline: none;
-    margin-right: 2em;
-  }
- 
-  .buttonAdd {
-    color: #fff;
-    border-radius: 5px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-    width: 130px;
-    height: 40px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
-    text-align: center;
-  }
 </style>

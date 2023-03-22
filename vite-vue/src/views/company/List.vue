@@ -83,41 +83,41 @@ export default {
 
 
 <template>
-  <div>
-    <table class="table table-hover">
+  <div class="bodyclass">
+    <table class="mainTable">
       <thead>
         <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Action</th>
+          <th scope="col"><div class="thText">ID</div></th>
+          <th scope="col"><div class="thText">NAME</div></th>
+          <th scope="col"><div class="thText">PRICE</div></th>
+          <th scope="col"><div class="thText">ACTION</div></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="product in products" :key="product.id">
-          <th scope="row">{{ product.id }}</th>
-          <td>{{ product.name }}</td>
-          <td>{{ product.price }}</td>
-          <td><button class="buttonAction"><i class="bi bi-trash text-danger" @click.prevent="deleteProduct(product.id)"></i></button>
-              <button class="buttonAction"><i class="bi bi-pencil-square text-warning" @click="showModals = product.id"></i></button></td>
+          <td><div class="tableText">{{ product.id }}</div></td>
+          <td><div class="tableText">{{ product.name }}</div></td>
+          <td><div class="tableText">{{ product.price }}</div></td>
+          <td><div class="tableText"><button class="buttonAction delete"><i class="bi bi-trash text-danger" @click.prevent="deleteProduct(product.id)"></i></button>
+              <button class="buttonAction edit"><i class="bi bi-pencil-square text-warning" @click="showModals = product.id"></i></button></div></td>
               <modal v-show="showModals == product.id" @close="showModals = false">
                 <template v-slot:header>
-                  <h2>{{product.id}}</h2>
+                  <h6 class="modalTitle">{{product.id}}</h6>
                 </template>
                 <template v-slot:body>
                   <form @submit.prevent="editProduct(product.id, editName, editPrice)">
                     <div class="form-group">
                       <label for="Nom">Nom</label> 
-                      <input type="text" class="form-control" v-model="editName" :placeholder="product.name">
+                      <input type="text" class="formInput" v-model="editName" :placeholder="product.name">
                     </div>
                     <div class="form-group">
                       <label>Prix</label> 
-                      <input type="number" class="form-control" v-model="editPrice" :placeholder="product.price">
+                      <input type="number" class="formInput" v-model="editPrice" :placeholder="product.price">
                     </div>
-                    <div id="button-container">
+                    <div class="containerFlex">
                       <button id="save">Enregistrer</button>
+                      <button id="dismiss" @click.prevent="showModals = false">Annuler</button>
                     </div>
-                    
                   </form>
                 </template>
                 <template v-slot:footer>
@@ -128,9 +128,13 @@ export default {
         <tr>
           <td>
             <form @submit.prevent="createNewProduct(name, price)">
-              <input type="text" v-model="name" placeholder="Name">
-              <input type="number" v-model="price" placeholder="Price">
-              <button class="buttonAdd">Add Product</button>    
+              <span class="col-12 col-sm-6 col-lg-3">
+                <input class="formInput" type="text" v-model="name" placeholder="Name">
+              </span>
+              <span class="col-12 col-sm-6 col-lg-3">
+                <input class="formInput" type="number" v-model="price" placeholder="Price">
+              </span>
+              <button class="buttonAdd">AJOUTER</button>    
             </form>
           </td>
         </tr>
@@ -143,65 +147,4 @@ export default {
 
 <style lang="css">
 
-  #button-container {
-    width: 100%;
-    display:block;
-    position:relative;
-    margin-top: 100px;
-    text-align: center;
-    height: auto;
-  }
-
-  #save {
-    color: #fff;
-    border-radius: 5px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-    width: 130px;
-    height: 40px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
-    text-align: center;
-  }
-
-  .buttonAction {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: cursor;
-    outline: none;
-    margin-right: 2em;
-  }
- 
-  .buttonAdd {
-    color: #fff;
-    border-radius: 5px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-    width: 130px;
-    height: 40px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
-    text-align: center;
-  }
 </style>

@@ -12,11 +12,11 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\ApiProperty;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
-#[ApiResource(security: "is_granted('ROLE_COMPANY') or is_granted('ROLE_ADMIN')")]
+#[ApiResource]
 #[Get]
-#[Put(security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_COMPANY')")]
+#[Put]
 #[GetCollection]
-#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Post]
 class Product
 {
     #[ORM\Id]
