@@ -32,6 +32,15 @@ async function handleLogout() {
                     <li class="nav-item" :class="{ 'router-link-active': $route.path === '/reservation' }">
                         <router-link class="nav-link" to="/produits">Produits</router-link>
                     </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/products' }">
+                        <router-link class="nav-link" to="/products">Nos Produits</router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/company/products' }">
+                        <router-link class="nav-link" to="/company/products">Produits Admin</router-link>
+                    </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/admin/review' }">
+                        <router-link class="nav-link" to="/admin/review">Review</router-link>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="nav-item"><a class="nav-link" href="/register" style="font-weight: bold">S'inscrire</a></li>

@@ -61,35 +61,4 @@ import { ref, onBeforeMount } from 'vue';
   section {
     margin-bottom: 2em;
   }
-
-  .buttonAction {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: cursor;
-    outline: none;
-    margin-right: 2em;
-  }
- 
-  .buttonAdd {
-    color: #fff;
-    border-radius: 5px;
-    font-family: 'Lato', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: inline-block;
-    box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
-    7px 7px 20px 0px rgba(0,0,0,.1),
-    4px 4px 5px 0px rgba(0,0,0,.1);
-    outline: none;
-    background: linear-gradient(0deg, rgba(255,151,0,1) 0%, rgba(251,75,2,1) 100%);
-    width: 130px;
-    height: 40px;
-    line-height: 42px;
-    padding: 0;
-    border: none;
-    text-align: center;
-  }
 </style>

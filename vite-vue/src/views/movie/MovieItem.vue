@@ -18,7 +18,6 @@
                     <span class="label label--dark mr-2"> Famille </span>
                     <span class="label label--dark mr-2">1h58</span>
                 </div>
-
                 <div>
                     <p class="ft-tertiary ft-500 c-white-70"> Sortie : {{ movie.release_date }} </p>
 
@@ -28,6 +27,18 @@
                         </p>
                         <p class="hero-film__desc ft-default c-white-70"> {{ movie.description }} </p>
                     </div>
+                </div>
+                <div v-if="review">
+                  <h3>Notre avis:</h3>
+                  <div>
+                    <div>
+                        <h5><b>{{ review.value.title }}</b></h5>
+                        <p>{{ review.value.description }}</p> 
+                    </div>
+                  </div>
+                </div>
+                <div v-else>
+                  <p>Pas encore d'avis de la rédaction</p>
                 </div>
             </div>
         </div>
@@ -83,6 +94,9 @@ export default {
         const seances = reactive([]);
         const comments = reactive([]);
         const comments_url = ref({});
+        const review = reactive({});
+        const review_url = ref({});
+        
         const route = useRoute();
         const showModals = reactive(Array(seances.length).fill(false))
         onBeforeMount(async () => {
@@ -92,7 +106,8 @@ export default {
                 movie.value = data_movie;
                 movie.value.release_date = new Date(movie.value.release_date).toLocaleDateString()
                 seances_urls.value = movie.value.seance;
-
+                  review_url.value = movie.value.review_id;
+                  
                 // get comments
                 comments_url.value = movie.value.comments;
                 console.log(comments_url.value);
@@ -112,6 +127,15 @@ export default {
                             seances.push(data);
                         })
                 }
+                
+                //get reviews
+                await fetch(`${API_URL}${review_url.value}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                review.value=data;
+                                /*review.title = data.title;
+                                review.description = data.description;*/
+                        })  
 
             } catch (error) {
                 console.log(error);
@@ -126,7 +150,9 @@ export default {
             seances,
             showModals,
             comments,
-            comments_url
+            comments_url,
+            review,
+            review_url
         }
     },
     /*  methods: {
