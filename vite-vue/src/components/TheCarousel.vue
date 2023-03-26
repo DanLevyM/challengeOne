@@ -6,7 +6,7 @@
         <div class="track">
 
           <div class="card-container" v-for="movie in movies" :key="movie.id">
-            <router-link :to="'/movie/' + movie.id">
+            <router-link :to="'/movies/' + movie.id">
               <div class="card card1"></div>
               <p class="card-title">{{ movie.title }}</p>
             </router-link>
@@ -26,7 +26,7 @@
         <div class="track">
 
           <div class="card-container" v-for="movie in movies" :key="movie.id">
-            <router-link :to="'/movie/' + movie.id">
+            <router-link :to="'/movies/' + movie.id">
               <div class="card card1"></div>
               <p class="card-title">{{ movie.title }}</p>
             </router-link>
@@ -53,7 +53,6 @@ export default {
     onBeforeMount(async () => {
       const response = await axios.get(`${API_URL}/movies?page=1`);
       movies.value = await JSON.parse(JSON.stringify(response.data["hydra:member"]));
-
     });
 
     return {

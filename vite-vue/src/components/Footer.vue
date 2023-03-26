@@ -5,7 +5,7 @@
                 <div class="col-12">
                     <div class="footer__content">
                         <a href="index.html" class="footer__logo">
-                            <img src="img/logo.svg" alt="">
+                            <img src="../../public/drolcinema.png" alt="">
                         </a>
 
                         <span class="footer__copyright">© DROLCINEMA 2023</span>
