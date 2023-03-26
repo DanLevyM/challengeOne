@@ -77,10 +77,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Ticket::class)]
     private Collection $tickets;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Review::class)]
-    #[Groups(['review:read', 'review:create', 'review:update'])]
-    private Collection $reviews;
-    
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
