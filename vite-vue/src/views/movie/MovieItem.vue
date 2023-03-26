@@ -47,7 +47,7 @@
                             <div>
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
-                                        <a class="nav-link" :class="{ active: activeTab === index }"
+                                        <a  style="cursor: pointer;" class="nav-link" :class="{ active: activeTab === index }"
                                             @click="selectTab(index)">{{ tab }}</a>
                                     </li>
                                 </ul>
@@ -59,8 +59,6 @@
                                                 class="btn btn-block my-2 card-session">
                                                 <div class="screening-start">{{ seance.startTimeFormatted }}</div>
                                                 <div class="screening-end ">(fin {{ seance.endTimeFormatted }})</div>
-                                                <!-- {{ seance.price }} -->
-                                                <!-- {{ seance.id }} -->
                                             </button>
 
                                             <modal v-if="showModals[index]" @close="showModals[index] = false">
