@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReviewRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,12 +24,11 @@ class Review
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?User $user_id = null;
+    #[ORM\ManyToOne]
+    private ?User $user_admin = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?User $User_verif = null;
-
+    private ?User $user_admin_check = null;
 
     public function getId(): ?int
     {
@@ -58,26 +59,26 @@ class Review
         return $this;
     }
 
-    public function getUserId(): ?User
+    public function getUserAdmin(): ?User
     {
-        return $this->user_id;
+        return $this->user_admin;
     }
 
-    public function setUserId(?User $user_id): self
+    public function setUserAdmin(?User $user_admin): self
     {
-        $this->user_id = $user_id;
+        $this->user_admin = $user_admin;
 
         return $this;
     }
 
-    public function getUserVerif(): ?User
+    public function getUserAdminCheck(): ?User
     {
-        return $this->User_verif;
+        return $this->user_admin_check;
     }
 
-    public function setUserVerif(?User $User_verif): self
+    public function setUserAdminCheck(?User $user_admin_check): self
     {
-        $this->User_verif = $User_verif;
+        $this->user_admin_check = $user_admin_check;
 
         return $this;
     }

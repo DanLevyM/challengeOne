@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Review;
-use App\Entity\Seance;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MovieRepository;
@@ -38,16 +37,16 @@ class Movie
     #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Comment::class)]
     private Collection $comments;
 
-    #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Seance::class)]
-    private Collection $seances;
-
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Review $review_id = null;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
+    private Collection $seance;
 
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->seances = new ArrayCollection();
+        $this->seance = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,36 +144,6 @@ class Movie
         return $this;
     }
 
-    /**
-     * @return Collection<int, Seance>
-     */
-    public function getSeances(): Collection
-    {
-        return $this->seances;
-    }
-
-    public function addSeance(Seance $seance): self
-    {
-        if (!$this->seances->contains($seance)) {
-            $this->seances->add($seance);
-            $seance->setMovieId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeance(Seance $seance): self
-    {
-        if ($this->seances->removeElement($seance)) {
-            // set the owning side to null (unless already changed)
-            if ($seance->getMovieId() === $this) {
-                $seance->setMovieId(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getReviewId(): ?Review
     {
         return $this->review_id;
@@ -183,6 +152,36 @@ class Movie
     public function setReviewId(?Review $review_id): self
     {
         $this->review_id = $review_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeance(): Collection
+    {
+        return $this->seance;
+    }
+
+    public function addSeance(Seance $seance): self
+    {
+        if (!$this->seance->contains($seance)) {
+            $this->seance->add($seance);
+            $seance->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): self
+    {
+        if ($this->seance->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getMovie() === $this) {
+                $seance->setMovie(null);
+            }
+        }
 
         return $this;
     }

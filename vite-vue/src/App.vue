@@ -1,16 +1,16 @@
 <template>
     <TheNavigation />
-    <div class="container">
-        <router-view v-slot="{ Component }">
-            <transition name="slide" mode="out-in">
-                <component :is="Component" :key="$route.path" />
-            </transition>
-        </router-view>
-    </div>
+    <router-view v-slot="{ Component }">
+        <transition name="slide" mode="out-in">
+            <component :is="Component" :key="$route.path" />
+        </transition>
+    </router-view>
+    <Footer />
 </template>
 
 <script setup lang="ts">
 import TheNavigation from "./components/TheNavigation.vue";
+import Footer from "./components/Footer.vue";
 </script>
 
 <style lang="css">

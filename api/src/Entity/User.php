@@ -64,11 +64,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:create', 'user:update'])]
+    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $lastname = null;
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Comment::class)]
@@ -80,19 +80,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Review::class)]
     #[Groups(['review:read', 'review:create', 'review:update'])]
     private Collection $reviews;
-
+    
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Subscription $subscription_id = null;
 
+    #[ORM\OneToMany(mappedBy: 'user_admin_check', targetEntity: Review::class)]
+    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tickets = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
         $this->moderations = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,36 +250,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Review>
-     */
-    public function getReviews(): Collection
-    {
-        return $this->reviews;
-    }
-
-    public function addReview(Review $review): self
-    {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setUserId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReview(Review $review): self
-    {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getUserId() === $this) {
-                $review->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Moderation>
      */
     public function getModerations(): Collection
@@ -332,5 +306,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setUserAdminCheck($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getUserAdminCheck() === $this) {
+                $review->setUserAdminCheck(null);
+            }
+        }
+
+        return $this;
     }
 }

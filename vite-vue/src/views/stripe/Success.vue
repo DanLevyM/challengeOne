@@ -1,5 +1,5 @@
 <template>
     <div>
-        Le paiement a réussi
+        Le paiement a bien été accepté
     </div>
 </template>

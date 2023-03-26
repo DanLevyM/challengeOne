@@ -6,7 +6,6 @@
 parameters:
 
 services:
-    
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -30,6 +29,3 @@ services:
     App\State\UserPasswordHasher:
         bind:
             $processor: '@api_platform.doctrine.orm.state.persist_processor'
-
-    App\Controller\PaymentController:
-        tags: ['controller.service_arguments']

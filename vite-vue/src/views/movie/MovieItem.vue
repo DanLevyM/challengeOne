@@ -1,58 +1,44 @@
 <template>
-
-    <div class="movie-detail">
-        <h2>{{movie.title}}</h2>
-        <p>{{ movie.release_date }}</p>
-        <img src="../../assets/img/avatar.jpg" alt="Movie Poster" class="featured-img" />
-        <p>{{ movie.description }}</p>
-
-        <h2> Seances</h2>
-        <div class="row">
-            <div v-if="seances" v-for="(seance, index) in seances" :key="seance.id" class="col-sm-3">
-                <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <button @click="showModals[index] = true" class="btn btn-primary">
-                            {{ seance.start_time }}
-                        </button> 
-                    </div>  
+    <div>
+        <picture class="cover-img">
+            <source media="(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)"
+                srcset="https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg">
+            <img alt="" loading="lazy"
+                src="https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg">
+        </picture>
+        <div class="container hero-film">
+            <img width="100" class="hero-film__poster"
+                src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
+                alt="Le Roi Lion">
+            <div class="hero-film-content">
+                <h1 class="mb-md-1">Le Roi Lion</h1>
+                <div class="hero-film__subtitle mb-2 f-inline f-ai-center f-wrap">
+                    <span class="label label--dark mr-2">Animation </span>
+                    <span class="label label--dark mr-2"> Aventure </span>
+                    <span class="label label--dark mr-2"> Famille </span>
+                    <span class="label label--dark mr-2">1h58</span>
                 </div>
-                
-                <modal v-if="showModals[index]" @close="showModals[index] = false">
-                    <template v-slot:header>
-                        <h2>{{movie.title}}</h2>
-                    </template>
-                    <template v-slot:body>
-                        <h3>{{seances[index].start_time}}</h3>
-                        <h3>{{seances[index].price}}€</h3>
-                    </template>
-                    <template v-slot:footer>
-                        <a @click="emitDataEvent(seances[index].price)" href="/stripe-test" class="button-cta cta-button">Réserver</a>
-                    </template>
-                </modal>
-            </div>
-            <div v-else>
-                Aucune séance pour le moment
-            </div>
-            <div v-if="review">
-                <h3>Notre avis:</h3>
                 <div>
+                    <p class="ft-tertiary ft-500 c-white-70"> Sortie : {{ movie.release_date }} </p>
+
+                    <div>
+                        <p class="ft-tertiary c-white-70"> De <strong>{{ movie.director }}</strong> avec
+                            <strong>Jean Reno, Rayane Bensetti, Sabrina Ouazani</strong>
+                        </p>
+                        <p class="hero-film__desc ft-default c-white-70"> {{ movie.description }} </p>
+                    </div>
+                </div>
+                <div v-if="review">
+                  <h3>Notre avis:</h3>
+                  <div>
                     <div>
                         <h5><b>{{ review.value.title }}</b></h5>
                         <p>{{ review.value.description }}</p> 
                     </div>
+                  </div>
                 </div>
-            </div>
-            <div v-else>
-                <p>Pas encore d'avis de la rédaction</p>
-            </div>
-            <div class="comment-contents">
-                <p>Comments:</p>
-                <div v-if="comments" v-for="(comment) in comments" :key="comment.id" class="col-sm-3">
-                    <div class="comment">
-                        <h3 class="comment-content">{{ comment.title }}</h3>
-                        <p class="comment-content">{{ comment.description }}</p> 
-                    </div>
+                <div v-else>
+                  <p>Pas encore d'avis de la rédaction</p>
                 </div>
             </div>
         </div>
@@ -62,149 +48,157 @@
 
 
 <script>
-    import { ref, reactive, onBeforeMount, onMounted } from 'vue';
-    import { useRoute } from 'vue-router';
-    import modal from "../../components/Modal.vue"
-    import StripeTest from '../stripe/StripeTest.vue';
+import { ref, reactive, onBeforeMount, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import modal from "../../components/Modal.vue"
+import Stripe from '../stripe/Stripe.vue';
 
-    const API_URL = import.meta.env.VITE_API_URL;
-    function getHoursAndMinutes (dateString) {
-        let date = new Date(dateString);
+const API_URL = import.meta.env.VITE_API_URL;
+function getHoursAndMinutes(dateString) {
+    let date = new Date(dateString);
 
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
 
-        let formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-        return formattedTime;
-    }
+    let formattedTime = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+    return formattedTime;
+}
 
-    function getFullDate(date_string) {
-        let dateString = date_string;
-        let date = new Date(dateString);
+function getFullDate(date_string) {
+    let dateString = date_string;
+    let date = new Date(dateString);
 
-        let dayOfWeek = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-        let day = dayOfWeek[date.getUTCDay()];
+    let dayOfWeek = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    let day = dayOfWeek[date.getUTCDay()];
 
-        let months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-        let month = months[date.getUTCMonth()];
+    let months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    let month = months[date.getUTCMonth()];
 
-        let dayOfMonth = date.getUTCDate();
+    let dayOfMonth = date.getUTCDate();
 
-        let formattedDate = `${day} ${dayOfMonth} ${month}`;
+    let formattedDate = `${day} ${dayOfMonth} ${month}`;
 
-        return formattedDate ;
+    return formattedDate;
 
-    }
-    export default {
+}
+export default {
+
+    components: {
+        modal,
+        Stripe
+    },
+    setup() {
+
+        const movie = ref({});
+        const seances_urls = ref({});
+        const seances = reactive([]);
+        const comments = reactive([]);
+        const comments_url = ref({});
+        const review = reactive({});
+        const review_url = ref({});
         
-        components: {
-            modal,
-            StripeTest
-        },
-        setup () {
-            
-            const movie = ref({});
-            const seances_urls = ref({});
-            const seances = reactive([]);
-            const comments = reactive([]);
-            const review = reactive({});
-            const comments_url = ref({});
-            const review_url = ref({});
-            const route = useRoute();
-            const showModals = reactive(Array(seances.length).fill(false))
-            onBeforeMount(async () => {
-                try {
-                    const res_movie = await fetch(`${API_URL}/movies/${route.params.id}`);
-                    const data_movie = await res_movie.json();
-                    movie.value = data_movie;
-                    movie.value.release_date = new Date(movie.value.release_date).toLocaleDateString()
-                    seances_urls.value = movie.value.seances;
-                    review_url.value = movie.value.review_id;
-                    // get comments
-                    comments_url.value = movie.value.comments;
-                    console.log(comments_url.value);
-                    for (const comment of comments_url.value) {
-                        await fetch(`${API_URL}${comment}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                comments.push(data);
-                        })   
-                    } 
+        const route = useRoute();
+        const showModals = reactive(Array(seances.length).fill(false))
+        onBeforeMount(async () => {
+            try {
+                const res_movie = await fetch(`${API_URL}/movies/${route.params.id}`);
+                const data_movie = await res_movie.json();
+                movie.value = data_movie;
+                movie.value.release_date = new Date(movie.value.release_date).toLocaleDateString()
+                seances_urls.value = movie.value.seance;
+                  review_url.value = movie.value.review_id;
+                  
+                // get comments
+                comments_url.value = movie.value.comments;
+                console.log(comments_url.value);
+                for (const comment of comments_url.value) {
+                    await fetch(`${API_URL}${comment}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            comments.push(data);
+                        })
+                }
 
-                    for (const s of seances_urls.value) {
-                        await fetch(`${API_URL}${s}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                data.start_time = getHoursAndMinutes(data.start_time)
-                                seances.push(data);
-                        })   
-                    } 
-
-                    await fetch(`${API_URL}${review_url.value}`)
+                for (const s of seances_urls.value) {
+                    await fetch(`${API_URL}${s}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.start_time = getHoursAndMinutes(data.start_time)
+                            seances.push(data);
+                        })
+                }
+                
+                //get reviews
+                await fetch(`${API_URL}${review_url.value}`)
                             .then(response => response.json())
                             .then(data => {
                                 review.value=data;
-                                console.log(review)
                                 /*review.title = data.title;
                                 review.description = data.description;*/
-                        })   
-                } catch (error) {
-                    console.log(error);
-                }
-            
-            });
+                        })  
 
-            
-            return {
-                movie,
-                seances_urls,
-                seances,
-                showModals,
-                comments,
-                comments_url,
-                review,
-                review_url
+            } catch (error) {
+                console.log(error);
             }
-        },
+
+        });
+
+
+        return {
+            movie,
+            seances_urls,
+            seances,
+            showModals,
+            comments,
+            comments_url,
+            review,
+            review_url
+        }
+    },
     /*  methods: {
             emitDataEvent(seance) {
                 bus.$emit('data-event', seance)
         } */
     //}                
-        
-        
-    
-    };
+
+
+
+};
 </script>
 
 <style lang="scss">
-.movie-detail {
-    padding: 16px;
-    h2 {
-        color: #000;
-        font-size: 28px;
-        font-weight: 600;
-        margin-bottom: 16px;
-    }
-    .featured-img {
-        display: block;
-        max-width: 200px;
-        margin-bottom: 16px;
-    }
-    p {
-        color: #000;
-        font-size: 18px;
-        line-height: 1.4;
-    }
+.cover-img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    // display: flex;
+    background-image: url('https://www.pathe.fr/media/movie/9102738/backdrop/lg/80/1280x720_le-roi-lion-238823_5df0b8e1496ad.jpg');
+    background-size: cover;
+    background-position: center center;
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 100vh;
+    /* ajuster la hauteur selon vos besoins */
 }
 
-.button-cta {
-        background-color: #B3282F;
-        color: #fff !important;
-    }
+.hero-film-content {
+    width: 40%;
+}
 
-.button-cta:hover {
-    background-color: #6687BA;
+.cover-img {
+    z-index: -1;
+    width: 60%
+}
+
+.cover-img::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, var(--black) 0%, transparent 44%);
+    z-index: 1;
 }
 
 .comment-contents {
