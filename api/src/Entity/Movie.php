@@ -41,6 +41,7 @@ class Movie
     private ?int $duration = null;
 
     #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Comment::class)]
+    #[Groups('movie')]
     private Collection $comments;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

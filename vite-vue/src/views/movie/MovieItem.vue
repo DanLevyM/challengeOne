@@ -47,8 +47,8 @@
                             <div>
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
-                                        <a  style="cursor: pointer;" class="nav-link" :class="{ active: activeTab === index }"
-                                            @click="selectTab(index)">{{ tab }}</a>
+                                        <a style="cursor: pointer;" class="nav-link"
+                                            :class="{ active: activeTab === index }" @click="selectTab(index)">{{ tab }}</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content mt-3">
@@ -70,8 +70,7 @@
                                                     <h3>{{ seance.price }}€</h3>
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <a @click="emitDataEvent(seance.price)"
-                                                        :href="'/payment/' + seance.id"
+                                                    <a @click="emitDataEvent(seance.price)" :href="'/payment/' + seance.id"
                                                         class="button-cta cta-button">Réserver</a>
                                                 </template>
                                             </modal>
@@ -83,21 +82,20 @@
                                 </div>
                             </div>
 
-                            <!-- <div class="comment-contents">
-                                    <p>Comments:</p>
-                                    <div v-if="comments">
-                                        <div> v-for="(comment) in comments" :key="comment.id" class="col-sm-3">
-                                            <div class="comment">
-                                                <h3 class="comment-content">{{ comment.title }}</h3>
-                                                <p class="comment-content">{{ comment.description }}</p>
-                                            </div>
+                            <div class="comment-contents">
+                                <h2 class="content-title">Commentaires</h2>
+                                <div v-if="movie.comments && movie.comments.length > 0">
+                                    <div v-for="(comment) in movie.comments" :key="comment.id" class="col-sm-3">
+                                        <div class="comment">
+                                            <h3 class="comment-content">{{ comment.title }}</h3>
+                                            <p class="comment-content">{{ comment.description }}</p>
                                         </div>
                                     </div>
-                                    <div v-else>
-                                        Aucune commentaire pour le moment
-                                    </div>
-                                </div> -->
-
+                                </div>
+                                <div v-else>
+                                    Aucune commentaire pour le moment
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -214,6 +212,7 @@ export default {
 
         }
 
+        selectTab(0); // Appel de la fonction pour le premier onglet
 
         onBeforeMount(async () => {
             try {
