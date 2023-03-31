@@ -1,4 +1,4 @@
-.PHONY: build start stop renew test
+.PHONY: build start stop db fixtures test
 
 build:
 	docker compose build --pull --no-cache
@@ -7,11 +7,12 @@ start:
 	docker compose up -d
 
 stop:
-	docker compose down
+	docker compose down --remove-orphans
 
-# Execute this after startclient and startserver if the bdd was updated - press "yes" for purge the dabatase and apply fixtures
-renew:
+db:
 	docker compose exec php bin/console doctrine:schema:update --force
+
+fixtures:
 	docker compose exec php bin/console doctrine:fixtures:load 
 
 test:

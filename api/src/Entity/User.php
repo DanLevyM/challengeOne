@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Patch(processor: UserPasswordHasher::class),
         new Delete(),
     ],
-    normalizationContext: ['groups' => ['user:read']],
+    normalizationContext: ['groups' => ['user:read', 'review:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]

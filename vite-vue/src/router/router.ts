@@ -33,9 +33,24 @@ const routes = [
     component: () => import("../views/movie/Movies.vue"),
   },
   {
+    path: "/company/products",
+    name: "company",
+    component: () => import("../views/company/List.vue"),
+  },
+  {
     path: "/movies/:id",
     name: "movie.show",
     component: () => import("../views/movie/MovieItem.vue"),
+  },
+  {
+    path: "/products",
+    name: "products",
+    component: () => import("../views/product/ProductList.vue"),
+  },
+  {
+    path: "/admin/review",
+    name: "review",
+    component: () => import("../views/review/ReviewForm.vue"),
   },
   {
     path: "/demo/:id",
@@ -62,6 +77,11 @@ const routes = [
     path: "/purchase",
     name: "purchase",
     component: () => import("../views/movie/Reservation.vue"),
+  },
+  {
+    path: "/admin/dashboard",
+    name: "admin",
+    component: () => import("../views/adm/Dashboard.vue"),
   },
   {
     path: '/success',

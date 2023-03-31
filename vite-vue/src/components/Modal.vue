@@ -8,6 +8,7 @@
                 </slot>
             </div>
             <div class="modal-body">
+                <span class="close-icon" @click="$emit('close')">&times;</span>
                 <slot name="body">
                     Contenu de la modale
                 </slot>
@@ -17,7 +18,7 @@
                     Footer de la modale
                 </slot>
             </div>
-            <span class="close-icon" @click="$emit('close')">&times;</span>
+            
             <slot></slot>
         </div>
         </div>
@@ -43,6 +44,9 @@
     left: 0;
     width: 100%;
     height: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%; 
     background-color: rgba(0, 0, 0, 0.5);
     display: table;
     transition: opacity 0.3s ease;
@@ -51,6 +55,7 @@
     .modal-wrapper {
     display: table-cell;
     vertical-align: middle;
+    background-color: rgba(0, 0, 0, 0.05);
     }
 
     .modal-container {
@@ -73,6 +78,7 @@
     text-align: right; */
     display: block;
     text-align: center;
+    align-items: center;
     margin-top: 50px;
     }
 
@@ -90,11 +96,12 @@
 
     .close-icon {
         position: relative;
-        bottom: 220px;
-        left: 430px;
+        bottom: 20%;
+        left: 95%;
         cursor: pointer;
         font-size: 30px;
+        color: white;
     }
 
-
+  
 </style>
