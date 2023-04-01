@@ -13,7 +13,8 @@
 
 body {
     min-height: 100vh;
-    background-color: #090a0b;
+    background-color: #1a191f;
+    /* //#090a0b; */
     color: #ffffff;
 }
 
@@ -30,8 +31,8 @@ a {
     text-decoration: none;
 }
 
-.navbar {
-    background-color: #0E314C;
+.navbar-toggler {
+    color: white !important;
 }
 
 .booking {
