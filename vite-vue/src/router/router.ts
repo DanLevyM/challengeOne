@@ -35,6 +35,7 @@ const routes = [
     path: "/company/products",
     name: "company",
     component: () => import("../views/company/List.vue"),
+    meta: { requiresCompanyRole: true }
   },
   {
     path: "/movies/:id",
@@ -114,3 +115,22 @@ export const router = createRouter({
     );
   },
 });
+
+router.beforeEach((to, from, next) => {
+  const requiresCompanyRole = to.matched.some(record => record.meta.requiresCompanyRole)
+  const token = localStorage.getItem("access_token");
+  if (token) {
+  let payload = (token).split('.')[1];
+  let tokenTest = window.atob(payload);
+  const values = JSON.parse(tokenTest);
+  const roles = values.roles;
+  
+  if (requiresCompanyRole && roles.includes('ROLE_COMPANY') ){
+     
+      next() 
+    } else {
+    
+      next('/login')
+    }              
+  }
+})
