@@ -120,8 +120,7 @@ export const router = createRouter({
     );
   },
 });
-/*
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
   const requiresCompanyRole = to.matched.some(record => record.meta.requiresCompanyRole)
   const token = localStorage.getItem("access_token");
   if (token) {
