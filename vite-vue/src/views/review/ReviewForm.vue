@@ -39,6 +39,7 @@ export default {
         }
         
         onBeforeMount(async () => {
+          console.log(localStorage.getItem("access_token"));
             try {
                 //TODO faire en sorte que la liste des users soient seulement des admins
                 const res_users = await fetch(`${API_URL}/users`);
