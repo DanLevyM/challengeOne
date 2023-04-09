@@ -9,19 +9,38 @@
                     <div class="col-12">
                         <div class="card card--details">
                             <div class="row">
-                                <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3">
+                                <div
+                                    class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3"
+                                >
                                     <div class="card-cover">
-                                        <img src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
-                                            alt={{movie.title}}>
+                                        <img
+                                            src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
+                                            alt="{{movie.title}}"
+                                        />
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-md-8 col-lg-9 col-xl-9">
                                     <div class="card-content">
                                         <ul class="card-meta">
-                                            <li>Directeur:<span>{{ movie.director }}</span></li>
-                                            <li>Sortie:<span>{{ movie.releaseDateFormatted }}</span></li>
-                                            <li>Durée:<span>{{ movie.duration }} min</span></li>
+                                            <li>
+                                                Directeur:<span>{{
+                                                    movie.director
+                                                }}</span>
+                                            </li>
+                                            <li>
+                                                Sortie:<span>{{
+                                                    movie.releaseDateFormatted
+                                                }}</span>
+                                            </li>
+                                            <li>
+                                                Durée:<span
+                                                    >{{
+                                                        movie.duration
+                                                    }}
+                                                    min</span
+                                                >
+                                            </li>
                                         </ul>
                                         <div>
                                             {{ movie.description }}
@@ -46,32 +65,87 @@
 
                             <div>
                                 <ul class="nav nav-tabs">
-                                    <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
-                                        <a style="cursor: pointer;" class="nav-link"
-                                            :class="{ active: activeTab === index }" @click="selectTab(index)">{{ tab }}</a>
+                                    <li
+                                        class="nav-item"
+                                        v-for="(tab, index) in tabs"
+                                        :key="index"
+                                    >
+                                        <a
+                                            style="cursor: pointer"
+                                            class="nav-link"
+                                            :class="{
+                                                active: activeTab === index,
+                                            }"
+                                            @click="selectTab(index)"
+                                            >{{ tab }}</a
+                                        >
                                     </li>
                                 </ul>
                                 <div class="tab-content mt-3">
-                                    <div class="row" v-if="seances['hydra:totalItems'] > 0">
-                                        <div v-for="(seance, index) in seances['hydra:member']" :key="index"
-                                            :class="{ active: activeTab === index }" class="col-sm-3 pad">
-                                            <button @click="showModals[index] = true"
-                                                class="btn btn-block my-2 card-session">
-                                                <div class="screening-start">{{ seance.startTimeFormatted }}</div>
-                                                <div class="screening-end ">(fin {{ seance.endTimeFormatted }})</div>
+                                    <div
+                                        class="row"
+                                        v-if="seances['hydra:totalItems'] > 0"
+                                    >
+                                        <div
+                                            v-for="(seance, index) in seances[
+                                                'hydra:member'
+                                            ]"
+                                            :key="index"
+                                            :class="{
+                                                active: activeTab === index,
+                                            }"
+                                            class="col-sm-3 pad"
+                                        >
+                                            <button
+                                                @click="
+                                                    showModals[index] = true
+                                                "
+                                                class="btn btn-block my-2 card-session"
+                                            >
+                                                <div class="screening-start">
+                                                    {{
+                                                        seance.startTimeFormatted
+                                                    }}
+                                                </div>
+                                                <div class="screening-end">
+                                                    (fin
+                                                    {{
+                                                        seance.endTimeFormatted
+                                                    }})
+                                                </div>
                                             </button>
 
-                                            <modal v-if="showModals[index]" @close="showModals[index] = false">
+                                            <modal
+                                                v-if="showModals[index]"
+                                                @close="
+                                                    showModals[index] = false
+                                                "
+                                            >
                                                 <template v-slot:header>
                                                     <h2>{{ movie.title }}</h2>
                                                 </template>
                                                 <template v-slot:body>
-                                                    <h3>{{ seance.startTimeFormatted }}</h3>
+                                                    <h3>
+                                                        {{
+                                                            seance.startTimeFormatted
+                                                        }}
+                                                    </h3>
                                                     <h3>{{ seance.price }}€</h3>
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <a @click="emitDataEvent(seance.price)" :href="'/payment/' + seance.id"
-                                                        class="button-cta cta-button">Réserver</a>
+                                                    <a
+                                                        @click="
+                                                            emitDataEvent(
+                                                                seance.price
+                                                            )
+                                                        "
+                                                        :href="
+                                                            '/payment/' +
+                                                            seance.id
+                                                        "
+                                                        class="button-cta cta-button"
+                                                        >Réserver</a
+                                                    >
                                                 </template>
                                             </modal>
                                         </div>
@@ -84,11 +158,60 @@
 
                             <div class="comment-contents">
                                 <h2 class="content-title">Commentaires</h2>
-                                <div v-if="movie.comments && movie.comments.length > 0">
-                                    <div v-for="(comment) in movie.comments" :key="comment.id" class="col-sm-3">
+
+                                <!-- INPUT COMMENT -->
+                                <form v-on:submit.prevent="handleAddComment">
+                                    <div class="form-floating">
+                                        <input
+                                            type="text"
+                                            v-model="commentTitle"
+                                            class="form-control"
+                                            id="titleCommentInput"
+                                        />
+                                        <label for="floatingInput">Titre</label>
+                                    </div>
+                                    <div class="form-floating">
+                                        <input
+                                            type="text"
+                                            v-model="commentDescription"
+                                            class="form-control"
+                                            id="descCommentInput"
+                                        />
+                                        <label for="floatingPassword"
+                                            >Description</label
+                                        >
+                                    </div>
+                                    <button
+                                        class="w-100 btn btn-lg btn-primary"
+                                        type="submit"
+                                    >
+                                        Envoyer
+                                    </button>
+                                </form>
+
+                                <!-- LIST COMMENTS -->
+                                <div
+                                    v-if="
+                                        movie.comments &&
+                                        movie.comments.length > 0
+                                    "
+                                >
+                                    <div
+                                        v-for="comment in movie.comments"
+                                        :key="comment.id"
+                                    >
                                         <div class="comment">
-                                            <h3 class="comment-content">{{ comment.title }}</h3>
-                                            <p class="comment-content">{{ comment.description }}</p>
+                                            <h3 class="comment-content">
+                                                {{ comment.title }}
+                                            </h3>
+                                            <p class="comment-content">
+                                                {{ comment.description }}
+                                            </p>
+                                            <button
+                                                @click="signalComment(comment)"
+                                            >
+                                                X
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -105,22 +228,29 @@
 </template>
 
 <script>
-import { ref, reactive, onBeforeMount, onMounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import modal from "../../components/Modal.vue"
-import TabMenu from "../../components/TabMenu.vue"
-import Stripe from '../stripe/Stripe.vue';
+import { ref, reactive, onBeforeMount, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
+import modal from "../../components/Modal.vue";
+import TabMenu from "../../components/TabMenu.vue";
+import Stripe from "../stripe/Stripe.vue";
+import { useUserStore } from "../../stores/UserStore";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
-
+    data() {
+        return {
+            comments: null,
+        };
+    },
+    created() {},
+    methods: {},
     components: {
         modal,
         Stripe,
     },
     setup() {
-
+        const user = useUserStore();
 
         const jours = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
         const mois = [
@@ -148,7 +278,9 @@ export default {
         const comments = reactive([]);
         const comments_url = ref({});
         const route = useRoute();
-        var showModals = reactive([])
+        var showModals = reactive([]);
+        const commentTitle = ref("");
+        const commentDescription = ref("");
 
         for (let i = 0; i < 7; i++) {
             let day = new Date(today.getTime() + i * 24 * 60 * 60 * 1000);
@@ -157,24 +289,26 @@ export default {
             let moisAnnee = mois[day.getMonth()];
 
             tabs.push(`${jourSemaine} ${jourMois} ${moisAnnee}`);
-            contents.push(`Contenu pour ${jourSemaine} ${jourMois} ${moisAnnee}`);
+            contents.push(
+                `Contenu pour ${jourSemaine} ${jourMois} ${moisAnnee}`
+            );
         }
 
         function formatDate(dateString) {
             // Tableau pour mapper les mois en français à leurs numéros respectifs
             const monthMap = {
-                'janv': '01',
-                'févr': '02',
-                'mars': '03',
-                'avril': '04',
-                'mai': '05',
-                'juin': '06',
-                'juil': '07',
-                'août': '08',
-                'sept': '09',
-                'oct': '10',
-                'nov': '11',
-                'déc': '12'
+                janv: "01",
+                févr: "02",
+                mars: "03",
+                avril: "04",
+                mai: "05",
+                juin: "06",
+                juil: "07",
+                août: "08",
+                sept: "09",
+                oct: "10",
+                nov: "11",
+                déc: "12",
             };
 
             // Expression régulière pour extraire le jour et le mois
@@ -187,11 +321,13 @@ export default {
             const month = monthMap[monthName];
 
             // Formater la date dans le format YYYY-MM-DD
-            const formattedDate = `${new Date().getFullYear()}-${month}-${day.padStart(2, '0')}`;
+            const formattedDate = `${new Date().getFullYear()}-${month}-${day.padStart(
+                2,
+                "0"
+            )}`;
 
             return formattedDate;
         }
-
 
         async function selectTab(index) {
             activeTab.value = index;
@@ -207,39 +343,126 @@ export default {
             const data_seances = await res_seances.json();
 
             seances.value = data_seances;
-            console.log(seances.value)
+            // console.log(seances.value)
             return seances;
-
         }
 
         selectTab(0); // Appel de la fonction pour le premier onglet
 
         onBeforeMount(async () => {
             try {
-                const res_movie = await fetch(`${API_URL}/movies/${route.params.id}`);
+                const res_movie = await fetch(
+                    `${API_URL}/movies/${route.params.id}`
+                );
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
+                console.log(movie.value);
 
-                showModals = Array(movie.seance.length).fill(false)
+                showModals = Array(movie.seance.length).fill(false);
                 seances_urls.value = movie.value.seance;
 
                 // get comments
                 comments_url.value = movie.value.comments;
-                console.log(comments_url.value);
                 for (const comment of comments_url.value) {
                     await fetch(`${API_URL}${comment}`)
-                        .then(response => response.json())
-                        .then(data => {
+                        .then((response) => response.json())
+                        .then((data) => {
                             comments.push(data);
-                        })
+                        });
                 }
-
             } catch (error) {
                 console.log(error);
             }
-
         });
 
+        async function handleAddComment() {
+            const movieId = route.params.id;
+            const userId = await user.id();
+
+            try {
+                await fetch(`${API_URL}/comments`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        title: this.commentTitle,
+                        description: this.commentDescription,
+                        movieId: `/movies/${movieId}`,
+                        userId: `/users/${userId}`,
+                        // moderation: '/moderations/2',
+                        date: new Date(),
+                        counter: 0,
+                    }),
+                });
+
+                const res_movie = await fetch(`${API_URL}/movies/${movieId}`);
+                const data_movie = await res_movie.json();
+                movie.value = data_movie;
+
+                // get comments
+                comments_url.value = movie.value.comments;
+                for (const comment of comments_url.value) {
+                    await fetch(`${API_URL}${comment["@id"]}`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            comments.push(data);
+                        });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function signalComment(comment) {
+            const userId = await user.id();
+            const commentId = comment["@id"];
+
+            console.log("commentId = ", commentId);
+            // Check if comment is already signaled
+            const res = await fetch(`${API_URL}/moderations`);
+            const commentsInDb = await res.json();
+
+            try {
+                const isCommentAlreadySignaled = commentsInDb[
+                    "hydra:member"
+                ].find((el) => el.commentaireId === commentId);
+
+                if (isCommentAlreadySignaled) {
+                    const moderationresp = await fetch(
+                        `${API_URL}/moderations/${isCommentAlreadySignaled.id}`
+                    );
+                    const moderationdata = await moderationresp.json();
+                    const numberOfSignal = moderationdata.counterUserBan;
+
+                    await fetch(`${API_URL}/moderations/${moderationdata.id}`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/merge-patch+json",
+                        },
+                        body: JSON.stringify({
+                            counterUserBan: numberOfSignal + 1,
+                            userId: `/users/${userId}`,
+                            commentaireId: commentId,
+                        }),
+                    });
+                } else {
+                    await fetch(`${API_URL}/moderations`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            counterUserBan: 0,
+                            userId: `/users/${userId}`,
+                            commentaireId: commentId,
+                        }),
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
         return {
             movie,
@@ -251,13 +474,22 @@ export default {
             activeTab,
             selectTab,
             formatDate,
-            seances
-        }
-    }
+            seances,
+            handleAddComment,
+            commentTitle,
+            commentDescription,
+            user,
+            signalComment,
+        };
+    },
 };
 </script>
 
 <style lang="scss">
+label {
+    color: black;
+}
+
 .section--details {
     background: url(../../assets/details.jpg) center center / cover no-repeat;
 }
@@ -382,4 +614,3 @@ export default {
     color: black !important;
 }
 </style>
-
