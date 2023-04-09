@@ -92,5 +92,9 @@ export const useUserStore = defineStore("UserStore", {
       this.isLoggedIn = false;
       localStorage.removeItem("access_token");
     },
+
+    isLogged() {
+      return localStorage.getItem("access_token") ? true : false;
+    }
   },
 });
