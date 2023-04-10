@@ -19,7 +19,7 @@ class CommentFixture extends Fixture implements DependentFixtureInterface
 
         $comment = new Comment();
         $comment->setTitle('bof');
-        $comment->setDescription("S'il ne fallait retenir qu'un seul Disney ce serait évidemment celui-là. Le Roi Lion est un film splendide, porteur d'une histoire et d'une morale universelles. C'est aussi une prouesse technique au niveau des dessins. Impossible de retenir ses larmes face à un tel chef d'œuvre que l'on ne se lasse pas encore et encore de regarder !");
+        $comment->setDescription("S'il ne fallait retenir qu'un seul Disney ce serait évidemment celui-là. Le Roi Lion est un film splendide, porteur d'une histoire et d'une morale universelles.");
         $comment->setDate(new \DateTime('2020-07-17'));
         $comment->setUserId($user);
         $comment->setMovieId($movie);

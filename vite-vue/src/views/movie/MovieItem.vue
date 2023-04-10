@@ -182,8 +182,9 @@
                                         >
                                     </div>
                                     <button
-                                        class="w-100 btn btn-lg btn-primary"
+                                        class="w-100 btn btn-lg"
                                         type="submit"
+                                        id="button-send-comment"
                                     >
                                         Envoyer
                                     </button>
@@ -201,17 +202,18 @@
                                         :key="comment.id"
                                     >
                                         <div class="comment">
-                                            <h3 class="comment-content">
-                                                {{ comment.title }}
-                                            </h3>
-                                            <p class="comment-content">
-                                                {{ comment.description }}
-                                            </p>
-                                            <button
+                                            <div>
+                                                <h3 class="comment-content">
+                                                    {{ comment.title }}
+                                                </h3>
+                                                <p class="comment-content">
+                                                    {{ comment.description }}
+                                                </p>
+                                            </div>
+                                            <i
+                                                class="bi bi-flag-fill"
                                                 @click="signalComment(comment)"
-                                            >
-                                                X
-                                            </button>
+                                            ></i>
                                         </div>
                                     </div>
                                 </div>
@@ -225,6 +227,7 @@
             </div>
         </section>
     </div>
+    <div v-if="showMessage" class="message">{{ message }}</div>
 </template>
 
 <script>
@@ -234,7 +237,8 @@ import modal from "../../components/Modal.vue";
 import TabMenu from "../../components/TabMenu.vue";
 import Stripe from "../stripe/Stripe.vue";
 import { useUserStore } from "../../stores/UserStore";
-
+const showMessage = ref(false);
+const message = ref("");
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default {
@@ -376,6 +380,10 @@ export default {
         });
 
         async function handleAddComment() {
+            if (this.commentTitle == "" || this.commentDescription == "") {
+                alert("Veuillez remplir tous les champs");
+                return;
+            }
             const movieId = route.params.id;
             const userId = await user.id();
 
@@ -459,6 +467,11 @@ export default {
                         }),
                     });
                 }
+                showMessage.value = true;
+                message.value = "Commentaire signalé !";
+                setTimeout(() => {
+                    showMessage.value = false;
+                }, 3000);
             } catch (error) {
                 console.error(error);
             }
@@ -480,6 +493,8 @@ export default {
             commentDescription,
             user,
             signalComment,
+            showMessage,
+            message,
         };
     },
 };
@@ -488,6 +503,16 @@ export default {
 <style lang="scss">
 label {
     color: black;
+}
+
+#button-send-comment {
+    background-color: #ff7f00;
+    color: white;
+}
+
+#button-send-comment:hover {
+    background-color: #f9ab00;
+    color: white;
 }
 
 .section--details {
@@ -612,5 +637,46 @@ label {
 
 .nav-tabs .nav-link.active {
     color: black !important;
+}
+
+i {
+    color: red;
+    cursor: pointer;
+}
+
+.comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: 1px white solid;
+    margin: 0.5em;
+    padding: 0.5em 1.5em;
+
+    border-radius: 5px;
+}
+
+form {
+    width: 70%;
+    margin: 0 auto;
+    padding: 1em 0;
+}
+
+form > div {
+    margin-bottom: 0.5em;
+}
+
+.message {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 </style>
