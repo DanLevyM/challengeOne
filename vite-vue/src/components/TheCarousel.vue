@@ -52,6 +52,8 @@ export default {
     const movies = ref({});
     onBeforeMount(async () => {
       const response = await axios.get(`${API_URL}/movies?page=1`);
+
+      console.log('response', response);
       movies.value = await JSON.parse(JSON.stringify(response.data["hydra:member"]));
     });
 

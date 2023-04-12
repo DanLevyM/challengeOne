@@ -5,6 +5,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const user = useUserStore();
 
+// console.log("user is admin:", user.isAdmin());
+
 async function handleLogout() {
     await user.logout();
     router.push({ name: "login" });
@@ -15,43 +17,127 @@ async function handleLogout() {
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="../../public/drolcinema.png" alt="DrolCinema">
+                <img src="../../public/drolcinema.png" alt="DrolCinema" />
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav navbar-left me-auto mb-2 mb-lg-0">
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/' }">
+                    <li
+                        class="nav-item"
+                        :class="{ 'router-link-active': $route.path === '/' }"
+                    >
                         <router-link class="nav-link" to="/">Films</router-link>
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/about' }">
-                        <router-link class="nav-link" to="/offres">Offres</router-link>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active': $route.path === '/about',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/offres"
+                            >Offres</router-link
+                        >
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/reservation' }">
-                        <router-link class="nav-link" to="/produits">Produits</router-link>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active':
+                                $route.path === '/reservation',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/produits"
+                            >Produits</router-link
+                        >
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/products' }">
-                        <router-link class="nav-link" to="/products">Nos Produits</router-link>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active': $route.path === '/products',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/products"
+                            >Nos Produits</router-link
+                        >
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/company/products' }">
-                        <router-link class="nav-link" to="/company/products">Produits Admin</router-link>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active':
+                                $route.path === '/company/products',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/company/products"
+                            >Produits Admin</router-link
+                        >
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/admin/review' }">
-                        <router-link class="nav-link" to="/admin/review">Review</router-link>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active':
+                                $route.path === '/admin/review',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/admin/review"
+                            >Review</router-link
+                        >
+                    </li>
+                    <li
+                        v-if="user.isAdmin()"
+                        class="nav-item"
+                        :class="{
+                            'router-link-active':
+                                $route.path === '/admin/dashboard',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/admin/dashboard"
+                            >Modération</router-link
+                        >
                     </li>
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="nav-item"><a class="nav-link" href="/register" style="font-weight: bold">S'inscrire</a></li>
+
+                <ul v-if="user.isLogged()" @click="handleLogout">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/login"
+                            style="font-weight: bold"
+                            >Se déconnecter</a
+                        >
+                    </li>
+                </ul>
+                <ul v-else class="nav navbar-nav navbar-right">
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/register"
+                            style="font-weight: bold"
+                            >S'inscrire</a
+                        >
+                    </li>
                     <li class="nav-item"><span class="nav-link">|</span></li>
-                    <li class="nav-item"><a class="nav-link" href="/login" style="font-weight: bold">Se connecter</a></li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="/login"
+                            style="font-weight: bold"
+                            >Se connecter</a
+                        >
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 </template>
-
 
 <style>
 .router-link-active {

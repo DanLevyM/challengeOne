@@ -10,7 +10,6 @@ const routes = [
     path: "/",
     name: "home",
     component: () => import("../views/movie/Movies.vue"),
-
   },
   {
     path: "/about",
@@ -80,24 +79,24 @@ const routes = [
   },
   {
     path: "/admin/dashboard",
-    name: "admin",
+    name: "admin-dashboard",
     component: () => import("../views/adm/Dashboard.vue"),
   },
   {
-    path: '/success',
-    name: 'successview',
-    component: SuccessView
+    path: "/success",
+    name: "successview",
+    component: SuccessView,
   },
   {
-    path: '/error',
-    name: 'errorview',
-    component: ErrorView
+    path: "/error",
+    name: "errorview",
+    component: ErrorView,
   },
   {
-    path: '/payment/:id',
-    name: 'Payment',
-    component: Stripe
-  }
+    path: "/payment/:id",
+    name: "Payment",
+    component: Stripe,
+  },
 ];
 
 export const router = createRouter({
