@@ -9,38 +9,46 @@ use App\Repository\MovieRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource]
+#[ApiResource (normalizationContext: ['groups' => ['movie']])]
 class Movie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('movie')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('movie')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('movie')]
     private ?string $director = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $release_date = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('movie')]
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?int $Duration = null;
+    #[Groups('movie')]
+    private ?int $duration = null;
 
     #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Comment::class)]
+    #[Groups('movie')]
     private Collection $comments;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Review $review_id = null;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
+    #[Groups('movie')]
     private Collection $seance;
 
     public function __construct()
@@ -104,12 +112,12 @@ class Movie
 
     public function getDuration(): ?int
     {
-        return $this->Duration;
+        return $this->duration;
     }
 
     public function setDuration(int $Duration): self
     {
-        $this->Duration = $Duration;
+        $this->duration = $Duration;
 
         return $this;
     }
@@ -184,5 +192,17 @@ class Movie
         }
 
         return $this;
+    }
+
+    #[Groups("movie")]
+    public function getReleaseDateFormatted(): ?string
+    {   
+        
+        $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+        $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+        $date_str = $this->release_date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
+        $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
+        
+        return $date_str;
     }
 }

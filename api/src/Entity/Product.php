@@ -5,9 +5,18 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\ApiProperty;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource]
+#[Get]
+#[Put]
+#[GetCollection]
+#[Post]
 class Product
 {
     #[ORM\Id]

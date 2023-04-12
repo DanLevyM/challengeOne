@@ -2,17 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Entity\Ticket;
 use App\Entity\MovieRoom;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\SeanceRepository;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Filesystem\Path;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
-#[ApiResource]
+#[ApiResource ()]
+#[ApiFilter(SearchFilter::class, properties: ['date' => 'exact', 'movie' => 'exact'])]
 class Seance
 {
     #[ORM\Id]
@@ -40,6 +49,7 @@ class Seance
     private ?Movie $movie = null;
 
     #[ORM\Column]
+    #[Groups('movie')]
     private ?float $price = null;
 
     public function __construct()
@@ -153,4 +163,28 @@ class Seance
 
         return $this;
     }
+
+    #[Groups('movie')]
+    public function getStartTimeFormatted(): string
+    {
+        return $this->start_time->format('H:i');
+    }
+
+    #[Groups('movie')]
+    public function getEndTimeFormatted(): string
+    {
+        return $this->end_time->format('H:i');
+    }
+
+    #[Groups('movie')]
+    public function getDateFormatted(): ?string
+    {
+        $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+        $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+        $date_str = $this->date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
+        $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
+        
+        return $date_str;
+    }
+
 }

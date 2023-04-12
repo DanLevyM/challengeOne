@@ -10,7 +10,6 @@ const routes = [
     path: "/",
     name: "home",
     component: () => import("../views/movie/Movies.vue"),
-
   },
   {
     path: "/about",
@@ -33,7 +32,12 @@ const routes = [
     component: () => import("../views/movie/Movies.vue"),
   },
   {
-    path: "/movie/:id",
+    path: "/company/products",
+    name: "company",
+    component: () => import("../views/company/List.vue"),
+  },
+  {
+    path: "/movies/:id",
     name: "movie.show",
     component: () => import("../views/movie/MovieItem.vue"),
   },
@@ -41,6 +45,11 @@ const routes = [
     path: "/products",
     name: "products",
     component: () => import("../views/product/ProductList.vue"),
+  },
+  {
+    path: "/admin/review",
+    name: "review",
+    component: () => import("../views/review/ReviewForm.vue"),
   },
   {
     path: "/demo/:id",
@@ -70,24 +79,24 @@ const routes = [
   },
   {
     path: "/admin/dashboard",
-    name: "admin",
+    name: "admin-dashboard",
     component: () => import("../views/adm/Dashboard.vue"),
   },
   {
-    path: '/success',
-    name: 'successview',
-    component: SuccessView
+    path: "/success",
+    name: "successview",
+    component: SuccessView,
   },
   {
-    path: '/error',
-    name: 'errorview',
-    component: ErrorView
+    path: "/error",
+    name: "errorview",
+    component: ErrorView,
   },
   {
-    path: '/payment/:id',
-    name: 'Payment',
-    component: Stripe
-  }
+    path: "/payment/:id",
+    name: "Payment",
+    component: Stripe,
+  },
 ];
 
 export const router = createRouter({
