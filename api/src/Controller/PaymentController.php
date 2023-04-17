@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Seance;
 use App\Entity\Ticket;
 use App\Repository\SeanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,25 +30,18 @@ class PaymentController extends AbstractController
     {        
          // Find the seance by its ID
         $seanceId = $request->get('id');
-    
         $seance = $this->seanceRepo->find($seanceId);
         if (!$seance) {
             throw new NotFoundHttpException("Cette séance n'a pas été trouvée");
-        }
-    
-        // Get the Stripe token from the request parameters
-        $token = $request->get('token');
-        if (!$token) {
-            throw new BadRequestHttpException('Token not found');
         }
     
         try {
             // Charge the customer using Stripe
             Stripe::setApiKey($_ENV['STRIPE_SK']);
             $charge = Charge::create([
-                "amount" => floatval($seance->getPrice()),
+                "amount" => floatval($seance->getPrice()) * 100,
                 "currency" => "eur",
-                "source" => $token,
+                "source" => json_decode($request->getContent())->stripeToken,
                 "description" => "Payment for seance"
             ]);
     
