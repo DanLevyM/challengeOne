@@ -22,9 +22,9 @@ RUN apk add --no-cache \
 
 RUN set -eux; \
     install-php-extensions \
-    	intl \
-    	zip \
-    	apcu \
+		intl \
+		zip \
+		apcu \
 		opcache \
     ;
 
