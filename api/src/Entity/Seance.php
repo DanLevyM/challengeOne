@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
+#[ApiResource (normalizationContext: ['groups' => ['seance:read']])]
 #[ApiResource ()]
 #[ApiFilter(SearchFilter::class, properties: ['date' => 'exact', 'movie' => 'exact'])]
 class Seance
@@ -22,6 +23,7 @@ class Seance
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['seance:read', 'movie'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
@@ -35,6 +37,8 @@ class Seance
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
+    
+    #[Groups(['seance:read', 'movie'])]
     private ?MovieRoom $movieroom_id = null;
 
     #[ORM\OneToMany(mappedBy: 'seance_id', targetEntity: Ticket::class)]
@@ -44,7 +48,7 @@ class Seance
     private ?Movie $movie = null;
 
     #[ORM\Column]
-    #[Groups('movie')]
+    #[Groups(['movie', 'seance:read'])]
     private ?float $price = null;
 
     public function __construct()
@@ -159,19 +163,19 @@ class Seance
         return $this;
     }
 
-    #[Groups('movie')]
+    #[Groups(['seance:read', 'movie'])]
     public function getStartTimeFormatted(): string
     {
         return $this->start_time->format('H:i');
     }
 
-    #[Groups('movie')]
+    #[Groups(['seance:read', 'movie'])]
     public function getEndTimeFormatted(): string
     {
         return $this->end_time->format('H:i');
     }
 
-    #[Groups('movie')]
+    #[Groups(['seance:read', 'movie'])]
     public function getDateFormatted(): ?string
     {
         $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
