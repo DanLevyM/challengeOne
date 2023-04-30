@@ -92,4 +92,5 @@ class MovieRoom
 
         return $this;
     }
+
 }
