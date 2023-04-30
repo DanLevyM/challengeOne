@@ -41,8 +41,10 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { ref, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-const API_URL = import.meta.env.VITE_API_URL;
+import jsCookie from "js-cookie";
 
+const API_URL = import.meta.env.VITE_API_URL;
+const jwtToken = jsCookie.get('jwt')
 const style = {
     style: {
         base: {
@@ -104,11 +106,13 @@ export default {
 
             try {
                 const token = (await stripe.createToken(cardElement)).token.id;
-                const id = route.params.id
+                const id = route.params.id;
+
                 const response = await fetch(`${API_URL}/payment/${id}`, {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + jwtToken
                     },
                     body: JSON.stringify({ stripeToken: token })
                 });
@@ -122,8 +126,19 @@ export default {
                         forceReload: true
 
                     });
+                } else if (response.status === 404 || response.status === 400) {
+                    const error = await response.json();
+                    alert(payment_state);
+                } else if (response.status === 302) {
+                    router.push({
+                        path: '/login'
+                    })
+                } else if (response.status === 201) {
+                    router.push({
+                        path: '/success'
+                    })
                 } else {
-                    alert(JSON.stringify(payment_state))
+                    alert(JSON.stringify(payment_state));
                     // router.push({
                     //     path: "/error",
                     //     forceReload: true
@@ -131,7 +146,7 @@ export default {
                 }
 
             } catch (error) {
-                console.log("error", error);
+                // alert( error);
                 loading.value = false;
             }
         }

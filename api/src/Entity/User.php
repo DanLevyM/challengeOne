@@ -80,12 +80,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Subscription $subscription_id = null;
-
     #[ORM\OneToMany(mappedBy: 'user_admin_check', targetEntity: Review::class)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private Collection $reviews;
+
+    #[ORM\OneToMany(mappedBy: 'user_sub', targetEntity: Subscription::class)]
+    private Collection $subscriptions;
 
     public function __construct()
     {
@@ -93,6 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->tickets = new ArrayCollection();
         $this->moderations = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -275,18 +276,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSubscriptionId(): ?Subscription
-    {
-        return $this->subscription_id;
-    }
-
-    public function setSubscriptionId(?Subscription $subscription_id): self
-    {
-        $this->subscription_id = $subscription_id;
-
-        return $this;
-    }
-
     /* A visual identifier that represents this user.
      *
      * @see UserInterface
@@ -328,6 +317,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($review->getUserAdminCheck() === $this) {
                 $review->setUserAdminCheck(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions->add($subscription);
+            $subscription->setUserSub($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getUserSub() === $this) {
+                $subscription->setUserSub(null);
             }
         }
 
