@@ -1,38 +1,75 @@
 <template>
-    <section class="showcase">
-
-        <div class="nes-container with-title">
-            <h3>Réservez votre place !</h3>
-            <div class="img">
-                <img src="https://stripe-camo.global.ssl.fastly.net/6d097cce2c90965a3c955721cead3e8e0a9f8050f4122b2b3c50762fbffb326a/68747470733a2f2f66696c65732e7374726970652e636f6d2f6c696e6b732f4d44423864584e6c636c38775155526f654464315454683556566c4a53327846544642554e48786d624639305a584e3058316c7963464a58546e52726556424863336b35626c5648596b5a554e45706a656730305a7a5a565335315a"
-                    alt="" srcset="" />
-            </div>
-        </div>
-
-        <div class="nes-container with-title is-centered">
-            <form @submit.prevent="handleSubmit">
-                <fieldset :class="{ dis: loading }" class="fields">
-                    <div class="nes-field"></div>
-                    <div class="nes-field">
-                        <label for="name_field">Nom</label>
-                        <input placeholder="Jane Doe" type="text" name="name" id="name_field" class="nes-input" />
+    <section v-if="seance" class="text-right">
+        <div class="container col-md-6 mx-auto bg-dark text-light p-4"
+            style="border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 1);">
+            <div class="row">
+                <h3 class="text-center pb-3" style="color: #f88c3f;">Réservez votre place !</h3>
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <h3 class="h3">{{ seance.movie["title"] }}</h3>
+                        <p>Salle {{ seance.movieroom_id["room_name"] }}</p>
                     </div>
-                    <div class="nes-field">
-                        <label for="email_field">Email</label>
-                        <input placeholder="jane.doe@example.com " type="email" name="email" id="email_field"
-                            class="nes-input" />
+                    <div class="col-md-6">
+                        <h4>{{ seance.dateFormatted }}</h4>
+                        <h4>{{ seance.startTimeFormatted }}</h4>
+                        <p>Fin ({{ seance.endTimeFormatted }})</p>
                     </div>
-                    <div class="nes-field">
-                        <label for="email_field">Carte de crédit</label>
-                        <div id="stripe-element-mount-point" class="nes-input" />
-                    </div>
-                </fieldset>
-                <div class="nes-field">
-                    <button type="submit" class="nes-btn is-primary" :class="{ dis: loading }">
-                        {{ loading ? "Loading..." : `Payer ` }}
-                    </button>
                 </div>
-            </form>
+                <div v-if="sub">
+                    <div class="row p-4">
+
+                        <div v-if="sub.message === 'Offre Découverte'" class="d-flex flex-column">
+                            <span class="text-decoration-line-through">
+                                Prix : {{ seance.price }}€
+                            </span>
+                            <span class="text-danger fs-5">
+                                {{ seance.price * 80 / 100 }}€
+                            </span>
+                            <span class="text-success">-20% grace à l'offre Découverte</span>
+                        </div>
+                        <div v-else-if="sub.message === 'Offre Drol'" class="d-flex flex-column">
+                            <span class="text-decoration-line-through">
+                                Prix : {{ seance.price }}€
+                            </span>
+                            <span class="text-danger fs-5">
+                                {{ seance.price * 50 / 100 }}€
+                            </span>
+                            <span class="text-success">-50% grace à l'offre Drol</span>
+                        </div>
+                        <div v-else class="d-flex flex-column">
+                            <span class="fs-5">
+                                Prix : {{ seance.price }}€
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <form @submit.prevent="handleSubmit">
+                    
+                    <div class="form-group p-4">
+                        <label for="email_field">Carte de crédit</label>
+                        <div id="stripe-element-mount-point"></div>
+                    </div>
+
+                    <p v-if="error" class="has-text-centered has-text-danger">{{ error }}</p>
+
+                    <div class="d-flex justify-content-center">
+                        <button v-if="sub.message === 'Offre Découverte'" type="submit" class="btn text-light col-md-4"
+                            style="background-color: #f88c3f; font-weight: bold;" :disabled="loading">
+                            {{ loading ? "Loading..." : `Payer ${seance.price * 80 / 100}€` }}
+                        </button>
+                        <button v-else-if="sub.message === 'Offre Drol'" type="submit" class="btn text-light col-md-4"
+                            style="background-color: #f88c3f; font-weight: bold;" :disabled="loading">
+                            {{ loading ? "Loading..." : `Payer ${seance.price * 50 / 100}€` }}
+                        </button>
+                        <button v-else type="submit" class="btn text-light col-md-4"
+                            style="background-color: #f88c3f; font-weight: bold;" :disabled="loading">
+                            {{ loading ? "Loading..." : `Payer ${seance.price}€` }}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 </template>
@@ -48,36 +85,57 @@ const jwtToken = jsCookie.get('jwt')
 const style = {
     style: {
         base: {
-            iconColor: "#000",
-            color: "#000",
+            iconColor: "#fff",
+            color: "#fff",
             fontWeight: "800",
             fontFamily: "Press Start 2P",
-            fontSize: "22px",
-            fontSmoothing: "antialiased",
-            ":-webkit-autofill": {
-                color: "#fce883"
-            },
-            "::placeholder": {
-                color: "green"
-            }
+            fontSize: "22px"
         },
         invalid: {
             iconColor: "#FFC7EE",
-            color: "red"
+            color: "#d9534f",
+            "::placeholder": {
+                color: "#d9534f"
+            }
         }
     }
 };
 
 export default {
     setup() {
+        const seance = ref({});
+        const sub = ref({});
         const router = useRouter();
         const route = useRoute();
         let stripe = null;
         let loading = ref(true);
         let elements = null;
         const amount = ref(0);
+        const error = ref(null)
 
         onBeforeMount(async () => {
+            const res_seance = await fetch(`${API_URL}/seances/${route.params.id}`);
+            const data_seance = await res_seance.json();
+            seance.value = data_seance;
+
+            const res_sub = await fetch(`${API_URL}/subscriptions/active`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + jwtToken
+                },
+            });
+
+            const data_sub = await res_sub.json();
+            sub.value = data_sub;
+
+            if (data_sub.code === 401) {
+                router.push({
+                    path: '/login',
+                    forceReload: true
+                })
+            }
+
             const ELEMENT_TYPE = "card";
             stripe = await loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
             elements = stripe.elements();
@@ -94,15 +152,6 @@ export default {
 
             const cardElement = elements.getElement("card");
             loading.value = true;
-
-            const { name, email } = Object.fromEntries(
-                new FormData(event.target)
-            );
-
-            const billingDetails = {
-                name,
-                email
-            };
 
             try {
                 const token = (await stripe.createToken(cardElement)).token.id;
@@ -127,9 +176,12 @@ export default {
 
                     });
                 } else if (response.status === 404 || response.status === 400) {
-                    const error = await response.json();
-                    alert(payment_state);
-                } else if (response.status === 302) {
+                    // const error = await response.json();
+                    // alert(JSON.stringify(payment_state));
+
+                    error.value = payment_state.message
+                }
+                else if (response.status === 302 || response.status === 401) {
                     router.push({
                         path: '/login'
                     })
@@ -151,51 +203,8 @@ export default {
             }
         }
 
-        return { loading, handleSubmit, amount };
-    },
-    methods: {
-        handleDataEvent(seance) {
-            console.log("hola")
-            amount.value = seance
-        }
+        return { loading, handleSubmit, amount, seance, sub };
     }
 };
 </script>
 
-
-<style scoped>
-.checkout {
-    border: 1px solid black;
-    padding: 3px;
-}
-
-.fields {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.img {
-    display: flex;
-    justify-content: center;
-}
-
-.showcase {
-    margin-bottom: 20px;
-}
-
-.mt {
-    margin-top: 20px;
-}
-
-.dis {
-    opacity: 0.5;
-    cursor: default;
-    pointer-events: none;
-}
-
-button {
-    margin-top: 30px;
-}
-</style>

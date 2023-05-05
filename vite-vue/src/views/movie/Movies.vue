@@ -59,7 +59,7 @@
 									<sub>/mois</sub></span></div>
 							<div class="price__item"><span><font-awesome-icon icon="fa-solid fa-check" /> 1 an</span></div>
 							<div class="price__item"><span><font-awesome-icon icon="fa-solid fa-check" /> Séances
-									illimités</span></div>
+									illimitées</span></div>
 							<div class="price__item"><span><font-awesome-icon icon="fa-solid fa-check" /> 15% de réduction
 									sur la nourriture</span></div>
 							<div class="price__item"><span><font-awesome-icon icon="fa-solid fa-check" /> Possibilité de
