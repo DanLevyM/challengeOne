@@ -3,14 +3,23 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Controller\SubscriptionController;
 use App\Repository\SubscriptionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
-#[ApiResource]
+#[ApiResource (
+    operations: [
+        new Get(
+            name: 'get-active-subscription',
+            controller: SubscriptionController::class,
+            uriTemplate: '/subscriptions/active',
+            read: false
+        )
+    ]
+)]
 class Subscription
 {
     #[ORM\Id]

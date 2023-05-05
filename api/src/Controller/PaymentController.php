@@ -22,13 +22,11 @@ class PaymentController extends AbstractController
 {
     public function __construct(
         private SeanceRepository $seanceRepo,
-        // private UserRepository $userRepo,
         private SubscriptionRepository $subRepo,
         private RequestStack $requestStack,
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
         private JwtAuthService $jwtAuthService,
-        // private PaymentService $paymentService,
     ) {
     }
 
@@ -84,7 +82,8 @@ class PaymentController extends AbstractController
                 $price = $seance->getPrice() * 80/100;
             } else if ($subscription->getType() === "Offre Drol") {
                 // c. Si user a un abonnement drol il n'a pas besoin de payer fin du workflow
-                return $this->createTicket($price, $seance);
+                // return $this->createTicket($price, $seance);
+                $price = $seance->getPrice() * 50/100;
             }
 
             $this->payment($request, $price);

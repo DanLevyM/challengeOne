@@ -343,7 +343,7 @@ export default {
 
 // Section decouverte
 .content-head {
-    background-color: #1a191f;
+    // background-color: #1a191f;
     margin-bottom: 20px;
     padding: 20px 0;
     position: relative;

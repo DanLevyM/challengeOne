@@ -139,6 +139,7 @@ class Seance
         return $this;
     }
 
+    #[Groups(['seance:read'])]
     public function getMovie(): ?Movie
     {
         return $this->movie;
