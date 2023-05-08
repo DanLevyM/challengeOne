@@ -154,28 +154,6 @@
                                                     <a @click="emitDataEvent(seance.price)" :href="'/payment/' + seance.id"
                                                         class="btn-cta btn--full btn--center">Réserver pour {{ seance.price }}€</a>
 
-                                                    <h3>
-                                                        {{
-                                                            seance.startTimeFormatted
-                                                        }}
-                                                    </h3>
-                                                    <h3>{{ seance.price }}€</h3>
-                                                </template>
-                                                <template v-slot:footer>
-                                                    <a
-                                                        @click="
-                                                            emitDataEvent(
-                                                                seance.price
-                                                            )
-                                                        "
-                                                        :href="
-                                                            '/payment/' +
-                                                            seance.id
-                                                        "
-                                                        class="button-cta cta-button"
-                                                        >Réserver</a
-                                                    >
-
                                                 </template>
                                             </modal>
                                         </div>
@@ -256,8 +234,8 @@
                 </div>
             </div>
         </section>
+        <div v-if="showMessage" class="message">{{ message }}</div>
     </div>
-    <div v-if="showMessage" class="message">{{ message }}</div>
 </template>
 
 <script>
@@ -667,7 +645,6 @@ label {
 .nav-tabs .nav-link.active {
     color: black !important;
 }
-<
 
 // Modal
 .box {
@@ -787,8 +764,6 @@ label {
         line-height: 28px;
     }
 }
-</style>
-
 
 i {
     color: red;
