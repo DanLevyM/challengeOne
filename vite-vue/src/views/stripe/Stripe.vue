@@ -46,13 +46,13 @@
 
 
                 <form @submit.prevent="handleSubmit">
-                    
+
                     <div class="form-group p-4">
                         <label for="email_field">Carte de crédit</label>
                         <div id="stripe-element-mount-point"></div>
                     </div>
 
-                    <p v-if="error" class="has-text-centered has-text-danger">{{ error }}</p>
+                    <p v-if="error" class="alert alert-danger" role="alert">{{ error }}</p>
 
                     <div class="d-flex justify-content-center">
                         <button v-if="sub.message === 'Offre Découverte'" type="submit" class="btn text-light col-md-4"
@@ -111,38 +111,49 @@ export default {
         let loading = ref(true);
         let elements = null;
         const amount = ref(0);
-        const error = ref(null)
+        const error = ref(null);
 
         onBeforeMount(async () => {
-            const res_seance = await fetch(`${API_URL}/seances/${route.params.id}`);
-            const data_seance = await res_seance.json();
-            seance.value = data_seance;
+            try {
+                const res_seance = await fetch(`${API_URL}/seances/${route.params.id}`);
 
-            const res_sub = await fetch(`${API_URL}/subscriptions/active`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + jwtToken
-                },
-            });
+                if (res_seance.status === 404) {
+                    router.replace({ name: 'not-found' });
+                } else {
+                    const data_seance = await res_seance.json();
+                    seance.value = data_seance;
 
-            const data_sub = await res_sub.json();
-            sub.value = data_sub;
+                    const res_sub = await fetch(`${API_URL}/subscriptions/active`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + jwtToken
+                        },
+                    });
 
-            if (data_sub.code === 401) {
-                router.push({
-                    path: '/login',
-                    forceReload: true
-                })
+                    const data_sub = await res_sub.json();
+                    sub.value = data_sub;
+
+                    if (data_sub.code === 401) {
+                        router.push({
+                            path: '/login',
+                            forceReload: true
+                        })
+                    }
+
+                    const ELEMENT_TYPE = "card";
+                    stripe = await loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
+                    elements = stripe.elements();
+                    const element = elements.create(ELEMENT_TYPE, style);
+                    element.mount("#stripe-element-mount-point");
+
+                    loading.value = false;
+
+                }
+
+            } catch {
+                error.value = "Une erreur s'est produite lors de la récupération des données de la séance."
             }
-
-            const ELEMENT_TYPE = "card";
-            stripe = await loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
-            elements = stripe.elements();
-            const element = elements.create(ELEMENT_TYPE, style);
-            element.mount("#stripe-element-mount-point");
-
-            loading.value = false;
 
         });
 
@@ -176,9 +187,7 @@ export default {
 
                     });
                 } else if (response.status === 404 || response.status === 400) {
-                    // const error = await response.json();
-                    // alert(JSON.stringify(payment_state));
-
+                    loading.value = false;
                     error.value = payment_state.message
                 }
                 else if (response.status === 302 || response.status === 401) {
@@ -189,21 +198,14 @@ export default {
                     router.push({
                         path: '/success'
                     })
-                } else {
-                    alert(JSON.stringify(payment_state));
-                    // router.push({
-                    //     path: "/error",
-                    //     forceReload: true
-                    // })
                 }
 
             } catch (error) {
-                // alert( error);
                 loading.value = false;
             }
         }
 
-        return { loading, handleSubmit, amount, seance, sub };
+        return { loading, handleSubmit, amount, seance, sub, error };
     }
 };
 </script>
