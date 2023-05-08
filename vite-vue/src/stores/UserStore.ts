@@ -93,5 +93,46 @@ export const useUserStore = defineStore("UserStore", {
       this.isLoggedIn = false;
       localStorage.removeItem("access_token");
     },
+
+    isLogged() {
+      return localStorage.getItem("access_token") ? true : false;
+    },
+
+    async id() {
+      const API_URL = import.meta.env.VITE_API_URL;
+      const userData = localStorage.getItem("access_token");
+      let id_connected;
+      if (userData) {
+        let payload = userData.split(".")[1];
+        let tokenTest = window.atob(payload);
+        const values = JSON.parse(tokenTest);
+        //get the id of the logged user
+        const all_user = await fetch(`${API_URL}/users`);
+        const data_allUser = await all_user.json();
+
+        for (let element of data_allUser["hydra:member"]) {
+          if (element.email === values.email) {
+            id_connected = element.id;
+          }
+        }
+        return id_connected;
+      }
+    },
+
+    isAdmin() {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        const payload = token?.split(".")[1];
+        const tokenTest = window.atob(payload!);
+        const values = JSON.parse(tokenTest);
+
+        for (let element of values.roles) {
+          if (element === "ROLE_ADMIN") {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
   },
 });
