@@ -3,16 +3,20 @@
         <div class="modal-wrapper">
             <div class="modal-container">
                 <div class="modal-header">
-                    <slot name="header"> Titre de la modale </slot>
+                    <span class="close-icon" @click="$emit('close')">&times;</span> 
+                    <slot name="header">
+                        Titre de la modale
+                    </slot>
                 </div>
                 <div class="modal-body">
-                    <span class="close-icon" @click="$emit('close')"
-                        >&times;</span
-                    >
-                    <slot name="body"> Contenu de la modale </slot>
+                    <slot name="body">
+                        Contenu de la modale
+                    </slot>
                 </div>
                 <div class="modal-footer">
-                    <slot name="footer"> Footer de la modale </slot>
+                    <slot name="footer">
+                        Footer de la modale
+                    </slot>
                 </div>
 
                 <slot></slot>
@@ -25,9 +29,9 @@
 export default {
     data() {
         return {
-            showModal: false,
+            showModal: false
         };
-    },
+    }
 };
 </script>
 
@@ -57,7 +61,8 @@ export default {
     width: 500px;
     margin: 0px auto;
     padding: 20px 30px;
-    background-color: black;
+    color: #090a0b;
+    background-color: #f7f7f7;
     border-radius: 2px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
     transition: all 0.3s ease;
@@ -65,12 +70,26 @@ export default {
 }
 
 .modal-header {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px;
+    flex-direction: column;
+}
+
+div.modal-header h3 {
+    font-size: 24px;
+    line-height: 28px;
+    font-weight: 700;
+}
+
+div.modal-header p {
+    position: relative;
+    font-size: 36px;
+    line-height: 48px;
+    font-weight: 700;
 }
 
 .modal-footer {
-    /* margin-top: 20px;
-    text-align: right; */
     display: block;
     text-align: center;
     align-items: center;
@@ -82,7 +101,7 @@ export default {
     border-radius: 3em;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
     display: inline-block;
-    font-family: "Old Standard TT", serif;
+    font-family: 'Old Standard TT', serif;
     font-size: 1em;
     text-decoration: none;
     padding: 1em 2em;
@@ -91,10 +110,8 @@ export default {
 
 .close-icon {
     position: relative;
-    bottom: 20%;
-    left: 95%;
+    left: 50%;
     cursor: pointer;
     font-size: 30px;
-    color: white;
 }
 </style>

@@ -9,11 +9,8 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TicketRepository;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GetCollection;
 use App\Controller\PaymentController;
 use Symfony\Component\Serializer\Annotation\Groups;
-
-// use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 #[ApiResource(
@@ -21,12 +18,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(),
         new Post(
+            name: 'checkout',
             controller: PaymentController::class,
             uriTemplate: "/payment/{id}",
             uriVariables: ['id' => new Link(
                 fromClass: Seance::class,
                 toProperty: 'seance_id',
             )],
+            normalizationContext: ['groups' => ['none']],
+            denormalizationContext: ['groups' => ['none']],
+            read: false
         )
     ]
 )]

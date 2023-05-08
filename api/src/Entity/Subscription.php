@@ -3,13 +3,23 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use App\Controller\SubscriptionController;
 use App\Repository\SubscriptionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\Get;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
-#[ApiResource]
+#[ApiResource (
+    operations: [
+        new Get(
+            name: 'get-active-subscription',
+            controller: SubscriptionController::class,
+            uriTemplate: '/subscriptions/active',
+            read: false
+        )
+    ]
+)]
 class Subscription
 {
     #[ORM\Id]
@@ -23,16 +33,18 @@ class Subscription
     #[ORM\Column(length: 255)]
     private ?string $formality = null;
 
-    #[ORM\OneToMany(mappedBy: 'subscription_id', targetEntity: User::class)]
-    private Collection $users;
-
     #[ORM\Column]
     private ?int $price = null;
 
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
-    }
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $started_at = null;
+
+    #[ORM\ManyToOne(inversedBy: 'subscriptions')]
+    private ?User $user_sub = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $end_at = null;
+
 
     public function getId(): ?int
     {
@@ -63,36 +75,6 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->setSubscriptionId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getSubscriptionId() === $this) {
-                $user->setSubscriptionId(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getPrice(): ?int
     {
         return $this->price;
@@ -101,6 +83,42 @@ class Subscription
     public function setPrice(int $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?\DateTimeInterface
+    {
+        return $this->started_at;
+    }
+
+    public function setStartedAt(\DateTimeInterface $started_at): self
+    {
+        $this->started_at = $started_at;
+
+        return $this;
+    }
+
+    public function getUserSub(): ?User
+    {
+        return $this->user_sub;
+    }
+
+    public function setUserSub(?User $user_sub): self
+    {
+        $this->user_sub = $user_sub;
+
+        return $this;
+    }
+
+    public function getEndAt(): ?\DateTimeInterface
+    {
+        return $this->end_at;
+    }
+
+    public function setEndAt(\DateTimeInterface $end_at): self
+    {
+        $this->end_at = $end_at;
 
         return $this;
     }

@@ -59,6 +59,10 @@ async function handleLogout() {
                             >Produits</router-link
                         >
                     </li>
+
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/products' }">
+                        <router-link class="nav-link" to="/products">Nos Produits</router-link>
+
                     <li
                         class="nav-item"
                         :class="{
@@ -79,6 +83,7 @@ async function handleLogout() {
                         <router-link class="nav-link" to="/company/products"
                             >Produits Admin</router-link
                         >
+
                     </li>
                     <li
                         class="nav-item"

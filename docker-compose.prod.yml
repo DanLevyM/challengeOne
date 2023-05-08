@@ -15,5 +15,3 @@ services:
   database:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-
-# zgG8xEM2vUQnydD?

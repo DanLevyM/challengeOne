@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import jsCookie from "js-cookie";
 
 interface State {
   user: User | null;
@@ -47,7 +48,7 @@ export const useUserStore = defineStore("UserStore", {
         };
         this.isLoggedIn = true;
         console.log("user:", this.user);
-
+        jsCookie.set('jwt', data.token, { expires: 1 })
         localStorage.setItem("access_token", data.token);
         return true;
       } catch (error) {

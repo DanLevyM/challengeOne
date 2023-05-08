@@ -15,16 +15,19 @@ class MovieRoomFixture extends Fixture
 
         $movie_room = new MovieRoom();
         $movie_room->setNumberPlaces(250);
+        $movie_room->setRoomName(rand(200, 300));
         $manager->persist($movie_room);
         $manager->flush();
 
         $movie_room = new MovieRoom();
         $movie_room->setNumberPlaces(300);
+        $movie_room->setRoomName(rand(200, 300));
         $manager->persist($movie_room);
         $manager->flush();
 
         $movie_room = new MovieRoom();
         $movie_room->setNumberPlaces(160);
+        $movie_room->setRoomName(rand(200, 300));
         $manager->persist($movie_room);
         $manager->flush();
     }

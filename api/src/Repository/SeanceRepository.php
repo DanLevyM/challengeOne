@@ -39,6 +39,25 @@ class SeanceRepository extends ServiceEntityRepository
         }
     }
 
+    public function countRemainingSeatsForSession(Seance $seance)
+    {
+        $movieRoom = $seance->getMovieRoomId();
+        $totalSeats = $movieRoom->getNumberPlaces();
+
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(t.id)
+            FROM App\Entity\Ticket t
+            WHERE t.seance_id = :seance'
+        )->setParameter('seance', $seance);
+
+        $soldSeats = $query->getSingleScalarResult();
+
+        $remainingSeats = $totalSeats - $soldSeats;
+
+        return $remainingSeats;
+    }
+
 //    /**
 //     * @return Seance[] Returns an array of Seance objects
 //     */
