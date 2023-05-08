@@ -36,7 +36,7 @@ class PaymentController extends AbstractController
 
         // 1. Vérifier si la seance passée en paramètre de mon url existe et ne soit dépassée (en date) et qu'elle n'ait pas lieu dans plus de 7 jours. Si c'est le cas on renvoie un code api avec un message suivant le cas pour le renvoyer au front
         if (!(is_numeric($seanceId) && (int)$seanceId == $seanceId)) {
-            return $this->json(['message' => 'Cette séance n\'a pas été trouvée'], 400);
+            return $this->json(['message' => 'Cette séance n\'a pas été trouvée'], 404);
         }
 
         $seance = $this->seanceRepo->find($seanceId);
@@ -49,7 +49,7 @@ class PaymentController extends AbstractController
         $seanceLimitDate = (new \DateTime())->modify('+7 days');
 
         if ($seanceDate < $today || $seanceDate > $seanceLimitDate) {
-            return $this->json(['message' => 'La séance est dépassée ou aura lieu dans plus de 7 jours.'], 400);
+            return $this->json(['message' => "La séance est dépassée ou aura lieu dans plus de 7 jours."], 400);
         }
 
         /* 2. Vérifier qu'il reste des places dans la salle */
