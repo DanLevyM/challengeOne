@@ -92,6 +92,11 @@ const routes = [
     name: "Payment",
     component: () => import("../views/stripe/Stripe.vue"),
   },
+  {
+    path: "/offres/",
+    name: "offers",
+    component:  () => import("../views/stripe/Offers.vue"),
+  }
 ];
 
 export const router = createRouter({
