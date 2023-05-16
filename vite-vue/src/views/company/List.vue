@@ -93,6 +93,21 @@ export default {
       }
 
         onBeforeMount(async () => {
+          console.log("here 1");
+          console.log(localStorage.getItem("access_token"));
+          let payload = (localStorage.getItem("access_token")).split('.')[1];
+          let tokenTest = window.atob(payload);
+          console.log("here 2");
+          console.log(tokenTest);
+          const values = JSON.parse(tokenTest);
+          const roles = values.sub;
+          console.log("here 3");
+          console.log(values.roles);
+          for(let role of roles){
+            if (role == "ROLE_COMPANY"){
+              
+            }
+          }
             try {
                 const res_products = await fetch(`${API_URL}/products`);
                 const data_products = await res_products.json();
