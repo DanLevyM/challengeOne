@@ -14,12 +14,12 @@ async function handleLogout() {
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" >
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img src="../../public/drolcinema.png" alt="DrolCinema" />
             </a>
-            <button
+            <button 
                 class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
@@ -28,7 +28,7 @@ async function handleLogout() {
                 aria-expanded="false"
                 aria-label="Toggle navigation"
             >
-                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon navbar-dark"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav navbar-left me-auto mb-2 mb-lg-0">
@@ -103,16 +103,19 @@ async function handleLogout() {
                             >Modération</router-link
                         >
                     </li>
+                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/admin/review_validation' }">
+                        <router-link class="nav-link" to="/admin/review_validation">Review A Valider</router-link>
+                    </li>
                 </ul>
 
                 <ul v-if="user.isLogged()" @click="handleLogout">
                     <li class="nav-item">
-                        <a
+                        <button class="logout-button"><a
                             class="nav-link"
                             href="/login"
                             style="font-weight: bold"
-                            >Se déconnecter</a
-                        >
+                            ><i class="bi bi-box-arrow-right logout-icon"></i></a
+                        ></button>
                     </li>
                 </ul>
                 <ul v-else class="nav navbar-nav navbar-right">
@@ -174,4 +177,26 @@ async function handleLogout() {
 .navbar-left li {
     margin-right: 32px;
 }
+
+.logout-button {
+    border: 1px solid #f9ab00;
+    background-color: transparent;
+    padding: 5px;
+    border-radius: 4px;
+    margin-right: 2em;
+}
+
+.logout-button:hover {
+    background-color: #f9ab00;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.logout-icon {
+    font-size: 1.3em;
+}
+
+li {
+    list-style: none;
+}
+
 </style>

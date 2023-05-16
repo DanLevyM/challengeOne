@@ -17,4 +17,4 @@ fixtures:
 
 test:
 	docker compose exec php bin/phpunit
-	docker compose exec web npm run test
+	docker compose exec web npm run test   

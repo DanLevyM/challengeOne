@@ -11,7 +11,7 @@ class ProductFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
         $product = new Product();
-        $product->setName('Petit popcorns sucrés');
+        $product->setName('Petits popcorns sucrés');
         $product->setPrice(7);
         $manager->persist($product);
 
