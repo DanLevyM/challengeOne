@@ -47,7 +47,6 @@ export default {
               
               id_connected = data_user_logged["hydra:member"];
 
-              //TODO faire en sorte que la liste des users soient seulement des admins
               const res_users_admin = await fetch(`${API_URL}/users`);
               const data_users_admin = await res_users_admin.json();
               admins.value = data_users_admin;
@@ -73,9 +72,6 @@ export default {
                 element.movie_id = data_movies.id;
                 datas.push(element);   
               }
-
-              console.log("fini")
-             
             } catch (error) {
                 console.log(error);
             }
