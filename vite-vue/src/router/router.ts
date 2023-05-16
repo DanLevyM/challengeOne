@@ -68,16 +68,6 @@ const routes = [
     component: () => import("../views/NotFound.vue"),
   },
   {
-    path: "/reservation",
-    name: "reservation",
-    component: () => import("../views/movie/Reservation.vue"),
-  },
-  {
-    path: "/purchase",
-    name: "purchase",
-    component: () => import("../views/movie/Reservation.vue"),
-  },
-  {
     path: "/admin/dashboard",
     name: "admin-dashboard",
     component: () => import("../views/adm/Dashboard.vue"),

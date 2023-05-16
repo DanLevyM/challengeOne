@@ -10,7 +10,7 @@ interface User {
   name: string;
   isAuthenticate: boolean;
 }
-
+const API_URL = import.meta.env.VITE_API_URL;
 const isLoggedIn = localStorage.getItem("access_token") ? true : false;
 console.log("IsLoggedIn:", isLoggedIn);
 
@@ -27,7 +27,7 @@ export const useUserStore = defineStore("UserStore", {
       console.log(credentials);
 
       try {
-        const response = await fetch("https://localhost/authentication_token", {
+        const response = await fetch(`${API_URL}/authentication_token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export const useUserStore = defineStore("UserStore", {
       try {
         console.log("req", credentials);
 
-        const response = await fetch("https://localhost/users", {
+        const response = await fetch(`${API_URL}users`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
