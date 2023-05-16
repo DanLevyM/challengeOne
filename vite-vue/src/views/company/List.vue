@@ -19,7 +19,6 @@ export default {
           formData.id = id
           formData.name = name;
           formData.price = price;
-          console.log(formData)
           const response = await fetch(`${API_URL}/products/${id}`, {
             method: 'PATCH',
             headers: {
@@ -68,25 +67,15 @@ export default {
           await fetch(`${API_URL}/products/` + id, {
             method: 'DELETE',
           });
-          console.log("delete fait")
           const res_products = await fetch(`${API_URL}/products`);
               const data_products = await res_products.json();
               products.value = data_products;
-              console.log("dataproducts")
-              console.log(data_products)
               products.value = data_products["hydra:member"];
-              console.log("products")
               for (let i=0; i<products.length; i++){
-                console.log("hello here")
-                console.log(products[i])
-                console.log(products[i].id)
                 if (products[i].id === id){
                   products.splice(i, 1);
                 }
               }
-              console.log("products2")
-              console.log(products)
-       
         } catch (error) {
             console.error(error);
         }
@@ -97,16 +86,12 @@ export default {
           console.log(localStorage.getItem("access_token"));
           let payload = (localStorage.getItem("access_token")).split('.')[1];
           let tokenTest = window.atob(payload);
-          console.log("here 2");
-          console.log(tokenTest);
           const values = JSON.parse(tokenTest);
           const roles = values.sub;
-          console.log("here 3");
-          console.log(values.roles);
-          for(let role of roles){
-            if (role == "ROLE_COMPANY"){
-              
-            }
+          if (values.roles.includes("ROLE_COMPANY")) {
+            console.log("Vous avez accès");
+          } else {
+            console.log("Vous n'avez pas accès");
           }
             try {
                 const res_products = await fetch(`${API_URL}/products`);
@@ -114,7 +99,6 @@ export default {
                 products.value = data_products;
                 console.log(data_products)
                 products.value = data_products["hydra:member"];
-                console.log(products)
                 for (let product of data_products["hydra:member"]){
                   products.push(product)
                 }

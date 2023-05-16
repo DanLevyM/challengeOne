@@ -8,12 +8,9 @@ export default {
     },
     setup () {
       const userData = localStorage.getItem('access_token');
-      console.log("here");
-      console.log(userData);
 
 // Vérification si les données existent dans le localStorage
 
-    
         const data = reactive([]);
         const user = ref({});
         const reviews_urls = ref({});
@@ -43,7 +40,6 @@ export default {
           const formData = {};
           formData.title = title;
           formData.description = description;
-          //TODO remplacer /users/1 par les données de l'user loggé
           formData.userAdmin = "/users/"+id_connected;
           formData.userAdminCheck = "/users/"+verif;
           formData.movie_id = movieId;
@@ -76,20 +72,15 @@ export default {
                 let payload = (userData).split('.')[1];
                 let tokenTest = window.atob(payload);
                 const values = JSON.parse(tokenTest);
-                console.log("values")
-                console.log(values)
                 //get the id of the logged user 
                 const all_user = await fetch(`${API_URL}/users`);
                 const data_allUser = await all_user.json();
-                console.log("data_allUser")
-                console.log(data_allUser);
                 for (let element of data_allUser["hydra:member"]) {
                   if(element.email === values.email) {
                     id_connected = element.id;
                   }
                 }
-                console.log("id_connected")
-                console.log(id_connected)
+            
                 //enlever le user connecté de la liste des admin 
                 for (let admin of users.value) {
                   if (admin.roles.includes('ROLE_ADMIN')){
@@ -97,48 +88,22 @@ export default {
                   } 
                 }
                 administrator.splice(administrator.indexOf(id_connected), 1); 
-                console.log("administrator")
-                console.log(administrator);
+
                 //afficher que les reviews que l'utilisateur loggé a créé
                 for (let element of reviews.value){
-                  //TODO remplacer /users/1 par les données de l'user loggé
-           
                   if(element.userId == `/users/${id_connected}`){
                     data.push(element);
                   }
                 }
                 
-                
-                /*const res_reviews = await fetch(`${API_URL}/reviews`);
-                const data_reviews = await res_reviews.json();
-                reviews.value = data_reviews;
-                reviews.value = reviews["value"]["hydra:member"];
-                for (let element of reviews.value){
-                  if(element.userId == "/users/2"){
-                    data.value = element
-                    console.log(element);
-                  }
-                }
-                console.log(data);*/
-                //2 tests differents en bas est de base en com dans le push
                 const res_user = await fetch(`${API_URL}/users/${id_connected}`);
-                console.log("hello here")
-                console.log(res_user)
                 const data_user = await res_user.json();
-                console.log( data_user);
                 user.value = data_user;
                 reviews_urls.value = user.value.reviews;
-                console.log("hello1 here")
-                console.log(reviews_urls.value);
                 for (const review of reviews_urls.value) {
                   await fetch(`${API_URL}${review}`)
                   .then(response => response.json())
                   .then(data => {
-                    console.log("data")
-                    console.log(data)
-                    console.log(reviews)
-                    console.log(review)
-                    console.log(typeof(reviews_array))
                     reviews_array.push(data);
                     }) }
                   //afficher les reviews qu'il doit valider je crois 
