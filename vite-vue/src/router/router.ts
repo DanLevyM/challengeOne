@@ -53,6 +53,11 @@ const routes = [
     component: () => import("../views/review/ReviewForm.vue"),
   },
   {
+    path: "/admin/review_validation",
+    name: "review_validation",
+    component: () => import("../views/review/ReviewToValidate.vue"),
+  },
+  {
     path: "/demo/:id",
     name: "demo.show",
     component: () => import("../views/Demo.vue"),
@@ -115,7 +120,7 @@ export const router = createRouter({
     );
   },
 });
-
+/*
 router.beforeEach((to, from, next) => {
   const requiresCompanyRole = to.matched.some(record => record.meta.requiresCompanyRole)
   const token = localStorage.getItem("access_token");
@@ -134,3 +139,4 @@ router.beforeEach((to, from, next) => {
     }              
   }
 })
+*/

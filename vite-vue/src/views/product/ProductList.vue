@@ -35,17 +35,17 @@ import { ref, onBeforeMount } from 'vue';
 
 
   <div>
-    <section style="background-color: #eee;">
+    <section style="background-color: #1a191f;">
       <div class="container py-5">
         <div class="row">
           <div class="col-md-12 col-lg-4 mb-4 mb-lg-4" v-for="product in products" >
-            <div class="card">
+            <div class="card" style="background-color: #1a191f; border: none">
               <img src="../../assets/img/default.png" 
-                class="card-img-top" alt="default" />
+                class="card-img-top" alt="default"/>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
                   <h5 class="mb-0">{{ product.name }}</h5>
-                  <h5 class="text-dark mb-0"> {{ product.price }} &euro;</h5>
+                  <h5 class="text-white mb-0"> {{ product.price }} &euro;</h5>
                 </div>
               </div>
             </div>

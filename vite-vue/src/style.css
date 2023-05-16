@@ -134,6 +134,8 @@ select {
     min-width: 1050px;
     border-spacing: 0;
     background-color: #1a191f;
+    padding: 1em;
+    margin-bottom: 1em;
 }
 
 .tableText {
@@ -149,17 +151,6 @@ select {
     background-color: #222028;
     white-space: nowrap;
     margin: 0;
-}
-
-tr {
-    border-bottom: 10px solid #1a191f;
-     
-}
-
-td {
-    background-color: transparent;
-    border: 0px solid transparent;
-    color: white;
 }
 
 #button-container {

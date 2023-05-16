@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="footer__content">
-                        <a href="index.html" class="footer__logo">
+                        <a href="/" class="footer__logo">
                             <img src="../../public/drolcinema.png" alt="">
                         </a>
 

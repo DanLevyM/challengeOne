@@ -13,10 +13,6 @@ use ApiPlatform\Metadata\ApiProperty;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource]
-#[Get]
-#[Put]
-#[GetCollection]
-#[Post]
 class Product
 {
     #[ORM\Id]
