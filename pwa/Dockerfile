@@ -8,8 +8,8 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /srv/app
 
 RUN corepack enable && \
-	corepack prepare --activate pnpm@latest && \
-    pnpm config set store-dir /.pnpm-store
+	corepack prepare --activate pnpm@latest-7 && \
+	pnpm config -g set store-dir /.pnpm-store
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -58,6 +58,8 @@ COPY --from=builder --link /srv/app/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --link --chown=nextjs:nodejs /srv/app/.next/standalone ./
+COPY --from=builder --link --chown=nextjs:nodejs /srv/app/.next/static ./.next/static
 
 USER nextjs
 
