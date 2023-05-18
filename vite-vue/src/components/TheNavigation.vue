@@ -90,30 +90,30 @@ async function handleLogout() {
 
                 <ul v-if="user.isLogged()" @click="handleLogout">
                     <li class="nav-item">
-                        <a
+                        <router-link
                             class="nav-link"
-                            href="/login"
+                            to="/login"
                             style="font-weight: bold"
-                            >Se déconnecter</a
-                        >
+                            >Se déconnecter
+                        </router-link>
                     </li>
                 </ul>
                 <ul v-else class="nav navbar-nav navbar-right">
                     <li class="nav-item">
-                        <a
+                        <router-link
                             class="nav-link"
-                            href="/register"
+                            to="/register"
                             style="font-weight: bold"
-                            >S'inscrire</a
+                            >S'inscrire</router-link
                         >
                     </li>
                     <li class="nav-item"><span class="nav-link">|</span></li>
                     <li class="nav-item">
-                        <a
+                        <router-link
                             class="nav-link"
-                            href="/login"
+                            to="/login"
                             style="font-weight: bold"
-                            >Se connecter</a
+                            >Se connecter</router-link
                         >
                     </li>
                 </ul>

@@ -151,8 +151,8 @@
 
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <a @click="emitDataEvent(seance.price)" :href="'/payment/' + seance.id"
-                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price }}€</a>
+                                                    <router-link @click="emitDataEvent(seance.price)" :to="'/payment/' + seance.id"
+                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price }}€</router-link>
 
                                                 </template>
                                             </modal>
