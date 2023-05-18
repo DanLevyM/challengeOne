@@ -19,7 +19,7 @@
                         v-model="password"
                         class="formInput"
                         id="floatingPassword"
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                     />
                   
                 </div>
