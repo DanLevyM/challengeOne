@@ -40,6 +40,7 @@ services:
       - php_socket:/var/run/php
       - caddy_data:/data
       - caddy_config:/config
+      - ./api/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
     ports:
       # HTTP
       - target: 80
@@ -72,25 +73,16 @@ services:
   ###> symfony/mercure-bundle ###
   ###< symfony/mercure-bundle ###
 
-  web:
-    image: node:18-alpine
-    env_file: ".env"
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./vite-vue:/usr/local/vite-vue
-    working_dir: /usr/local/vite-vue
-    command: sh -c "npm install && npm run dev"
+  # web:
+  #   image: node:18-alpine
+  #   env_file: ".env"
+  #   ports:
+  #     - "5173:5173"
+  #   volumes:
+  #     - ./vite-vue:/usr/local/vite-vue
+  #   working_dir: /usr/local/vite-vue
+  #   command: sh -c "npm install && npm run dev"
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: mypassword
-    ports:
-      - "5051:80"
-    depends_on:
-      - database
 
 volumes:
   php_socket:

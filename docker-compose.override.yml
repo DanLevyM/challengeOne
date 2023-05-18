@@ -25,6 +25,16 @@ services:
     environment:
       MERCURE_EXTRA_DIRECTIVES: demo
 
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: mypassword
+    ports:
+      - "5051:80"
+    depends_on:
+      - database
+
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
