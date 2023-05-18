@@ -6,9 +6,15 @@ services:
     environment:
       APP_SECRET: ${APP_SECRET}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
-      APP_ENV: prod
+      CORS_ALLOW_ORIGIN: 'https://drol-cinema-api.fr/'
+      env_file:
+        - .env.prod
 
-  caddy:
+  caddy:  
     environment:
       MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
       MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
+  
+  database:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
