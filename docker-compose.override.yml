@@ -14,27 +14,14 @@ services:
     environment:
       # See https://xdebug.org/docs/all_settings#mode 
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
-      CORS_ALLOW_ORIGIN: 'http://localhost:8000'
+      CORS_ALLOW_ORIGIN: 'http://localhost:5173'
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
 
-  pwa:
-    build:
-      context: ./pwa
-      target: dev 
-    volumes:
-      - ./pwa:/srv/app
-    environment:
-      API_PLATFORM_CREATE_CLIENT_ENTRYPOINT: http://caddy
-      API_PLATFORM_CREATE_CLIENT_OUTPUT: .
-      # On Linux, you may want to comment the following line for improved performance
-      WATCHPACK_POLLING: true
-
   caddy:
     volumes:
       - ./api/public:/srv/app/public:ro
-      - ./api/docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     environment:
       MERCURE_EXTRA_DIRECTIVES: demo
 
@@ -48,13 +35,17 @@ services:
     depends_on:
       - database
 
-###> doctrine/doctrine-bundle ###
   database:
     ports:
       - target: 5432
         published: 5432
         protocol: tcp
-###< doctrine/doctrine-bundle ###
 
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+  web:
+    image: node:18-alpine
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./vite-vue:/usr/local/vite-vue
+    working_dir: /usr/local/vite-vue
+    command: sh -c "npm install && npm run dev"
