@@ -7,7 +7,12 @@ services:
       APP_SECRET: ${APP_SECRET}
       MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
       CORS_ALLOW_ORIGIN: 'https://challenge-one-five.vercel.app'
+<<<<<<< HEAD
       SERVER_NAME: drol-cinema-api.fr
+=======
+      env_file:
+        - .env.prod
+>>>>>>> b783f18f (prod)
 
   caddy:  
     environment:
