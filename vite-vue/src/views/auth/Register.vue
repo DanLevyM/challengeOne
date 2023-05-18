@@ -1,66 +1,62 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
-        <main class="form-signin w-100 border p-4 rounded shadow">
+        <main class="form-signin w-100 p-4" style="background-color:#1a191f">
             <form v-on:submit.prevent="handleRegisterForm">
-                <h1 class="h3 mb-3 fw-normal">Sign up</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">S'enregistrer</h1>
 
                 <div class="form-floating">
                     <input
                         type="email"
                         v-model="email"
-                        class="form-control"
+                        class="formInput"
                         id="floatingInput"
-                        placeholder="name@example.com"
+                        placeholder="Email"
                     />
-                    <label for="floatingInput">Email address</label>
                 </div>
 
                 <div class="form-floating">
                     <input
                         type="password"
                         v-model="password"
-                        class="form-control"
+                        class="formInput"
                         id="floatingPassword"
                         placeholder="Password"
                     />
-                    <label for="floatingPassword">Password</label>
                 </div>
 
                 <div class="form-floating">
                     <input
                         type="text"
                         v-model="firstname"
-                        class="form-control"
+                        class="formInput"
                         id="floatingInput"
-                        placeholder="Firstname"
+                        placeholder="Prenom"
                     />
-                    <label for="floatingInput">Firstname</label>
                 </div>
 
                 <div class="form-floating">
                     <input
                         type="text"
                         v-model="lastname"
-                        class="form-control"
+                        class="formInput"
                         id="floatingInput"
-                        placeholder="Lastname"
+                        placeholder="Nom"
                     />
-                    <label for="floatingInput">Lastname</label>
                 </div>
 
                 <div class="checkbox mb-3">
-                    <label>
-                        <input type="checkbox" value="remember-me" /> Remember
-                        me
+                    <label style="color: #f9ab00;">
+                        <input type="checkbox" value="remember-me" /> Se souvenir de 
+                        moi
                     </label>
                 </div>
-                <div class="w-50 m-auto mb-2 text-secondary">
+                <div class="w-50 m-auto mb-2 text-warning text-center">
                     <router-link to="/login"
-                        >Already have an account ?</router-link
+                        >Déjà un compte ?</router-link
                     >
                 </div>
-                <button class="w-100 btn btn-lg btn-primary" type="submit">
-                    Create an account
+                <button class="w-100 btn-lg buttonAdd" type="submit">
+                    Créer un compte
                 </button>
             </form>
         </main>
@@ -102,6 +98,11 @@ export default {
 </script>
 
 <style>
+::placeholder {
+    color: white;
+    opacity: 1; 
+}
+
 label {
     color: black;
 }
