@@ -4,12 +4,11 @@ version: "3.4"
 services:
   php:
     environment:
+      APP_SECRET: ${APP_SECRET}
+      MERCURE_JWT_SECRET: ${MERCURE_JWT_SECRET}
       APP_ENV: prod
-      APP_DEBUG: true
-      STRIPE_WEBHOOK_ENDPOINT_SECRET: whsec_KuHK0vmLz3sNVY33c3vCd9vIgBSJGMZL
-      FRONT_URL: https://challenge-one-five.vercel.app/
-      CORS_ALLOW_ORIGIN: '^https:\/\/challenge-one-five.vercel.app$'
 
   caddy:
-    volumes:
-      - ./api/docker/caddy/CaddyfileProd:/etc/caddy/Caddyfile:ro
+    environment:
+      MERCURE_PUBLISHER_JWT_KEY: ${MERCURE_JWT_SECRET}
+      MERCURE_SUBSCRIBER_JWT_KEY: ${MERCURE_JWT_SECRET}
