@@ -197,7 +197,7 @@
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    <p>{{review.descritpion}}{{review[0].description}}gygyu</p>
+                                    <p>{{review.descritpion}}{{review[0].description}}</p>
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div
