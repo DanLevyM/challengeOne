@@ -35,7 +35,7 @@
                     >
                 </div>
                 <button class="w-100 btn-lg buttonAdd" type="submit">
-                    SIGN IN
+                    SE CONNECTER
                 </button>
             </form>
         </main>

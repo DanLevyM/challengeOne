@@ -2,7 +2,7 @@
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
         <main class="form-signin w-100 p-4" style="background-color:#1a191f">
             <form v-on:submit.prevent="handleRegisterForm">
-                <h1 class="h3 mb-3 fw-normal text-center">S'enregistrer</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">S'inscrire</h1>
 
                 <div class="form-floating">
                     <input
