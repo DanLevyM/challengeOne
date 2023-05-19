@@ -25,7 +25,7 @@ services:
     App\OpenApi\JwtDecorator:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@.inner']
-        
+
     App\State\UserPasswordHasher:
-        arguments:
-            - '@api_platform.state_processor.locator'
+        bind:
+            $processor: '@api_platform.doctrine.orm.state.persist_processor'
