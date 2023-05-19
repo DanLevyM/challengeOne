@@ -1,7 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#c-hashing-passwords
     password_hashers:
-        App\Entity\User: 'auto'
+        App\Entity\User: "auto"
 
     # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true
@@ -47,4 +47,3 @@ when@test:
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
                 memory_cost: 10 # Lowest possible value for argon
-
