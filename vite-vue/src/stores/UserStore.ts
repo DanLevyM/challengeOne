@@ -11,8 +11,7 @@ interface User {
   isAuthenticate: boolean;
 }
 const API_URL = import.meta.env.VITE_API_URL;
-const isLoggedIn = localStorage.getItem("access_token") ? true : false;
-console.log("IsLoggedIn:", isLoggedIn);
+const isLoggedIn = jsCookie.get('jwt') ? true : false;
 
 export const useUserStore = defineStore("UserStore", {
   state: (): State => ({ user: {} as User, isLoggedIn }),
@@ -24,7 +23,6 @@ export const useUserStore = defineStore("UserStore", {
       email: string;
       password: string;
     }): Promise<boolean | void> {
-      console.log(credentials);
 
       try {
         const response = await fetch(`${API_URL}/authentication_token`, {
@@ -35,7 +33,6 @@ export const useUserStore = defineStore("UserStore", {
           body: JSON.stringify(credentials),
         });
         const data = await response.json();
-        console.log("data received:", data);
 
         if (response.status !== 200 || !response.ok) {
           throw new Error(data.message);
@@ -47,9 +44,7 @@ export const useUserStore = defineStore("UserStore", {
           isAuthenticate: true,
         };
         this.isLoggedIn = true;
-        console.log("user:", this.user);
         jsCookie.set('jwt', data.token, { expires: 1 })
-        localStorage.setItem("access_token", data.token);
         return true;
       } catch (error) {
         console.error(error);
@@ -63,7 +58,6 @@ export const useUserStore = defineStore("UserStore", {
       lastname: string;
     }) {
       try {
-        console.log("req", credentials);
 
         const response = await fetch(`${API_URL}/users`, {
           method: "POST",
@@ -84,23 +78,14 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     async logout() {
-      // const response = await fetch("http://localhost:3003/api/logout", {
-      //   method: "DELETE",
-      // });
-      // console.log("logout", response);
-
       this.user = null;
       this.isLoggedIn = false;
-      localStorage.removeItem("access_token");
-    },
-
-    isLogged() {
-      return localStorage.getItem("access_token") ? true : false;
+      jsCookie.remove('jwt');
     },
 
     async id() {
       const API_URL = import.meta.env.VITE_API_URL;
-      const userData = localStorage.getItem("access_token");
+      const userData = jsCookie.get("jwt");
       let id_connected;
       if (userData) {
         let payload = userData.split(".")[1];
@@ -120,7 +105,7 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     isAdmin() {
-      const token = localStorage.getItem("access_token");
+      const token = jsCookie.get("jwt");
       if (token) {
         const payload = token?.split(".")[1];
         const tokenTest = window.atob(payload!);

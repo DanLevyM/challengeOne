@@ -5,8 +5,6 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const user = useUserStore();
 
-// console.log("user is admin:", user.isAdmin());
-
 async function handleLogout() {
     await user.logout();
     router.push({ name: "login" });
@@ -88,12 +86,11 @@ async function handleLogout() {
                     </li>
                 </ul>
 
-                <ul v-if="user.isLogged()" @click="handleLogout">
+                <ul v-if="user.isLoggedIn" @click="handleLogout"  class="nav navbar-nav navbar-right">
                     <li class="nav-item">
                         <router-link
                             class="nav-link"
                             to="/login"
-                            style="font-weight: bold"
                             >Se déconnecter
                         </router-link>
                     </li>
