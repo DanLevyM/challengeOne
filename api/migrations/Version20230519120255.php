@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230418215954 extends AbstractMigration
+final class Version20230519120255 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -46,7 +46,8 @@ final class Version20230418215954 extends AbstractMigration
         $this->addSql('CREATE TABLE seance (id INT NOT NULL, movieroom_id_id INT NOT NULL, movie_id INT DEFAULT NULL, end_time TIME(0) WITHOUT TIME ZONE NOT NULL, date DATE NOT NULL, start_time TIME(0) WITHOUT TIME ZONE NOT NULL, price DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_DF7DFD0EEBB197E7 ON seance (movieroom_id_id)');
         $this->addSql('CREATE INDEX IDX_DF7DFD0E8F93B6FC ON seance (movie_id)');
-        $this->addSql('CREATE TABLE subscription (id INT NOT NULL, type VARCHAR(255) NOT NULL, formality VARCHAR(255) NOT NULL, price INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE subscription (id INT NOT NULL, user_sub_id INT DEFAULT NULL, type VARCHAR(255) NOT NULL, formality VARCHAR(255) NOT NULL, price INT NOT NULL, started_at DATE NOT NULL, end_at DATE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_A3C664D3603B89E4 ON subscription (user_sub_id)');
         $this->addSql('CREATE TABLE ticket (id INT NOT NULL, user_id_id INT NOT NULL, seance_id_id INT NOT NULL, price DOUBLE PRECISION NOT NULL, quantity INT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_97A0ADA39D86650F ON ticket (user_id_id)');
         $this->addSql('CREATE INDEX IDX_97A0ADA360528D1B ON ticket (seance_id_id)');
@@ -62,6 +63,7 @@ final class Version20230418215954 extends AbstractMigration
         $this->addSql('ALTER TABLE review ADD CONSTRAINT FK_794381C68FB65DB8 FOREIGN KEY (user_admin_check_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE seance ADD CONSTRAINT FK_DF7DFD0EEBB197E7 FOREIGN KEY (movieroom_id_id) REFERENCES movie_room (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE seance ADD CONSTRAINT FK_DF7DFD0E8F93B6FC FOREIGN KEY (movie_id) REFERENCES movie (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE subscription ADD CONSTRAINT FK_A3C664D3603B89E4 FOREIGN KEY (user_sub_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE ticket ADD CONSTRAINT FK_97A0ADA39D86650F FOREIGN KEY (user_id_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE ticket ADD CONSTRAINT FK_97A0ADA360528D1B FOREIGN KEY (seance_id_id) REFERENCES seance (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE "user" ADD CONSTRAINT FK_8D93D649857C9F24 FOREIGN KEY (subscription_id_id) REFERENCES subscription (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -90,6 +92,7 @@ final class Version20230418215954 extends AbstractMigration
         $this->addSql('ALTER TABLE review DROP CONSTRAINT FK_794381C68FB65DB8');
         $this->addSql('ALTER TABLE seance DROP CONSTRAINT FK_DF7DFD0EEBB197E7');
         $this->addSql('ALTER TABLE seance DROP CONSTRAINT FK_DF7DFD0E8F93B6FC');
+        $this->addSql('ALTER TABLE subscription DROP CONSTRAINT FK_A3C664D3603B89E4');
         $this->addSql('ALTER TABLE ticket DROP CONSTRAINT FK_97A0ADA39D86650F');
         $this->addSql('ALTER TABLE ticket DROP CONSTRAINT FK_97A0ADA360528D1B');
         $this->addSql('ALTER TABLE "user" DROP CONSTRAINT FK_8D93D649857C9F24');
