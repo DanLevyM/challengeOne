@@ -13,7 +13,8 @@
 
 body {
     min-height: 100vh;
-    background-color: #1a191f;
+    background-color: #111;
+    /* #1a191f; */
     /* //#090a0b; */
     color: #ffffff;
 }
@@ -153,6 +154,18 @@ select {
     margin: 0;
 }
 
+
+tr {
+    /* border-bottom: 10px solid #1a191f; */
+     
+}
+
+td {
+    background-color: transparent;
+    border: 0px solid transparent;
+    color: white;
+}
+
 #button-container {
     width: 100%;
     display:block;
@@ -178,7 +191,7 @@ select {
     border: 2px solid #f9ab00;
     margin-top: 10px; 
     color: #fff;
-    background-color: #1a191f;
+    /* background-color: #1a191f; */
     font-size: 14px;
 }
 
@@ -224,11 +237,11 @@ select {
     border: 2px solid #f9ab00;
     margin-top: 10px; 
     color: #fff;
-    background-color: #1a191f;
+    /* background-color: #1a191f; */
 }
 
 form {
-    background-color: #1a191f;
+    /* background-color: #1a191f; */
     display: inline-flexbox ;
 }
 

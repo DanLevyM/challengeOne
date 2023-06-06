@@ -122,30 +122,38 @@
                                                 "
                                             >
                                                 <template v-slot:header>
-                                                    <h2>{{ movie.title }}</h2>
+                                                    <h3>{{ seance.dateFormatted }}</h3>
+                                                    <p>{{ seance.startTimeFormatted }}</p>
                                                 </template>
                                                 <template v-slot:body>
-                                                    <h3>
-                                                        {{
-                                                            seance.startTimeFormatted
-                                                        }}
-                                                    </h3>
-                                                    <h3>{{ seance.price }}€</h3>
+
+                                                    <div class="booking-movie box">
+                                                        <div class="wrap">
+                                                            <h3 class="h3">{{ movie.title }}</h3>
+                                                            <p class="duration">Durée: {{ movie.duration }} min
+                                                                <span class="label label--light"> Fin prévue à {{
+                                                                    seance.endTimeFormatted }}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="ft-center wrap">
+                                                            <span class="booking__room">
+                                                                Salle 
+                                                                <b class="ft-up">
+                                                                    {{ seance.movieroom_id['room_name'] }}
+                                                                </b>
+
+                                                            </span>
+                                                            <div class="ft-xss">
+                                                                {{ seance.movieroom_id['number_places'] }} places
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <a
-                                                        @click="
-                                                            emitDataEvent(
-                                                                seance.price
-                                                            )
-                                                        "
-                                                        :href="
-                                                            '/payment/' +
-                                                            seance.id
-                                                        "
-                                                        class="button-cta cta-button"
-                                                        >Réserver</a
-                                                    >
+                                                    <router-link @click="emitDataEvent(seance.price)" :to="'/payment/' + seance.id"
+                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price }}€</router-link>
+
                                                 </template>
                                             </modal>
                                         </div>
@@ -235,8 +243,8 @@
                 </div>
             </div>
         </section>
+        <div v-if="showMessage" class="message">{{ message }}</div>
     </div>
-    <div v-if="showMessage" class="message">{{ message }}</div>
 </template>
 
 <script>
@@ -603,7 +611,7 @@ label {
 
 // Section decouverte
 .content-head {
-    background-color: #1a191f;
+    // background-color: #1a191f;
     margin-bottom: 20px;
     padding: 20px 0;
     position: relative;
@@ -641,7 +649,6 @@ label {
 
 .btn:hover {
     background-color: #ff9900;
-    // color: black;
 }
 
 .screening-start {
@@ -661,6 +668,125 @@ label {
 
 .nav-tabs .nav-link.active {
     color: black !important;
+}
+
+// Modal
+.box {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px lightblue;
+    border-radius: 6px;
+    transition: box-shadow .3s cubic-bezier(.25, .1, .25, 1);
+    background-color: white;
+}
+
+.booking-movie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 95px;
+    padding-left: 16px;
+    overflow: visible;
+}
+
+.wrap {
+    word-wrap: break-word;
+    hyphens: none;
+}
+
+.h3 {
+    font-weight: 700;
+}
+
+.duration {
+    color: rgba(9, 10, 11, .5);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.label--light {
+    color: var(--black);
+    background-color: rgba(9, 10, 11, .1);
+}
+
+.label {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 4px;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: black;
+    border-radius: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+.ft-center {
+    text-align: center;
+    margin-right: 10px;
+}
+
+.booking__room {
+    display: block;
+    background: #f3d269;
+    padding: 4px 8px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.ft-up {
+    text-transform: uppercase;
+    display: block;
+}
+
+.ft-xss {
+    font-size: 10px;
+    line-height: 16px;
+}
+
+.btn--center {
+    justify-content: center;
+}
+
+.btn--full, .btn-sm--full {
+    width: 100%;
+}
+
+.btn-cta {
+    display: inline-block;
+    align-items: center;
+    justify-content: space-between;
+    vertical-align: middle;
+    height: 48px;
+    min-width: 56px;
+    line-height: 48px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all .15s ease-out;
+    cursor: pointer;
+    color: white;
+    padding: 0 20px;
+    outline: none;
+    text-decoration: none;
+    background: #1c2129;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+@media (min-width: 1080px) {
+
+    .h3 {
+        font-size: 24px;
+        line-height: 28px;
+    }
 }
 
 i {
