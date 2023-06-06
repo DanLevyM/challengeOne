@@ -96,20 +96,31 @@ export default {
                   }
                 }
                 
-                const res_user = await fetch(`${API_URL}/users/${id_connected}`);
+                const res_user = await fetch(`${API_URL}/reviews?user_admin=/users/${id_connected}`);
                 const data_user = await res_user.json();
                 user.value = data_user;
-                reviews_urls.value = user.value.reviews;
-                for (const review of reviews_urls.value) {
+                console.log("user.value2")
+                console.log(data_user)
+                console.log("user.value1")
+                console.log(user.value)
+                console.log("user.value")
+                console.log(user["value"]["hydra:member"][0])
+                user.value = user["value"]["hydra:member"];
+                console.log("user")
+                console.log(user.value)
+                //reviews_urls.value = user.value.reviews;
+                
+                /*for (const review of reviews_urls.value) {
                   await fetch(`${API_URL}${review}`)
                   .then(response => response.json())
                   .then(data => {
                     reviews_array.push(data);
-                    }) }
+                    }) }*/
                   //afficher les reviews qu'il doit valider je crois 
                 let i = 0;
-                for (let userNames of reviews_array){
-                    
+                for (let userNames of user.value){
+                    console.log("here")
+                    console.log(userNames)
                   const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
                   const data_userNames = await res_userNames.json();
                         

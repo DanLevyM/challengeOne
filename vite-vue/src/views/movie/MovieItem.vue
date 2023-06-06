@@ -217,6 +217,8 @@
                                                 </h3>
                                                 <p class="comment-content">
                                                     {{ comment.description }}
+                                                    {{ formatDate(comment.date) }}
+                                                    {{ comment }}
                                                 </p>
                                             </div>
                                             <i
@@ -257,7 +259,13 @@ export default {
         };
     },
     created() {},
-    methods: {},
+    methods: {
+        formatDate(date) {
+            // Fonction pour formater la date
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(date).toLocaleDateString(undefined, options);
+        },
+    },
     components: {
         modal,
         Stripe,
@@ -381,8 +389,8 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-
-              
+console.log("movie.seance.length")
+              console.log(movie.seance.length)
                 showModals = Array(movie.seance.length).fill(false);
                 seances_urls.value = movie.value.seance;
             
@@ -663,7 +671,7 @@ label {
     color: black !important;
 }
 
-i {
+.bi-flag-fill {
     color: red;
     cursor: pointer;
 }

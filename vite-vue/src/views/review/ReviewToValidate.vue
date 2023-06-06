@@ -9,8 +9,11 @@ export default {
     }, 
     setup () {
         const userData = localStorage.getItem('access_token');
-
+        const elementor = ["1", "2", "3", "4", "5", "6"];
+        const picked = ref('');
         const datas = reactive([]);
+        const dataf = ref({});
+        const datafa = reactive([]);
         const reviews = ref({});
         const reviews_array = reactive([]);
         const admins = ref({});
@@ -18,6 +21,43 @@ export default {
         const data_reviews_logged_value = ref({});
         
         async function toValidate(id) {
+
+          const selectedReview = datas.find(review => review.id === id);
+          if (!selectedReview) {
+            return; // Arrêter la fonction si la critique sélectionnée n'est pas trouvée
+          }
+
+          // Mettre à jour l'état des critiques dans la base de données
+          const updatePromises = [];
+
+          // Mettre la critique sélectionnée en true
+          const updateSelectedReview = fetch(`${API_URL}/reviews/${id}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-type': 'application/merge-patch+json' 
+            },
+            body: JSON.stringify({ validate: true })
+          });
+          updatePromises.push(updateSelectedReview);
+
+          // Mettre à false l'ancienne critique validée (si elle existe)
+          const previouslyValidatedReview = datas.find(review => review.validate === true && review.id !== id);
+          if (previouslyValidatedReview) {
+            const updatePreviouslyValidatedReview = fetch(`${API_URL}/reviews/${previouslyValidatedReview.id}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-type': 'application/merge-patch+json' 
+                },
+                body: JSON.stringify({ validate: false })
+            });
+            updatePromises.push(updatePreviouslyValidatedReview);
+          }
+
+          // Attendre la fin de toutes les requêtes de mise à jour
+          await Promise.all(updatePromises);
+          picked.value = id;
+            
+          /*
           const formData = {};
           formData.id = id;
           formData.validate = true;
@@ -28,11 +68,12 @@ export default {
             },
             body: JSON.stringify(formData)
           });
+          console.log(formData)
           for (let i=0; i<datas.length; i++){
             if (datas[i].id === id){
                 datas.splice(i, 1);
             }
-          }
+          }*/
         }
 
         onBeforeMount(async () => {
@@ -51,7 +92,7 @@ export default {
               const data_users_admin = await res_users_admin.json();
               admins.value = data_users_admin;
               admins.value = admins["value"]["hydra:member"];
-
+console.log("here2")
               const res_reviews = await fetch(`${API_URL}/reviews`);
               const data_reviews = await res_reviews.json();
               reviews.value = data_reviews;
@@ -60,7 +101,7 @@ export default {
               const res_reviews_logged = await fetch(`${API_URL}/reviews?user_admin_check=/users/${id_connected[0].id}`);
               const data_reviews_logged = await res_reviews_logged.json();
               data_reviews_logged_value.value = data_reviews_logged
-        
+        console.log("here1")
               for (let element of data_reviews_logged_value["value"]["hydra:member"]){
                 const res_userNames = await fetch(`${API_URL}${element["userAdmin"]}`);
                 const data_userNames = await res_userNames.json();
@@ -75,7 +116,15 @@ export default {
             } catch (error) {
                 console.log(error);
             }
-        
+            for(let ele of datas){
+              console.log(ele)
+              console.log(ele.movie_id)
+              dataf.movie_id = ele.movie_id;
+              console.log(dataf)
+              dataf.title = ele.title;
+              dataf.description = ele.description;
+              datafa.push({element: dataf});
+            }
         });
         
       
@@ -84,10 +133,36 @@ export default {
             datas,
             admins,
             reviews_array,
-            toValidate
+            toValidate,
+            dataf,
+            datafa,
+            pickedCritiques: {},
+            elementor,
+            picked,
         }
-    }      
+    },      
          
+    computed: {
+    critiquesGroupedByFilm() {
+      return this.datas.reduce((groupedCritiques, critique) => {
+        const idFilm = critique.movie_id;
+        console.log("critique")
+        console.log(critique)
+        if (groupedCritiques[idFilm]) {
+          groupedCritiques[idFilm].push(critique);
+          console.log("critique long")
+        console.log(groupedCritiques[idFilm])
+        } else {
+          groupedCritiques[idFilm] = [critique];
+          console.log("groupedCritiques[idFilm]")
+          console.log(groupedCritiques[idFilm])
+        }
+        return groupedCritiques;
+      }, {});
+    },
+  },
+
+
 
 };
 
@@ -96,31 +171,22 @@ export default {
 
 <template>
   <div class="bodyclass">
-    <table class="mainTable">
-      <thead>
-        <tr class="fit">
-          <th scope="col"><div class="thText">TITRE</div></th>
-          <th scope="col"><div class="thText">DESCRIPTION</div></th>
-          <th scope="col"><div class="thText">AUTEUR</div></th>
-          <th scope="col"><div class="thText">FILM</div></th>
-          <th scope="col"><div class="thText">ACTION</div></th>
-          <th scope="col"><div class="thText">FILM ID</div></th>
-        </tr>
-      </thead>
-      <tbody class="w-auto">
-        <tr v-for="review of datas" :key="review.id" class="fit">
-          <td><div class="tableText">{{ review.title }}</div></td>
-          <td><div class="tableText">{{ review.description }}</div></td>
-          <td><div class="tableText">{{ review.userAdmin }}</div></td>
-          <td><div class="tableText">{{ review.movie }}</div></td>
-          <td><div class="tableText">{{ review }}</div></td>
-          <td>
-            <div class="tableText"><button class="price__btn" @click="toValidate(review.id)">Valider</button></div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
+    <div style="color:white;" >
+      <div class="rounded" v-for="(critiqueGroup, idFilm) in critiquesGroupedByFilm" :key="idFilm" style="margin: 5% 20% 5% 20%; padding-top: 2%; background-color:#111111">
+      <h2 style="text-align:center;">Titre du film : {{ critiqueGroup[0].movie }}</h2>
+      <div style="margin: 5% 20% 5% 20%">
+        <div class="rounded" style="color:white; border: 2px solid #1d1b22; background-color: #222028; margin: 2% 2% 4% 2%" v-for="critique in critiqueGroup" :key="critique.id">
+            <input class="form-check-input" style="margin-left: 2%" v-if="critique.validate == true" type="radio" :id="critique.id" :value="critique.description" v-model="picked" checked/>
+            <input class="form-check-input" style="margin-left: 2%" v-else type="radio" :id="critique.id" :value="critique.id" v-model="picked"/>
+            {{ critique.title }}
+            <div>
+              <label :for="critique.description" style="margin: 2% 2% 2% 2%">{{ critique.description}}</label>
+            </div>
+        </div>
+        <button class="buttonAdd w-10 m-auto mb-2 pb-2" @click="toValidate(picked)">Enregistrer</button>
+      </div>
+    </div>
+    </div>
   </div>
 </template>
 

@@ -87,16 +87,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Subscription $subscription_id = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
-    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
-    private Collection $reviews;
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tickets = new ArrayCollection();
         $this->moderations = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -306,35 +301,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReviews(): Collection
-    {
-        return $this->reviews;
-    }
-
-    public function addReview(Review $review): self
-    {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setUserAdminCheck($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReview(Review $review): self
-    {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getUserAdminCheck() === $this) {
-                $review->setUserAdminCheck(null);
-            }
-        }
-
-        return $this;
     }
 }

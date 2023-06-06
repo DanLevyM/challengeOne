@@ -44,9 +44,9 @@ class Movie
     #[Groups('movie')]
     private Collection $comments;
 
-    #[ORM\OneToOne(mappedBy: 'movie_id', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Review::class)]
     #[Groups('movie')]
-    private ?Review $review_id = null;
+    private Collection $reviews;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
     #[Groups('movie')]

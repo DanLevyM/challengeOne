@@ -13,7 +13,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
-#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact', 'user_admin' => 'exact'])]
 class Review
 {
     #[ORM\Id]
@@ -36,7 +36,7 @@ class Review
     #[ORM\Column(nullable: true)]
     private ?bool $validate = null;
 
-    #[ORM\OneToOne(inversedBy: 'review_id', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'review_id')]
     private ?Movie $movie_id = null;
 
     public function getId(): ?int
