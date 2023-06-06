@@ -134,7 +134,9 @@ select {
     width: 100%;
     min-width: 1050px;
     border-spacing: 0;
-    /* background-color: #1a191f; */
+    background-color: #1a191f;
+    padding: 1em;
+    margin-bottom: 1em;
 }
 
 .tableText {
@@ -151,6 +153,7 @@ select {
     white-space: nowrap;
     margin: 0;
 }
+
 
 tr {
     /* border-bottom: 10px solid #1a191f; */

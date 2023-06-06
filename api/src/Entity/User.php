@@ -21,6 +21,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 
 #[ApiResource(
@@ -38,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email')]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact', 'roles' => 'exact'])]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -61,6 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(['user:read', 'user:create', 'user:update'])]
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
@@ -85,15 +89,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_sub', targetEntity: Subscription::class)]
     private Collection $subscriptions; */
 
-
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Review::class)]
-    private Collection $reviews;
-
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Subscription $subscription_id = null;
+
+    #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
+    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
+    private Collection $reviews;
 
     public function __construct()
     {

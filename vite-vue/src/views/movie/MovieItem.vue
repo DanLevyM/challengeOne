@@ -197,7 +197,16 @@
                                         Envoyer
                                     </button>
                                 </form>
-
+                                <!-- REVIEW --> 
+                                <div v-if="review.length > 0">
+                                    <p>{{review[0].title}}</p>
+                                    <p>{{review[0].description}}</p>
+                                    
+                                </div>
+                                <div v-else>
+                                    Aucune critique n'a été rédigée pour le moment
+                                    <p>{{review.descritpion}}{{review[0].description}}</p>
+                                </div>
                                 <!-- LIST COMMENTS -->
                                 <div
                                     v-if="
@@ -226,7 +235,7 @@
                                     </div>
                                 </div>
                                 <div v-else>
-                                    Aucune commentaire pour le moment
+                                    Aucun commentaire pour le moment
                                 </div>
                             </div>
                         </div>
@@ -286,6 +295,7 @@ export default {
         const contents = [];
 
         const movie = ref({});
+        const review = ref({});
         const seances = ref({});
         const comments = reactive([]);
         const comments_url = ref({});
@@ -369,9 +379,23 @@ export default {
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
                 console.log(movie.value);
+ //get review
+                const res_review = await fetch(`${API_URL}/reviews?validate=true&movie_id=${route.params.id}`);
+                const data_review = await res_review.json();
+                review.value = data_review;
+                review.value = review['value']['hydra:member'];
+                console.log("review")
+                console.log(review)
+            } catch (error) {
+                console.log(error);
+            }
 
+              
                 showModals = Array(movie.seance.length).fill(false);
                 seances_urls.value = movie.value.seance;
+            
+                
+                
 
                 // get comments
                 comments_url.value = movie.value.comments;
@@ -382,9 +406,8 @@ export default {
                             comments.push(data);
                         });
                 }
-            } catch (error) {
-                console.log(error);
-            }
+
+               
         });
 
         async function handleAddComment() {
@@ -503,6 +526,7 @@ export default {
             signalComment,
             showMessage,
             message,
+            review,
         };
     },
 };

@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact'])]
 class Review
 {
     #[ORM\Id]
@@ -29,6 +32,12 @@ class Review
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?User $user_admin_check = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $validate = null;
+
+    #[ORM\OneToOne(inversedBy: 'review_id', cascade: ['persist', 'remove'])]
+    private ?Movie $movie_id = null;
 
     public function getId(): ?int
     {
@@ -79,6 +88,30 @@ class Review
     public function setUserAdminCheck(?User $user_admin_check): self
     {
         $this->user_admin_check = $user_admin_check;
+
+        return $this;
+    }
+
+    public function isValidate(): ?bool
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?bool $validate): self
+    {
+        $this->validate = $validate;
+
+        return $this;
+    }
+
+    public function getMovie(): ?Movie
+    {
+        return $this->movie_id;
+    }
+
+    public function setMovie(?Movie $movie_id): self
+    {
+        $this->movie_id = $movie_id;
 
         return $this;
     }

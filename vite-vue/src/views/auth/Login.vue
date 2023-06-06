@@ -1,42 +1,41 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
-        <main class="form-signin w-100 border p-4 rounded shadow">
+        <main class="form-signin w-100 p-4" style="background-color:#1a191f">
             <form v-on:submit.prevent="handleLoginForm">
-                <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+                <h1 class="h3 mb-3 fw-bold text-center"><span style="color: #f9ab00;">DROL</span> CINEMA</h1>
                 <div class="form-floating">
                     <input
                         type="email"
                         v-model="email"
-                        class="form-control"
+                        class="formInput"
                         id="floatingInput"
-                        placeholder="name@example.com"
+                        placeholder="Email"
                     />
-                    <label for="floatingInput">Email address</label>
+                   
                 </div>
                 <div class="form-floating">
                     <input
                         type="password"
                         v-model="password"
-                        class="form-control"
+                        class="formInput"
                         id="floatingPassword"
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                     />
-                    <label for="floatingPassword">Password</label>
+                  
                 </div>
 
                 <div class="checkbox mb-3">
-                    <label>
-                        <input type="checkbox" value="remember-me" /> Remember
-                        me
+                    <label style="color: #f9ab00;">
+                        <input type="checkbox" value="remember-me" /> Se souvenir de moi
                     </label>
                 </div>
-                <div class="w-50 m-auto mb-2 text-secondary">
+                <div class="w-50 m-auto mb-2 text-center" style="color: #f9ab00;">
                     <router-link to="/register"
-                        >Not registered yet ?</router-link
+                        >Pas encore inscrit ?</router-link
                     >
                 </div>
-                <button class="w-100 btn btn-lg btn-primary" type="submit">
-                    Sign in
+                <button class="w-100 btn-lg buttonAdd" type="submit">
+                    SE CONNECTER
                 </button>
             </form>
         </main>
@@ -76,9 +75,11 @@ export default {
 </script>
 
 <style>
-label {
-    color: black;
+::placeholder {
+    color: white;
+    opacity: 1; 
 }
+
 
 .bd-placeholder-img {
     font-size: 1.125rem;
@@ -130,5 +131,9 @@ label {
     text-align: center;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
+}
+
+.labelLogin {
+    background-color:#222028;
 }
 </style>
