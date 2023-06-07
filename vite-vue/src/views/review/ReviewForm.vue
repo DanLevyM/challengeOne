@@ -190,16 +190,16 @@ export default {
         <input class="formInput" type="text" v-model="description" placeholder="Ecrire ici">
       </span>
       <span class="col-12 col-sm-6 col-lg-3">
-        <label class="formInput" for="admins-select">Choisir le modérateur:</label>
+        <label class="formInput space-label" for="admins-select">Choisir le modérateur:</label>
       </span>
       <select v-model="verif">
         <option value="" disabled>--Choisir parmi la liste--</option>
         <option v-for="user in administrator" :value="user.id" :key="user.id">{{ user.firstname }} {{ user.lastname }}</option>
       </select>
       <span class="col-12 col-sm-6 col-lg-3">
-        <label class="formInput" for="admins-select">Choisir le film:</label>
+        <label class="formInput space-label"  for="admins-select">Choisir le film:</label>
       </span>
-      <select v-model="movieId">
+      <select style="margin-right: 1%" v-model="movieId">
         <option value="" disabled>--Choisir parmi la liste--</option>
         <option v-for="movie in movies" :value="movie.id" :key="movie.id">{{ movie.title }}</option>
       </select>
@@ -213,5 +213,12 @@ export default {
 form {
   padding: 30px;
   margin-bottom: 30px;
+}
+
+.space-label {
+  padding-bottom: 1%; 
+  padding-top: 1%; 
+  margin-right: 1%; 
+  margin-left: 1%;
 }
 </style>

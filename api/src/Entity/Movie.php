@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource (normalizationContext: ['groups' => ['movie']])]
+#[ApiResource(normalizationContext: ['groups' => ['movie']])]
 class Movie
 {
     #[ORM\Id]
@@ -55,6 +55,7 @@ class Movie
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
         $this->seance = new ArrayCollection();
     }
 
@@ -153,18 +154,6 @@ class Movie
         return $this;
     }
 
-    public function getReviewId(): ?Review
-    {
-        return $this->review_id;
-    }
-
-    public function setReviewId(?Review $review_id): self
-    {
-        $this->review_id = $review_id;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Seance>
      */
@@ -195,15 +184,45 @@ class Movie
         return $this;
     }
 
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReviews(Review $review): self
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getMovie() === $this) {
+                $review->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
     #[Groups("movie")]
     public function getReleaseDateFormatted(): ?string
-    {   
-        
+    {
+
         $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
         $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
         $date_str = $this->release_date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
         $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
-        
+
         return $date_str;
     }
 }

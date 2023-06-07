@@ -150,7 +150,7 @@
                                             </modal>
                                         </div>
                                     </div>
-                                    <div v-else>
+                                    <div v-else class="mb-3 my-4 text-center">
                                         Aucune séance pour le moment
                                     </div>
                                 </div>
@@ -190,14 +190,13 @@
                                     </button>
                                 </form>
                                 <!-- REVIEW --> 
-                                <div v-if="review.length > 0">
-                                    <p>{{review[review.lenght-1].title}}</p>
-                                    <p>{{review[review.lenght-1].description}}</p>
-                                    
+                                <h2 class="content-title mt-4 mb-4">Critique de la rédaction</h2>
+                                <div class="ml-4 mt-4 mb-4" style="border: solid 2px #211f26" v-if="review.length > 0">
+                                    <p class="mt-4 mb-4 pl-4" style="margin-left: 2%; font-weight: 700;">{{review[(review.length)-1].title}}</p>
+                                    <p style="margin-left: 2%">{{review[(review.length)-1].description}}</p>
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    {{ review }}
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div
