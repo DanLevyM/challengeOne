@@ -22,6 +22,7 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('movie')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -36,7 +37,7 @@ class Review
     #[ORM\Column(nullable: true)]
     private ?bool $validate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'review_id')]
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?Movie $movie_id = null;
 
     public function getId(): ?int

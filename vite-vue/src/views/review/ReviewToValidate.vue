@@ -92,7 +92,7 @@ export default {
               const data_users_admin = await res_users_admin.json();
               admins.value = data_users_admin;
               admins.value = admins["value"]["hydra:member"];
-console.log("here2")
+
               const res_reviews = await fetch(`${API_URL}/reviews`);
               const data_reviews = await res_reviews.json();
               reviews.value = data_reviews;
@@ -101,7 +101,7 @@ console.log("here2")
               const res_reviews_logged = await fetch(`${API_URL}/reviews?user_admin_check=/users/${id_connected[0].id}`);
               const data_reviews_logged = await res_reviews_logged.json();
               data_reviews_logged_value.value = data_reviews_logged
-        console.log("here1")
+        
               for (let element of data_reviews_logged_value["value"]["hydra:member"]){
                 const res_userNames = await fetch(`${API_URL}${element["userAdmin"]}`);
                 const data_userNames = await res_userNames.json();
@@ -117,10 +117,9 @@ console.log("here2")
                 console.log(error);
             }
             for(let ele of datas){
-              console.log(ele)
-              console.log(ele.movie_id)
+         
               dataf.movie_id = ele.movie_id;
-              console.log(dataf)
+         
               dataf.title = ele.title;
               dataf.description = ele.description;
               datafa.push({element: dataf});
@@ -146,16 +145,13 @@ console.log("here2")
     critiquesGroupedByFilm() {
       return this.datas.reduce((groupedCritiques, critique) => {
         const idFilm = critique.movie_id;
-        console.log("critique")
-        console.log(critique)
+       
         if (groupedCritiques[idFilm]) {
           groupedCritiques[idFilm].push(critique);
-          console.log("critique long")
-        console.log(groupedCritiques[idFilm])
+  
         } else {
           groupedCritiques[idFilm] = [critique];
-          console.log("groupedCritiques[idFilm]")
-          console.log(groupedCritiques[idFilm])
+     
         }
         return groupedCritiques;
       }, {});
@@ -174,16 +170,16 @@ console.log("here2")
     <div style="color:white;" >
       <div class="rounded" v-for="(critiqueGroup, idFilm) in critiquesGroupedByFilm" :key="idFilm" style="margin: 5% 20% 5% 20%; padding-top: 2%; background-color:#111111">
       <h2 style="text-align:center;">Titre du film : {{ critiqueGroup[0].movie }}</h2>
-      <div style="margin: 5% 20% 5% 20%">
+      <div style="margin: 5% 20% 5% 20%; padding-bottom: 2%;" >
         <div class="rounded" style="color:white; border: 2px solid #1d1b22; background-color: #222028; margin: 2% 2% 4% 2%" v-for="critique in critiqueGroup" :key="critique.id">
             <input class="form-check-input" style="margin-left: 2%" v-if="critique.validate == true" type="radio" :id="critique.id" :value="critique.description" v-model="picked" checked/>
             <input class="form-check-input" style="margin-left: 2%" v-else type="radio" :id="critique.id" :value="critique.id" v-model="picked"/>
             {{ critique.title }}
             <div>
-              <label :for="critique.description" style="margin: 2% 2% 2% 2%">{{ critique.description}}</label>
+              <label :for="critique.description" style="margin: 6% 2% 2% 7%">{{ critique.description}}</label>
             </div>
         </div>
-        <button class="buttonAdd w-10 m-auto mb-2 pb-2" @click="toValidate(picked)">Enregistrer</button>
+        <button class="buttonAdd w-10 m-auto mb-2" @click="toValidate(picked)">Enregistrer</button>
       </div>
     </div>
     </div>

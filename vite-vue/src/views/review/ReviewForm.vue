@@ -99,15 +99,9 @@ export default {
                 const res_user = await fetch(`${API_URL}/reviews?user_admin=/users/${id_connected}`);
                 const data_user = await res_user.json();
                 user.value = data_user;
-                console.log("user.value2")
-                console.log(data_user)
-                console.log("user.value1")
-                console.log(user.value)
-                console.log("user.value")
-                console.log(user["value"]["hydra:member"][0])
+               
                 user.value = user["value"]["hydra:member"];
-                console.log("user")
-                console.log(user.value)
+                 
                 //reviews_urls.value = user.value.reviews;
                 
                 /*for (const review of reviews_urls.value) {
@@ -119,8 +113,7 @@ export default {
                   //afficher les reviews qu'il doit valider je crois 
                 let i = 0;
                 for (let userNames of user.value){
-                    console.log("here")
-                    console.log(userNames)
+                   
                   const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
                   const data_userNames = await res_userNames.json();
                         
@@ -128,25 +121,18 @@ export default {
                   data[i].userVerif = userName;
                   i++;
                   }
-                const res_movies = await fetch(`${API_URL}/movies`)
-                        .then(response => response.json())
-                        .then(result => {
-                          movies.value = result
-                        })
+                const res_movies = await fetch(`${API_URL}/movies`);
+                const data_movies = await res_movies.json();
+                movies.value = data_movies;
+             
+                        
                         movies.value = movies["value"]["hydra:member"];
 
-                        console.log("movies");
-                        console.log(movies);
-                        console.log("movies type");
-                        console.log(typeof(movies.value));
                   
                         for(let i=0; i>movies.value.length; i++){
                           if(movies.value.review_id.length === 0){
                             //movies.value.slice(-1)[0];
-                            console.log("element")
-                            console.log(movies.value[i].review_id)
-                            console.log("slice element")
-                            console.log()
+                         
                           }
                         }
                         //TODO faire la verif des films dans la liste deroulantes qu'ils n'aient pas deja une review

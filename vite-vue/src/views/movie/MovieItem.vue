@@ -191,13 +191,13 @@
                                 </form>
                                 <!-- REVIEW --> 
                                 <div v-if="review.length > 0">
-                                    <p>{{review[0].title}}</p>
-                                    <p>{{review[0].description}}</p>
+                                    <p>{{review[review.lenght-1].title}}</p>
+                                    <p>{{review[review.lenght-1].description}}</p>
                                     
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    <p>{{review.descritpion}}{{review[0].description}}</p>
+                                    {{ review }}
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div
@@ -217,8 +217,7 @@
                                                 </h3>
                                                 <p class="comment-content">
                                                     {{ comment.description }}
-                                                    {{ formatDate(comment.date) }}
-                                                    {{ comment }}
+                                                  
                                                 </p>
                                             </div>
                                             <i
@@ -230,6 +229,7 @@
                                 </div>
                                 <div v-else>
                                     Aucun commentaire pour le moment
+                                  
                                 </div>
                             </div>
                         </div>
