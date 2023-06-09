@@ -142,14 +142,24 @@
                                 <!-- INPUT COMMENT -->
                                 <form v-on:submit.prevent="handleAddComment">
                                     <div class="form-floating">
-                                        <input type="text" v-model="commentTitle" class="form-control"
-                                            id="titleCommentInput" />
-                                        <label for="floatingInput">Titre</label>
+                                        <input
+                                            type="text"
+                                            v-model="commentTitle"
+                                            class="form-control bg-dark border-form-color text-white"
+                                            id="titleCommentInput"
+                                        />
+                                        <label for="floatingInput" class="text-warning">Titre</label>
                                     </div>
                                     <div class="form-floating">
-                                        <input type="text" v-model="commentDescription" class="form-control"
-                                            id="descCommentInput" />
-                                        <label for="floatingPassword">Description</label>
+                                        <input
+                                            type="text"
+                                            v-model="commentDescription"
+                                            class="form-control bg-dark border-form-color text-white"
+                                            id="descCommentInput"
+                                        />
+                                        <label for="floatingPassword" class="text-warning"
+                                            >Description</label
+                                        >
                                     </div>
                                     <button class="w-100 btn btn-lg" type="submit" id="button-send-comment">
                                         Envoyer
@@ -178,7 +188,52 @@
                                                     {{ comment.description }}
                                                 </p>
                                             </div>
-                                            <i class="bi bi-flag-fill" @click="signalComment(comment)"></i>
+                                            <i class="bi bi-flag-fill" data-bs-toggle="modal" data-bs-target="#reg-modal"></i>
+
+                                            <!-- modal itself -->
+                                            <div class="modal fade" id="reg-modal" data-toggle="modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content  bg-dark">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modal-title">Reporter un commentaire</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <fieldset>
+                                                                <legend>Raison du signalement</legend>
+
+                                                                <div>
+                                                                    <input type="radio" id="hors-sujet" name="signalement" value="hors-sujet" checked>
+                                                                    <label for="hors-sujet" class="text-white modal-select"> Hors sujet</label>
+                                                                </div>
+
+                                                                <div>
+                                                                    <input type="radio" id="spam" name="signalement" value="spam">
+                                                                    <label for="spam" class="text-white modal-select"> Spam</label>
+                                                                </div>
+
+                                                                <div>
+                                                                    <input type="radio" id="grossierete" name="signalement" value="grossierete">
+                                                                    <label for="grossierete" class="text-white modal-select"> Grossièretés</label>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="radio" id="intimidation" name="signalement" value="intimidation">
+                                                                    <label for="intimidation" class="text-white modal-select"> Intimidation ou harcèlement</label>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="radio" id="autre" name="signalement" value="autre">
+                                                                    <label for="autre" class="text-white modal-select"> Autre</label>
+                                                                </div>
+                                                            </fieldset>                                                            
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                                            <button type="button" class="btn btn-danger" @click="signalComment(comment)" data-bs-dismiss="modal">Reporter</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -795,5 +850,14 @@ form>div {
     cursor: pointer;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.border-form-color {
+    border: 3px solid #ff7f00;
+    border-radius: 10px;
+}
+
+.modal-select {
+    padding: 0.3em;
 }
 </style>
