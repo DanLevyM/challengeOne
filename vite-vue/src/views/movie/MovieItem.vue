@@ -173,19 +173,19 @@
                                         <input
                                             type="text"
                                             v-model="commentTitle"
-                                            class="form-control"
+                                            class="form-control bg-dark border-form-color text-white"
                                             id="titleCommentInput"
                                         />
-                                        <label for="floatingInput">Titre</label>
+                                        <label for="floatingInput" class="text-warning">Titre</label>
                                     </div>
                                     <div class="form-floating">
                                         <input
                                             type="text"
                                             v-model="commentDescription"
-                                            class="form-control"
+                                            class="form-control bg-dark border-form-color text-white"
                                             id="descCommentInput"
                                         />
-                                        <label for="floatingPassword"
+                                        <label for="floatingPassword" class="text-warning"
                                             >Description</label
                                         >
                                     </div>
@@ -199,13 +199,13 @@
                                 </form>
                                 <!-- REVIEW --> 
                                 <div v-if="review.length > 0">
-                                    <p>{{review[0].title}}</p>
-                                    <p>{{review[0].description}}</p>
+                                    <!-- <p>{{review[0].title}}</p>
+                                    <p>{{review[0].description}}</p> -->
                                     
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    <p>{{review.descritpion}}{{review[0].description}}</p>
+                                    <!-- <p>{{review.descritpion}}{{review[0].description}}</p> -->
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div
@@ -227,10 +227,52 @@
                                                     {{ comment.description }}
                                                 </p>
                                             </div>
-                                            <i
-                                                class="bi bi-flag-fill"
-                                                @click="signalComment(comment)"
-                                            ></i>
+                                            <i class="bi bi-flag-fill" data-bs-toggle="modal" data-bs-target="#reg-modal"></i>
+
+                                            <!-- modal itself -->
+                                            <div class="modal fade" id="reg-modal" data-toggle="modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content  bg-dark">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modal-title">Reporter un commentaire</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <fieldset>
+                                                                <legend>Raison du signalement</legend>
+
+                                                                <div>
+                                                                    <input type="radio" id="hors-sujet" name="signalement" value="hors-sujet" checked>
+                                                                    <label for="hors-sujet" class="text-white modal-select"> Hors sujet</label>
+                                                                </div>
+
+                                                                <div>
+                                                                    <input type="radio" id="spam" name="signalement" value="spam">
+                                                                    <label for="spam" class="text-white modal-select"> Spam</label>
+                                                                </div>
+
+                                                                <div>
+                                                                    <input type="radio" id="grossierete" name="signalement" value="grossierete">
+                                                                    <label for="grossierete" class="text-white modal-select"> Grossièretés</label>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="radio" id="intimidation" name="signalement" value="intimidation">
+                                                                    <label for="intimidation" class="text-white modal-select"> Intimidation ou harcèlement</label>
+                                                                </div>
+                                                                <div>
+                                                                    <input type="radio" id="autre" name="signalement" value="autre">
+                                                                    <label for="autre" class="text-white modal-select"> Autre</label>
+                                                                </div>
+                                                            </fieldset>                                                            
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                                            <button type="button" class="btn btn-danger" @click="signalComment(comment)" data-bs-dismiss="modal">Reporter</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -378,7 +420,7 @@ export default {
                 );
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
-                console.log(movie.value);
+                console.log('movie value', movie.value);
  //get review
                 const res_review = await fetch(`${API_URL}/reviews?validate=true&movie_id=${route.params.id}`);
                 const data_review = await res_review.json();
@@ -828,5 +870,14 @@ form > div {
     cursor: pointer;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.border-form-color {
+    border: 3px solid #ff7f00;
+    border-radius: 10px;
+}
+
+.modal-select {
+    padding: 0.3em;
 }
 </style>
