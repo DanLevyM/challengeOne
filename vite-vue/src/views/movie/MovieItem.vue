@@ -205,7 +205,7 @@
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    <p>{{review.descritpion}}{{review[0].description}}</p>
+                                    <!-- <p>{{review.descritpion}}{{review[0].description}}</p> -->
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div
@@ -365,7 +365,6 @@ export default {
             const data_seances = await res_seances.json();
 
             seances.value = data_seances;
-            // console.log(seances.value)
             return seances;
         }
 
@@ -378,14 +377,12 @@ export default {
                 );
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
-                console.log(movie.value);
  //get review
                 const res_review = await fetch(`${API_URL}/reviews?validate=true&movie_id=${route.params.id}`);
                 const data_review = await res_review.json();
                 review.value = data_review;
                 review.value = review['value']['hydra:member'];
-                console.log("review")
-                console.log(review)
+           
             } catch (error) {
                 console.log(error);
             }

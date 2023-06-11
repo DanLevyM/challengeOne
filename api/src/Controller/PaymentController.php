@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mime\Email;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[AsController]
 class PaymentController extends AbstractController
@@ -27,6 +30,9 @@ class PaymentController extends AbstractController
         private EntityManagerInterface $entityManager,
         private LoggerInterface $logger,
         private JwtAuthService $jwtAuthService,
+        private MailerInterface $mailer
+
+
     ) {
     }
 
@@ -68,27 +74,27 @@ class PaymentController extends AbstractController
         /*B. Si connecté */
         $subscription = $this->subRepo->findActiveSubscriptionByUser($user);
 
-            // a . Si user n'a pas d'abonnement
-            if (!$subscription) {
-                // On vérifie que la séance a lieu 2 jours ou moins avant aujourd'hui
-                $isSessionValid = $this->isSessionValid($seance);
-                $price = $seance->getPrice();
-                if (!$isSessionValid) {
-                    return $this->json(['message' => 'Cette séance a lieu dans plus de 2 jours ! Abonnez-vous pour pouvoir réserver vos séances une semaine à l\'avance !'], 400);
-                } 
-            } else {
-                // b. Si user a un abonnement découverte alors on applique - 20% sur le prix de la séance et on procède au paiement
-                if ($subscription->getType() === "Offre Découverte") {
-                    $price = $seance->getPrice() * 80/100;
-                } else if ($subscription->getType() === "Offre Drol") {
-                    // c. Si user a un abonnement drol il n'a pas besoin de payer fin du workflow
-                    // return $this->createTicket($price, $seance);
-                    $price = $seance->getPrice() * 50/100;
-                }
+        // a . Si user n'a pas d'abonnement
+        if (!$subscription) {
+            // On vérifie que la séance a lieu 2 jours ou moins avant aujourd'hui
+            $isSessionValid = $this->isSessionValid($seance);
+            $price = $seance->getPrice();
+            if (!$isSessionValid) {
+                return $this->json(['message' => 'Cette séance a lieu dans plus de 2 jours ! Abonnez-vous pour pouvoir réserver vos séances une semaine à l\'avance !'], 400);
             }
+        } else {
+            // b. Si user a un abonnement découverte alors on applique - 20% sur le prix de la séance et on procède au paiement
+            if ($subscription->getType() === "Offre Découverte") {
+                $price = $seance->getPrice() * 80 / 100;
+            } else if ($subscription->getType() === "Offre Drol") {
+                // c. Si user a un abonnement drol il n'a pas besoin de payer fin du workflow
+                // return $this->createTicket($price, $seance);
+                $price = $seance->getPrice() * 50 / 100;
+            }
+        }
 
-            $this->payment($request, $price);
-            return $this->createTicket($price, $seance);
+        $this->payment($request, $price);
+        return $this->createTicket($price, $seance);
     }
 
     public function isSessionValid(Seance $session): bool
@@ -111,6 +117,16 @@ class PaymentController extends AbstractController
                 "description" => "Payment for seance"
             ]);
 
+            // Send mailer to user
+            $user = $this->getUser();
+            $message = (new TemplatedEmail())
+                ->from('ochesneau@myges.fr')
+                ->to('odessa75012@gmail.com')
+                ->subject('Drol Cinema, Seance')
+                ->htmlTemplate('buy_confirmation.html.twig');
+
+            $this->mailer->send($message);
+
             return $this->json(['message' => 'Payment successful'], 201);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
@@ -121,7 +137,8 @@ class PaymentController extends AbstractController
         }
     }
 
-    public function createTicket(float $price, Seance $seance) :JsonResponse {
+    public function createTicket(float $price, Seance $seance): JsonResponse
+    {
         $ticket = new Ticket();
         $ticket->setPrice($price);
         $ticket->setUserId($this->getUser());
