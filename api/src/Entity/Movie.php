@@ -53,15 +53,9 @@ class Movie
     #[Groups('movie')]
     private Collection $comments;
 
-<<<<<<< HEAD
-    #[ORM\OneToOne(mappedBy: 'movie_id', cascade: ['persist', 'remove'])]
-    #[Groups('movie')]
-    private ?Review $review_id = null;
-=======
     #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Review::class)]
     #[Groups('movie')]
     private Collection $reviews;
->>>>>>> add security back and frontfront error message login and register
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
     #[Groups('movie')]

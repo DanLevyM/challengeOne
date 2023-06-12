@@ -19,7 +19,10 @@ use ApiPlatform\Metadata\Patch;
 #[GetCollection]
 #[Post(security: "is_granted('ROLE_COMPANY')")]
 
+<<<<<<< HEAD
 >>>>>>> add security back and frontfront error message login and register
+=======
+>>>>>>> 7968e518be23b30b2863202c57e0f172ecf74d49
 class Product
 {
     #[ORM\Id]

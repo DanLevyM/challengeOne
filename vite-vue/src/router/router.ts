@@ -131,7 +131,19 @@ router.beforeEach((to, from, next) => {
     } else{
       next('/login');
     }
-  } else {
+  } else if (to.meta.requiresCompanyRole) {
+    if (token) {
+      const decodedToken = jwt(token);
+      if (decodedToken.roles.includes('ROLE_COMPANY')) {
+        next();
+      } else{
+        next('/login');
+      }
+    } else{
+      next('/login');
+    }
+  }
+  else {
     next();
   }
 });

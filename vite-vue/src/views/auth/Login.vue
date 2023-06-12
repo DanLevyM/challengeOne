@@ -1,18 +1,14 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
-<<<<<<< HEAD
+
         <main class="form-signin w-100 p-4" style="background-color:#1a191f">
-=======
-        <main class="form-signin w-100 border p-4 rounded shadow">
             <div class="alert alert-danger" role="alert" v-if="errorMessage">
                 {{ errorMessage }}
             </div>
 
->>>>>>> add security back and frontfront error message login and register
             <form v-on:submit.prevent="handleLoginForm">
                 <h1 class="h3 mb-3 fw-bold text-center"><span style="color: #f9ab00;">DROL</span> CINEMA</h1>
                 <div class="form-floating">
-<<<<<<< HEAD
                     <input
                         type="email"
                         v-model="email"
@@ -20,7 +16,7 @@
                         id="floatingInput"
                         placeholder="Email"
                     />
-                   
+
                 </div>
                 <div class="form-floating">
                     <input
@@ -30,17 +26,22 @@
                         id="floatingPassword"
                         placeholder="Mot de passe"
                     />
-                  
-=======
+
                     <input type="email" v-model="email" class="form-control" id="floatingInput"
                         placeholder="name@example.com" />
                     <label for="floatingInput">Email address</label>
                 </div>
+
+                <div class="form-floating">
+                    <input type="email" v-model="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" />
+                    <label for="floatingInput">Email address</label>
+                </div>
+
                 <div class="form-floating">
                     <input type="password" v-model="password" class="form-control" id="floatingPassword"
                         placeholder="Password" />
                     <label for="floatingPassword">Password</label>
->>>>>>> add security back and frontfront error message login and register
                 </div>
 
                 <div class="checkbox mb-3">
@@ -48,15 +49,14 @@
                         <input type="checkbox" value="remember-me" /> Se souvenir de moi
                     </label>
                 </div>
-<<<<<<< HEAD
+
                 <div class="w-50 m-auto mb-2 text-center" style="color: #f9ab00;">
                     <router-link to="/register"
-                        >Pas encore inscrit ?</router-link
-                    >
-=======
+                        >Pas encore inscrit ?
+                    </router-link>
+                </div>
                 <div class="w-50 m-auto mb-2 text-secondary">
                     <router-link to="/register">Not registered yet ?</router-link>
->>>>>>> add security back and frontfront error message login and register
                 </div>
                 <button class="w-100 btn-lg buttonAdd" type="submit">
                     SE CONNECTER

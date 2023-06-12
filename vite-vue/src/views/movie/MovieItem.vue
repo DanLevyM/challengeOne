@@ -500,11 +500,8 @@ export default {
             signalComment,
             showMessage,
             message,
-<<<<<<< HEAD
             review,
-=======
             error_comment
->>>>>>> add security back and frontfront error message login and register
         };
     },
 };

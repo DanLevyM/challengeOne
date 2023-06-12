@@ -7,12 +7,8 @@ use App\Entity\Subscription;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
@@ -26,24 +22,18 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ApiResource(
     operations: [
-        // new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
-        // new Put(processor: UserPasswordHasher::class),
-        // new Patch(processor: UserPasswordHasher::class),
-        // new Delete(),
     ],
     normalizationContext: ['groups' => ['user:read', 'review:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-<<<<<<< HEAD
+
 #[UniqueEntity('email')]
 #[ApiFilter(SearchFilter::class, properties: ['email' => 'exact', 'roles' => 'exact'])]
-=======
 #[UniqueEntity('email', 'Cet email est déjà utilisé')]
->>>>>>> add security back and frontfront error message login and register
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -73,12 +63,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
-<<<<<<< HEAD
     #[Groups(['user:read', 'user:create', 'user:update'])]
-    private array $roles = [];
-=======
     private array $roles = ['ROLE_USER'];
->>>>>>> add security back and frontfront error message login and register
 
     #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
     #[ORM\Column(length: 255)]
@@ -96,31 +82,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Ticket::class)]
     private Collection $tickets;
     
-
-    #[ORM\OneToMany(mappedBy: 'user_admin_check', targetEntity: Review::class)]
-    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
-    private Collection $reviews;
-
     #[ORM\OneToMany(mappedBy: 'user_sub', targetEntity: Subscription::class)]
-<<<<<<< HEAD
-    private Collection $subscriptions; */
-=======
     private Collection $subscriptions;
->>>>>>> add security back and frontfront error message login and register
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
-
-<<<<<<< HEAD
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Subscription $subscription_id = null;
 
     #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private Collection $reviews;
 
-=======
->>>>>>> add security back and frontfront error message login and register
     public function __construct()
     {
         $this->comments = new ArrayCollection();
