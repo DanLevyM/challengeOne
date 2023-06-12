@@ -47,12 +47,6 @@
                     />
                 </div>
 
-                <div class="form-floating">
-                    <input type="password" v-model="password" class="form-control" id="floatingPassword"
-                        placeholder="Password" />
-                    <label for="floatingPassword">Password</label>
-                </div>
-
                 <div class="w-50 m-auto mb-2 text-warning text-center">
                     <router-link to="/login"
                         >Déjà un compte ?

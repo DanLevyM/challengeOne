@@ -56,17 +56,9 @@ const routes = [
     path: "/admin/review_validation",
     name: "review_validation",
     component: () => import("../views/review/ReviewToValidate.vue"),
-  },
-  {
-    path: "/demo/:id",
-    name: "demo.show",
-    component: () => import("../views/Demo.vue"),
-    beforeEnter(to: any, from: any) {
-      const exists = filmDb.find((film) => film.id === parseInt(to.params.id));
-      if (!exists) {
-        return { name: "not-found" };
-      }
-    },
+    meta: {
+      requiresAuthAdmin: true
+    }
   },
   {
     path: "/:pathMatch(.*)*",

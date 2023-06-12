@@ -131,5 +131,23 @@ export const useUserStore = defineStore("UserStore", {
       }
       return false;
     },
+
+    isCompany() {
+      // const token = jsCookie.get("jwt");
+      const token = localStorage.getItem("access_token");
+
+      if (token) {
+        const payload = token?.split(".")[1];
+        const tokenTest = window.atob(payload!);
+        const values = JSON.parse(tokenTest);
+
+        for (let element of values.roles) {
+          if (element === "ROLE_COMPANY") {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
   },
 });

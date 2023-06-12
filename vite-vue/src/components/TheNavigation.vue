@@ -34,7 +34,7 @@ async function handleLogout() {
                     <li class="nav-item" :class="{ 'router-link-active': $route.path === '/products' }">
                         <router-link class="nav-link" to="/products">Nos Produits</router-link>
                     </li>
-                    <li v-if="user.isAdmin()" class="nav-item" :class="{
+                    <li v-if="user.isCompany()" class="nav-item" :class="{
                         'router-link-active':
                             $route.path === '/company/products',
                     }">
@@ -53,7 +53,8 @@ async function handleLogout() {
                     }">
                         <router-link class="nav-link" to="/admin/dashboard">Modération</router-link>
                     </li>
-                    <li class="nav-item" :class="{ 'router-link-active': $route.path === '/admin/review_validation' }">
+                    <li v-if="user.isAdmin()" class="nav-item"
+                        :class="{ 'router-link-active': $route.path === '/admin/review_validation' }">
                         <router-link class="nav-link" to="/admin/review_validation">Review A Valider</router-link>
                     </li>
                 </ul>

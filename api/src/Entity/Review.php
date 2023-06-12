@@ -47,8 +47,6 @@ class Review
     #[ORM\OneToOne(inversedBy: 'review_id', cascade: ['persist', 'remove'])]
     
     #[ORM\ManyToOne(inversedBy: 'reviews')]
-
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
     private ?Movie $movie_id = null;
 
     public function getId(): ?int

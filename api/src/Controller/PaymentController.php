@@ -67,9 +67,9 @@ class PaymentController extends AbstractController
         /* 3. Vérifier si user est connecté
                 A. Si pas connecté on le redirige sur la page de login puis on reprend le workflow */
         $user = $this->jwtAuthService->isAuthenticated();
-        if (!$user) {
-            return $this->json([], 302);
-        }
+        // if (!$user) {
+        //     return $this->json([], 302);
+        // }
 
         /*B. Si connecté */
         $subscription = $this->subRepo->findActiveSubscriptionByUser($user);
