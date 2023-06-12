@@ -42,6 +42,11 @@ const routes = [
     component: () => import("../views/movie/MovieItem.vue"),
   },
   {
+    path: "/admin/movies",
+    name: "admin-movies",
+    component: () => import("../views/movie/createMovie.vue"),
+  },
+  {
     path: "/products",
     name: "products",
     component: () => import("../views/product/ProductList.vue"),

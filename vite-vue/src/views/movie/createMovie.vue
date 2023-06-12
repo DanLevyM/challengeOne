@@ -23,6 +23,25 @@ export default {
 
      
         async function createNewMovie(title, director, description, duration, releaseDate, img) {
+          const r = await fetch('http://localhost/movies', {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              
+                "title": "string",
+                "director": "string",
+                "description": "string",
+                "duration": 0,
+                "releaseDate": "2023-06-12T20:26:14.566Z"
+}
+            )
+          })
+
+          console.log(r)
+          return
+
           let payload = (userData).split('.')[1];
           let tokenTest = window.atob(payload);
           const values = JSON.parse(tokenTest);
@@ -37,7 +56,7 @@ export default {
             }
           }
 
-          if(img = "") {
+          if(img = "" || img == null) {
             img = "https://www.cinehorizons.net/sites/default/files/default_images/affiches/default-movie.png";
           }
             
@@ -84,8 +103,8 @@ export default {
     <table class="mainTable">
       <thead>
         <tr class="fit">
-          <th scope="col"><div class="thText">TITRE</div></th>
-          <th scope="col"><div class="thText">DESCRIPTION</div></th>
+          <th scope="col"><div class="thText">Titre</div></th>
+          <th scope="col"><div class="thText">Description</div></th>
           <th scope="col"><div class="thText">VALIDATEUR</div></th>
         </tr>
       </thead>
@@ -97,7 +116,7 @@ export default {
         </tr>
       </tbody>
     </table>
-    <form @submit.prevent="createNewReview(title, description, verif, movieId)">
+    <form @submit.prevent="createNewMovie(title, director, description, duration, releaseDate, img)">
       <span class="col-12 col-sm-6 col-lg-3">
         <input class="formInput" type="text" v-model="title" placeholder="Titre">
       </span>
