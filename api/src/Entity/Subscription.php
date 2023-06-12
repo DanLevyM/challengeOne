@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Get;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 #[ApiResource (
+    security: 'is_granted("ROLE_USER")',
     operations: [
         new Get(
             name: 'get-active-subscription',

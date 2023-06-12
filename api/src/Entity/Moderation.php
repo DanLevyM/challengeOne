@@ -2,12 +2,23 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use App\Repository\ModerationRepository;
+use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Repository\ModerationRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[ORM\Entity(repositoryClass: ModerationRepository::class)]
 #[ApiResource]
+#[Get(security: 'is_granted("ROLE_USER")')]
+#[Post(security: 'is_granted("ROLE_USER")')]
+#[GetCollection(security:'is_granted("ROLE_USER")')]
+#[Patch(security: 'is_granted("ROLE_USER")')]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
 class Moderation
 {
     #[ORM\Id]

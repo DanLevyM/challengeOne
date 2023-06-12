@@ -22,7 +22,10 @@
     "bootstrap-vue-3": "^0.5.1",
     "jquery": "^3.6.4",
     "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.0",
+    "jwt-decode": "^3.1.2",
     "pinia": "^2.0.29",
+    "safe-buffer": "^5.2.1",
     "swiper": "^9.1.0",
     "vue": "^3.2.45",
     "vue-axios": "^3.5.2",
@@ -31,6 +34,7 @@
     "vue-stripe-js": "^1.0.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.2",
     "@vitejs/plugin-basic-ssl": "^1.0.1",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitest/coverage-c8": "^0.27.2",

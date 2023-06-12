@@ -8,11 +8,18 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Patch;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource]
+<<<<<<< HEAD
+=======
+#[Get]
+#[Patch(security: "is_granted('ROLE_COMPANY')")]
+#[GetCollection]
+#[Post(security: "is_granted('ROLE_COMPANY')")]
+
+>>>>>>> add security back and frontfront error message login and register
 class Product
 {
     #[ORM\Id]

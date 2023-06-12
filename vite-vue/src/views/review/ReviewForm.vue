@@ -17,6 +17,7 @@ export default {
         const reviews = ref({});
         const reviews_array = reactive([]);
         const users = ref({});
+<<<<<<< HEAD
         let id_connected;
         const administrator = reactive([]);
         const movies = reactive([]);
@@ -37,6 +38,10 @@ export default {
             }
           }
             
+=======
+
+        async function createNewReview(title, description, verif) {
+>>>>>>> add security back and frontfront error message login and register
           const formData = {};
           formData.title = title;
           formData.description = description;

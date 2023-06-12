@@ -1,10 +1,19 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
+<<<<<<< HEAD
         <main class="form-signin w-100 p-4" style="background-color:#1a191f">
+=======
+        <main class="form-signin w-100 border p-4 rounded shadow">
+            <div class="alert alert-danger" role="alert" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
+
+>>>>>>> add security back and frontfront error message login and register
             <form v-on:submit.prevent="handleRegisterForm">
                 <h1 class="h3 mb-3 fw-normal text-center">S'inscrire</h1>
 
                 <div class="form-floating">
+<<<<<<< HEAD
                     <input
                         type="email"
                         v-model="email"
@@ -42,6 +51,28 @@
                         id="floatingInput"
                         placeholder="Nom"
                     />
+=======
+                    <input type="email" v-model="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" />
+                    <label for="floatingInput">Email address</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" v-model="password" class="form-control" id="floatingPassword"
+                        placeholder="Password" />
+                    <label for="floatingPassword">Password</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" v-model="firstname" class="form-control" id="floatingInput"
+                        placeholder="Firstname" />
+                    <label for="floatingInput">Firstname</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" v-model="lastname" class="form-control" id="floatingInput" placeholder="Lastname" />
+                    <label for="floatingInput">Lastname</label>
+>>>>>>> add security back and frontfront error message login and register
                 </div>
 
                 <div class="checkbox mb-3">
@@ -50,10 +81,15 @@
                         moi
                     </label>
                 </div>
+<<<<<<< HEAD
                 <div class="w-50 m-auto mb-2 text-warning text-center">
                     <router-link to="/login"
                         >Déjà un compte ?</router-link
                     >
+=======
+                <div class="w-50 m-auto mb-2 text-secondary">
+                    <router-link to="/login">Already have an account ?</router-link>
+>>>>>>> add security back and frontfront error message login and register
                 </div>
                 <button class="w-100 btn-lg buttonAdd" type="submit">
                     Créer un compte
@@ -76,20 +112,29 @@ export default {
             password: "",
             firstname: "",
             lastname: "",
+            errorMessage: ""
         };
     },
     methods: {
         async handleRegisterForm() {
-            const hasRegister = await register({
-                email: this.email,
-                plainPassword: this.password,
-                firstname: this.firstname,
-                lastname: this.lastname,
-            });
-            if (hasRegister) {
-                this.$router.push("/login");
+            try {
+                const hasRegister = await register({
+                    email: this.email,
+                    plainPassword: this.password,
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                });
+                if (hasRegister) {
+                    this.$router.push("/login");
+                }
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error) {
+                    this.errorMessage = error.message;
+                }
             }
-        },
+        }
+
     },
     mounted() {
         console.log("Register mounted");

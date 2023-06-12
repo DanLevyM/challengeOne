@@ -7,11 +7,17 @@ use App\Entity\Moderation;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Post;
 use App\Repository\CommentRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 #[ApiResource]
+#[Post(security: 'is_granted("ROLE_USER")')]
+#[Delete(security: 'is_granted("ROLE_ADMIN")')]
+
 class Comment
 {
     #[ORM\Id]
@@ -21,8 +27,10 @@ class Comment
 
     #[ORM\Column(length: 255)]
     #[Groups('movie')]
+    #[Assert\NotBlank(message: "Veuillez saisir un titre")]
     private ?string $title = null;
 
+    #[Assert\NotBlank(message: "Veuillez saisir un commentaire")]
     #[ORM\Column(type: Types::TEXT)]
     #[Groups('movie')]
     private ?string $description = null;

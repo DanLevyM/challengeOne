@@ -4,16 +4,29 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReviewRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+<<<<<<< HEAD
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
 #[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact'])]
+=======
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+#[ORM\Entity(repositoryClass: ReviewRepository::class)]
+#[ApiResource]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Get()]
+#[GetCollection()]
+
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact', 'user_admin' => 'exact'])]
+>>>>>>> add security back and frontfront error message login and register
 class Review
 {
     #[ORM\Id]
@@ -22,6 +35,7 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('movie')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -36,7 +50,11 @@ class Review
     #[ORM\Column(nullable: true)]
     private ?bool $validate = null;
 
+<<<<<<< HEAD
     #[ORM\OneToOne(inversedBy: 'review_id', cascade: ['persist', 'remove'])]
+=======
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+>>>>>>> add security back and frontfront error message login and register
     private ?Movie $movie_id = null;
 
     public function getId(): ?int
@@ -116,4 +134,8 @@ class Review
         return $this;
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> add security back and frontfront error message login and register
