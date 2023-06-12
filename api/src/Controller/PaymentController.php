@@ -45,10 +45,20 @@ class PaymentController extends AbstractController
         }
 
         $today = new \DateTime();
-        $seanceDate = $seance->getDate();
-        $seanceLimitDate = (new \DateTime())->modify('+7 days');
+        // $seanceDate = $seance->getDate();
+        $seanceDate = $seance->getDate()->format('Y-m-d');
+        $seanceDateTime = new \DateTime($seance->getDate()->format('Y-m-d') . ' ' . $seance->getStartTime());
 
-        if ($seanceDate < $today || $seanceDate > $seanceLimitDate) {
+        $startTime = $seance->getStartTime();
+        $seanceLimitDate = (new \DateTime())->modify('+7 days');
+        $diff = $today->diff($seanceDateTime);
+        $minutesDifference = $diff->format('%i');
+
+        if ($minutesDifference <= 15) {
+            return $this->json(['message' => 'Cette séance a lieu dans 15 min ou moins'], 400);
+        }
+
+        if ($seanceDateTime < $today || $seanceDate > $seanceLimitDate) {
             return $this->json(['message' => "La séance est dépassée ou aura lieu dans plus de 7 jours."], 400);
         }
 
@@ -68,27 +78,27 @@ class PaymentController extends AbstractController
         /*B. Si connecté */
         $subscription = $this->subRepo->findActiveSubscriptionByUser($user);
 
-            // a . Si user n'a pas d'abonnement
-            if (!$subscription) {
-                // On vérifie que la séance a lieu 2 jours ou moins avant aujourd'hui
-                $isSessionValid = $this->isSessionValid($seance);
-                $price = $seance->getPrice();
-                if (!$isSessionValid) {
-                    return $this->json(['message' => 'Cette séance a lieu dans plus de 2 jours ! Abonnez-vous pour pouvoir réserver vos séances une semaine à l\'avance !'], 400);
-                } 
-            } else {
-                // b. Si user a un abonnement découverte alors on applique - 20% sur le prix de la séance et on procède au paiement
-                if ($subscription->getType() === "Offre Découverte") {
-                    $price = $seance->getPrice() * 80/100;
-                } else if ($subscription->getType() === "Offre Drol") {
-                    // c. Si user a un abonnement drol il n'a pas besoin de payer fin du workflow
-                    // return $this->createTicket($price, $seance);
-                    $price = $seance->getPrice() * 50/100;
-                }
+        // a . Si user n'a pas d'abonnement
+        if (!$subscription) {
+            // On vérifie que la séance a lieu 2 jours ou moins avant aujourd'hui
+            $isSessionValid = $this->isSessionValid($seance);
+            $price = $seance->getPrice();
+            if (!$isSessionValid) {
+                return $this->json(['message' => 'Cette séance a lieu dans plus de 2 jours ! Abonnez-vous pour pouvoir réserver vos séances une semaine à l\'avance !'], 400);
             }
+        } else {
+            // b. Si user a un abonnement découverte alors on applique - 20% sur le prix de la séance et on procède au paiement
+            if ($subscription->getType() === "Offre Découverte") {
+                $price = $seance->getPrice() * 80 / 100;
+            } else if ($subscription->getType() === "Offre Drol") {
+                // c. Si user a un abonnement drol il n'a pas besoin de payer fin du workflow
+                // return $this->createTicket($price, $seance);
+                $price = $seance->getPrice() * 50 / 100;
+            }
+        }
 
-            $this->payment($request, $price);
-            return $this->createTicket($price, $seance);
+        $this->payment($request, $price);
+        return $this->createTicket($price, $seance);
     }
 
     public function isSessionValid(Seance $session): bool
@@ -121,7 +131,8 @@ class PaymentController extends AbstractController
         }
     }
 
-    public function createTicket(float $price, Seance $seance) :JsonResponse {
+    public function createTicket(float $price, Seance $seance): JsonResponse
+    {
         $ticket = new Ticket();
         $ticket->setPrice($price);
         $ticket->setUserId($this->getUser());

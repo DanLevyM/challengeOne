@@ -48,7 +48,7 @@
                 <form @submit.prevent="handleSubmit">
 
                     <div class="form-group p-4">
-                        <label for="email_field">Carte de crédit</label>
+                        <label style="color:white" for="email_field">Carte de crédit</label>
                         <div id="stripe-element-mount-point"></div>
                     </div>
 
@@ -81,7 +81,7 @@ import { useRouter, useRoute } from "vue-router";
 import jsCookie from "js-cookie";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const jwtToken = jsCookie.get('jwt')
+const jwtToken = localStorage.getItem("access_token");//jsCookie.get('jwt')
 const style = {
     style: {
         base: {
@@ -167,7 +167,7 @@ export default {
             try {
                 const token = (await stripe.createToken(cardElement)).token.id;
                 const id = route.params.id;
-
+                alert(token)
                 const response = await fetch(`${API_URL}/payment/${id}`, {
                     method: "POST",
                     headers: {

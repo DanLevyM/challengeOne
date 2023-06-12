@@ -9,14 +9,10 @@
                     <div class="col-12">
                         <div class="card card--details">
                             <div class="row">
-                                <div
-                                    class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3"
-                                >
+                                <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                                     <div class="card-cover">
-                                        <img
-                                            src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
-                                            alt="{{movie.title}}"
-                                        />
+                                        <img src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
+                                            alt="{{movie.title}}" />
                                     </div>
                                 </div>
 
@@ -34,12 +30,10 @@
                                                 }}</span>
                                             </li>
                                             <li>
-                                                Durée:<span
-                                                    >{{
-                                                        movie.duration
-                                                    }}
-                                                    min</span
-                                                >
+                                                Durée:<span>{{
+                                                    movie.duration
+                                                }}
+                                                    min</span>
                                             </li>
                                         </ul>
                                         <div>
@@ -65,43 +59,22 @@
 
                             <div>
                                 <ul class="nav nav-tabs">
-                                    <li
-                                        class="nav-item"
-                                        v-for="(tab, index) in tabs"
-                                        :key="index"
-                                    >
-                                        <a
-                                            style="cursor: pointer"
-                                            class="nav-link"
-                                            :class="{
-                                                active: activeTab === index,
-                                            }"
-                                            @click="selectTab(index)"
-                                            >{{ tab }}</a
-                                        >
+                                    <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
+                                        <a style="cursor: pointer" class="nav-link" :class="{
+                                            active: activeTab === index,
+                                        }" @click="selectTab(index)">{{ tab }}</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content mt-3">
-                                    <div
-                                        class="row"
-                                        v-if="seances['hydra:totalItems'] > 0"
-                                    >
-                                        <div
-                                            v-for="(seance, index) in seances[
-                                                'hydra:member'
-                                            ]"
-                                            :key="index"
-                                            :class="{
-                                                active: activeTab === index,
-                                            }"
-                                            class="col-sm-3 pad"
-                                        >
-                                            <button
-                                                @click="
-                                                    showModals[index] = true
-                                                "
-                                                class="btn btn-block my-2 card-session"
-                                            >
+                                    <div class="row" v-if="seances['hydra:totalItems'] > 0">
+                                        <div v-for="(seance, index) in seances[
+                                            'hydra:member'
+                                            ]" :key="index" :class="{
+        active: activeTab === index,
+    }" class="col-sm-3 pad">
+                                            <button @click="
+                                                showModals[index] = true
+                                                " class="btn btn-block my-2 card-session">
                                                 <div class="screening-start">
                                                     {{
                                                         seance.startTimeFormatted
@@ -115,12 +88,7 @@
                                                 </div>
                                             </button>
 
-                                            <modal
-                                                v-if="showModals[index]"
-                                                @close="
-                                                    showModals[index] = false
-                                                "
-                                            >
+                                            <modal v-if="showModals[index]" @close="showModals[index] = false">
                                                 <template v-slot:header>
                                                     <h3>{{ seance.dateFormatted }}</h3>
                                                     <p>{{ seance.startTimeFormatted }}</p>
@@ -137,7 +105,7 @@
                                                         </div>
                                                         <div class="ft-center wrap">
                                                             <span class="booking__room">
-                                                                Salle 
+                                                                Salle
                                                                 <b class="ft-up">
                                                                     {{ seance.movieroom_id['room_name'] }}
                                                                 </b>
@@ -151,8 +119,10 @@
 
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <router-link @click="emitDataEvent(seance.price)" :to="'/payment/' + seance.id"
-                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price }}€</router-link>
+                                                    <router-link @click="emitDataEvent(seance.price)"
+                                                        :to="'/payment/' + seance.id"
+                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price
+                                                        }}€</router-link>
 
                                                 </template>
                                             </modal>
@@ -166,49 +136,31 @@
 
                             <div class="comment-contents">
                                 <h2 class="content-title">Commentaires</h2>
-
+                                <div class="alert alert-danger" role="alert" v-if="error_comment">
+                                    {{ error_comment }}
+                                </div>
                                 <!-- INPUT COMMENT -->
                                 <form v-on:submit.prevent="handleAddComment">
                                     <div class="form-floating">
-                                        <input
-                                            type="text"
-                                            v-model="commentTitle"
-                                            class="form-control"
-                                            id="titleCommentInput"
-                                        />
+                                        <input type="text" v-model="commentTitle" class="form-control"
+                                            id="titleCommentInput" />
                                         <label for="floatingInput">Titre</label>
                                     </div>
                                     <div class="form-floating">
-                                        <input
-                                            type="text"
-                                            v-model="commentDescription"
-                                            class="form-control"
-                                            id="descCommentInput"
-                                        />
-                                        <label for="floatingPassword"
-                                            >Description</label
-                                        >
+                                        <input type="text" v-model="commentDescription" class="form-control"
+                                            id="descCommentInput" />
+                                        <label for="floatingPassword">Description</label>
                                     </div>
-                                    <button
-                                        class="w-100 btn btn-lg"
-                                        type="submit"
-                                        id="button-send-comment"
-                                    >
+                                    <button class="w-100 btn btn-lg" type="submit" id="button-send-comment">
                                         Envoyer
                                     </button>
                                 </form>
 
                                 <!-- LIST COMMENTS -->
-                                <div
-                                    v-if="
-                                        movie.comments &&
-                                        movie.comments.length > 0
-                                    "
-                                >
-                                    <div
-                                        v-for="comment in movie.comments"
-                                        :key="comment.id"
-                                    >
+                                <div v-if="movie.comments &&
+                                    movie.comments.length > 0
+                                    ">
+                                    <div v-for="comment in movie.comments" :key="comment.id">
                                         <div class="comment">
                                             <div>
                                                 <h3 class="comment-content">
@@ -218,10 +170,7 @@
                                                     {{ comment.description }}
                                                 </p>
                                             </div>
-                                            <i
-                                                class="bi bi-flag-fill"
-                                                @click="signalComment(comment)"
-                                            ></i>
+                                            <i class="bi bi-flag-fill" @click="signalComment(comment)"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -255,13 +204,17 @@ export default {
             comments: null,
         };
     },
-    created() {},
-    methods: {},
+    created() { },
+    methods: {
+
+    },
     components: {
         modal,
         Stripe,
     },
     setup() {
+        const error_comment = ref('');
+
         const user = useUserStore();
 
         const jours = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
@@ -355,7 +308,6 @@ export default {
             const data_seances = await res_seances.json();
 
             seances.value = data_seances;
-            // console.log(seances.value)
             return seances;
         }
 
@@ -388,18 +340,20 @@ export default {
         });
 
         async function handleAddComment() {
-            if (this.commentTitle == "" || this.commentDescription == "") {
-                alert("Veuillez remplir tous les champs");
-                return;
-            }
+            // if (this.commentTitle == "" || this.commentDescription == "") {
+            //     alert("Veuillez remplir tous les champs");
+            //     return;
+            // }
             const movieId = route.params.id;
             const userId = await user.id();
+            const jwtToken = localStorage.getItem("access_token");
 
             try {
-                await fetch(`${API_URL}/comments`, {
+                const res_post_comment = await fetch(`${API_URL}/comments`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": "Bearer " + jwtToken
                     },
                     body: JSON.stringify({
                         title: this.commentTitle,
@@ -411,6 +365,11 @@ export default {
                         counter: 0,
                     }),
                 });
+
+                if (res_post_comment.status === 401) {
+                    this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
+                }
+                // alert(JSON.stringify(res_post_comment.status))
 
                 const res_movie = await fetch(`${API_URL}/movies/${movieId}`);
                 const data_movie = await res_movie.json();
@@ -426,6 +385,8 @@ export default {
                         });
                 }
             } catch (error) {
+                this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
+
                 console.error(error);
             }
         }
@@ -433,10 +394,14 @@ export default {
         async function signalComment(comment) {
             const userId = await user.id();
             const commentId = comment["@id"];
-
+            const jwtToken = localStorage.getItem("access_token")
             console.log("commentId = ", commentId);
             // Check if comment is already signaled
-            const res = await fetch(`${API_URL}/moderations`);
+            const res = await fetch(`${API_URL}/moderations`, {
+                headers: {
+                    'Authorization': "Bearer " + jwtToken
+                }
+            });
             const commentsInDb = await res.json();
 
             try {
@@ -446,8 +411,15 @@ export default {
 
                 if (isCommentAlreadySignaled) {
                     const moderationresp = await fetch(
-                        `${API_URL}/moderations/${isCommentAlreadySignaled.id}`
-                    );
+                        `${API_URL}/moderations/${isCommentAlreadySignaled.id}`,
+                        {
+                            headers: {
+                                "Content-Type": "application/merge-patch+json",
+                                "Authorization": "Bearer " + jwtToken
+                            }
+                        }
+
+                    )
                     const moderationdata = await moderationresp.json();
                     const numberOfSignal = moderationdata.counterUserBan;
 
@@ -455,6 +427,7 @@ export default {
                         method: "PATCH",
                         headers: {
                             "Content-Type": "application/merge-patch+json",
+                            "Authorization": "Bearer " + jwtToken
                         },
                         body: JSON.stringify({
                             counterUserBan: numberOfSignal + 1,
@@ -467,6 +440,7 @@ export default {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + jwtToken
                         },
                         body: JSON.stringify({
                             counterUserBan: 0,
@@ -503,6 +477,7 @@ export default {
             signalComment,
             showMessage,
             message,
+            error_comment
         };
     },
 };
@@ -731,7 +706,8 @@ label {
     justify-content: center;
 }
 
-.btn--full, .btn-sm--full {
+.btn--full,
+.btn-sm--full {
     width: 100%;
 }
 
@@ -788,7 +764,7 @@ form {
     padding: 1em 0;
 }
 
-form > div {
+form>div {
     margin-bottom: 0.5em;
 }
 

@@ -55,11 +55,16 @@ export default {
 
         const seances = reactive([]);
         const showModals = reactive(Array(seances.length).fill(false));
+        const jwtToken = localStorage.getItem("access_token");
 
         onBeforeMount(async () => {
             try {
                 // Retrieve moderations
-                const moderation_alls = await fetch(`${API_URL}/moderations`);
+                const moderation_alls = await fetch(`${API_URL}/moderations`, {
+                    headers: {
+                        'Authorization': "Bearer " + jwtToken
+                    }
+                });
                 const data_moderation = await moderation_alls.json();
                 moderations.push(...data_moderation["hydra:member"]);
                 const LIMIT_SIGNALS_AUTHORIZED = 3;
@@ -73,7 +78,12 @@ export default {
                         const data_user = await user.json();
 
                         const comment = await fetch(
-                            `${API_URL}${moderation.commentaireId}`
+                            `${API_URL}${moderation.commentaireId}`, 
+                            {
+                                headers: {
+                                    'Authorization': 'Bearer ' + jwtToken
+                                }
+                            }
                         );
                         const data_comment = await comment.json();
 
@@ -98,6 +108,7 @@ export default {
                     method: "PATCH",
                     headers: {
                         "Content-Type": "application/merge-patch+json",
+                        'Authorization': 'Bearer ' + jwtToken
                     },
                     body: JSON.stringify({
                         counterUserBan: 0,
@@ -119,6 +130,9 @@ export default {
             try {
                 await fetch(`${API_URL}${moderationId}`, {
                     method: "DELETE",
+                    headers: {
+                        'Authorization': 'Bearer ' + jwtToken
+                    }
                 });
 
                 showMessage.value = true;

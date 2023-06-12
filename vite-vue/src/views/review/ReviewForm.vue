@@ -19,7 +19,7 @@ export default {
         const reviews_urls = ref({});
         const reviews = ref({});
         const users = ref({});
-     
+
         async function createNewReview(title, description, verif) {
           const formData = {};
           formData.title = title;

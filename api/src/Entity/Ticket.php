@@ -16,9 +16,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext:['groups' => ['read:item:ticket']],
     operations: [
-        new Get(),
+        new Get(
+            security: 'is_granted("ROLE_USER") or user.getId() == userId',
+        ),
         new Post(
             name: 'checkout',
+            security: 'is_granted("ROLE_USER") ',
             controller: PaymentController::class,
             uriTemplate: "/payment/{id}",
             uriVariables: ['id' => new Link(

@@ -50,6 +50,7 @@ async function handleLogout() {
                         <router-link class="nav-link" to="/products">Nos Produits</router-link>
                     </li>
                     <li
+                        v-if="user.isAdmin()"
                         class="nav-item"
                         :class="{
                             'router-link-active':
@@ -61,7 +62,7 @@ async function handleLogout() {
                         >
 
                     </li>
-                    <li
+                    <li v-if="user.isAdmin()"
                         class="nav-item"
                         :class="{
                             'router-link-active':

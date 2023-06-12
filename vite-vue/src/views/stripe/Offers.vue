@@ -38,7 +38,7 @@
                                 icon="fa-solid fa-check" /><span>Possibilité de réserver jusqu’à 1 semaine avant la
                                 séance</span>
                         </div>
-                        <a href="#" class="price__btn">Choisir cette offre</a>
+                        <button @click="showModal = true" class="price__btn">Choisir cette Offre</button>
                     </div>
                 </div>
 
@@ -53,9 +53,30 @@
                                 sur la nourriture</span></div>
                         <div class="price__item"><span><font-awesome-icon icon="fa-solid fa-check" /> Possibilité de
                                 réserver jusqu’à 1 semaine avant la séance</span></div>
-                        <a href="#" class="price__btn">Choisir cette Offre</a>
+                        <button @click="showModal = true" class="price__btn">Choisir cette Offre</button>
                     </div>
                 </div>
+
+                <modal v-if="showModal" @close="showModal = false">
+                    <template v-slot:header>
+                        <h3>Souscrivez à notre offre de cinéma</h3>
+                    </template>
+                    <template v-slot:body>
+                        <p>
+                            Profitez d'un accès préférentiels à une vaste sélection de films et de séries !
+                        </p>
+                        <ul>
+                            <li>Des milliers de titres disponibles à la demande</li>
+                            <li>Diffusion en streaming haute qualité</li>
+                            <li>Accès sur tous vos appareils : téléviseur, ordinateur, téléphone et tablette</li>
+                            <li>Créez des listes de lecture personnalisées</li>
+                            <li>Recommandations basées sur vos préférences</li>
+                        </ul>
+                    </template>
+                    <template v-slot:footer>
+                        <router-link :to="'/payment/'" class="btn-cta btn--full btn--center">Souscrire</router-link>
+                    </template>
+                </modal>
 
             </div>
         </div>
@@ -88,6 +109,23 @@
         </div>
     </section>
 </template>
+
+<script>
+import modal from "../../components/Modal.vue";
+import { ref } from "vue";
+
+export default {
+    setup() {
+        var showModal = ref(false);
+        return {
+            showModal
+        }
+    },
+    components: {
+        modal
+    }
+}
+</script>
 
 <style scoped>
 section#cards-offers #ugc-blue,

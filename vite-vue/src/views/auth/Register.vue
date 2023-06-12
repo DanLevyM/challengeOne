@@ -1,50 +1,33 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
         <main class="form-signin w-100 border p-4 rounded shadow">
+            <div class="alert alert-danger" role="alert" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
+
             <form v-on:submit.prevent="handleRegisterForm">
                 <h1 class="h3 mb-3 fw-normal">Sign up</h1>
 
                 <div class="form-floating">
-                    <input
-                        type="email"
-                        v-model="email"
-                        class="form-control"
-                        id="floatingInput"
-                        placeholder="name@example.com"
-                    />
+                    <input type="email" v-model="email" class="form-control" id="floatingInput"
+                        placeholder="name@example.com" />
                     <label for="floatingInput">Email address</label>
                 </div>
 
                 <div class="form-floating">
-                    <input
-                        type="password"
-                        v-model="password"
-                        class="form-control"
-                        id="floatingPassword"
-                        placeholder="Password"
-                    />
+                    <input type="password" v-model="password" class="form-control" id="floatingPassword"
+                        placeholder="Password" />
                     <label for="floatingPassword">Password</label>
                 </div>
 
                 <div class="form-floating">
-                    <input
-                        type="text"
-                        v-model="firstname"
-                        class="form-control"
-                        id="floatingInput"
-                        placeholder="Firstname"
-                    />
+                    <input type="text" v-model="firstname" class="form-control" id="floatingInput"
+                        placeholder="Firstname" />
                     <label for="floatingInput">Firstname</label>
                 </div>
 
                 <div class="form-floating">
-                    <input
-                        type="text"
-                        v-model="lastname"
-                        class="form-control"
-                        id="floatingInput"
-                        placeholder="Lastname"
-                    />
+                    <input type="text" v-model="lastname" class="form-control" id="floatingInput" placeholder="Lastname" />
                     <label for="floatingInput">Lastname</label>
                 </div>
 
@@ -55,9 +38,7 @@
                     </label>
                 </div>
                 <div class="w-50 m-auto mb-2 text-secondary">
-                    <router-link to="/login"
-                        >Already have an account ?</router-link
-                    >
+                    <router-link to="/login">Already have an account ?</router-link>
                 </div>
                 <button class="w-100 btn btn-lg btn-primary" type="submit">
                     Create an account
@@ -80,20 +61,29 @@ export default {
             password: "",
             firstname: "",
             lastname: "",
+            errorMessage: ""
         };
     },
     methods: {
         async handleRegisterForm() {
-            const hasRegister = await register({
-                email: this.email,
-                plainPassword: this.password,
-                firstname: this.firstname,
-                lastname: this.lastname,
-            });
-            if (hasRegister) {
-                this.$router.push("/login");
+            try {
+                const hasRegister = await register({
+                    email: this.email,
+                    plainPassword: this.password,
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                });
+                if (hasRegister) {
+                    this.$router.push("/login");
+                }
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error) {
+                    this.errorMessage = error.message;
+                }
             }
-        },
+        }
+
     },
     mounted() {
         console.log("Register mounted");

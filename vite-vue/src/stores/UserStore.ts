@@ -11,7 +11,8 @@ interface User {
   isAuthenticate: boolean;
 }
 const API_URL = import.meta.env.VITE_API_URL;
-const isLoggedIn = jsCookie.get('jwt') ? true : false;
+// const isLoggedIn = jsCookie.get('jwt') ? true : false;
+const isLoggedIn = localStorage.getItem("access_token") ? true : false;
 
 export const useUserStore = defineStore("UserStore", {
   state: (): State => ({ user: {} as User, isLoggedIn }),
@@ -25,10 +26,10 @@ export const useUserStore = defineStore("UserStore", {
     }): Promise<boolean | void> {
 
       try {
-        const response = await fetch(`${API_URL}/authentication_token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+          const response = await fetch(`${API_URL}/authentication_token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
           },
           body: JSON.stringify(credentials),
         });
@@ -44,13 +45,18 @@ export const useUserStore = defineStore("UserStore", {
           isAuthenticate: true,
         };
         this.isLoggedIn = true;
-        jsCookie.set('jwt', data.token, { expires: 1 })
+        localStorage.setItem("access_token", data.token);
+        // jsCookie.set('jwt', data.token, { expires: 1 })
         return true;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
-
+    isLogged() {
+      return localStorage.getItem("access_token") ? true : false;
+    },
+    
     async register(credentials: {
       email: string;
       plainPassword: string;
@@ -58,7 +64,6 @@ export const useUserStore = defineStore("UserStore", {
       lastname: string;
     }) {
       try {
-
         const response = await fetch(`${API_URL}/users`, {
           method: "POST",
           headers: {
@@ -67,25 +72,30 @@ export const useUserStore = defineStore("UserStore", {
           body: JSON.stringify(credentials),
         });
         const data = await response.json();
-        console.log(data);
-        if (response.status !== 201 || !response.ok) {
-          throw new Error(data.message);
+        if (!response.ok && response.status !== 500) {
+          throw new Error(data.violations.map((v: { message: string }) => v.message).join("\n"));
+        } else if(response.status === 500) {
+          return false
         }
         return true;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
 
     async logout() {
       this.user = null;
       this.isLoggedIn = false;
-      jsCookie.remove('jwt');
+      // jsCookie.remove('jwt');
+      localStorage.removeItem("access_token");
+
     },
 
     async id() {
       const API_URL = import.meta.env.VITE_API_URL;
-      const userData = jsCookie.get("jwt");
+      // const userData = jsCookie.get("jwt");
+      const userData = localStorage.getItem("access_token");
       let id_connected;
       if (userData) {
         let payload = userData.split(".")[1];
@@ -105,7 +115,9 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     isAdmin() {
-      const token = jsCookie.get("jwt");
+      // const token = jsCookie.get("jwt");
+      const token = localStorage.getItem("access_token");
+
       if (token) {
         const payload = token?.split(".")[1];
         const tokenTest = window.atob(payload!);
