@@ -114,7 +114,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.meta.requiresAuthAdmin) {
     if (token) {
-      const decodedToken = jwt(token);
+      const decodedToken: DecodedToken = jwt(token);
       if (decodedToken.roles.includes('ROLE_ADMIN')) {
         next();
       } else{
@@ -125,7 +125,7 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.meta.requiresCompanyRole) {
     if (token) {
-      const decodedToken = jwt(token);
+      const decodedToken : DecodedToken = jwt(token);
       if (decodedToken.roles.includes('ROLE_COMPANY')) {
         next();
       } else{
@@ -163,3 +163,6 @@ router.beforeEach((to, from, next) => {
 
 */
 
+interface DecodedToken {
+  roles: string[];
+}
