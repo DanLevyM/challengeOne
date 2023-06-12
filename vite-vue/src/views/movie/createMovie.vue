@@ -12,30 +12,33 @@ export default {
 // Vérification si les données existent dans le localStorage
 
         const data = reactive([]);
-        const user = ref({});
-        const reviews_urls = ref({});
-        const reviews = ref({});
-        const reviews_array = reactive([]);
-        const users = ref({});
+        const title = ref();
+        const director = ref();
+        const description = reactive([]);
+        const duration = ref();
+        const releaseDate = ref();
+        const img = ref();
         let id_connected;
         const administrator = reactive([]);
         const movies = reactive([]);
 
      
-        async function createNewMovie(title, director, description, duration, releaseDate, img) {
-          const r = await fetch('http://localhost/movies', {
+        async function createNewMovie() {
+          
+          console.log("title:", this.title, this.description, this.director, this.title)
+          const r = await fetch(`${API_URL}/movies`, {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
               
-                "title": "string",
-                "director": "string",
-                "description": "string",
-                "duration": 0,
-                "releaseDate": "2023-06-12T20:26:14.566Z"
-}
+                title: this.title,
+                director: this.director,
+                description: this.description,
+                duration: new Number(this.duration),
+                releaseDate: this.releaseDate
+            }
             )
           })
 
@@ -84,12 +87,15 @@ export default {
 
 
         return {
-            reviews,
             data,
             createNewMovie,
-            users,
             administrator,
             movies,
+            title,
+            description,
+            director,
+            duration,
+            releaseDate
         }
     }      
          
@@ -97,46 +103,27 @@ export default {
 
 </script>
 
-
 <template>
+  <h1 class="title">Ajouter un film</h1>
   <div class="bodyclass">
     <table class="mainTable">
-      <thead>
-        <tr class="fit">
-          <th scope="col"><div class="thText">Titre</div></th>
-          <th scope="col"><div class="thText">Description</div></th>
-          <th scope="col"><div class="thText">VALIDATEUR</div></th>
-        </tr>
-      </thead>
-      <tbody class="w-auto">
-        <tr v-for="review of reviews_array" :key="review.id" class="fit">
-          <td><div class="tableText">{{ review.title }}</div></td>
-          <td><div class="tableText">{{ review.description }}</div></td>
-          <td><div class="tableText">{{ review.user_admin_check }}</div></td>
-        </tr>
-      </tbody>
     </table>
-    <form @submit.prevent="createNewMovie(title, director, description, duration, releaseDate, img)">
+    <form @submit.prevent="createNewMovie()">
       <span class="col-12 col-sm-6 col-lg-3">
         <input class="formInput" type="text" v-model="title" placeholder="Titre">
       </span>
       <span class="col-12 col-sm-6 col-lg-3">
-        <input class="formInput" type="text" v-model="description" placeholder="Ecrire ici">
+        <input class="formInput" type="text" v-model="description" placeholder="Description">
       </span>
       <span class="col-12 col-sm-6 col-lg-3">
-        <label class="formInput" for="admins-select">Choisir le modérateur:</label>
+        <input class="formInput" type="text" v-model="director" placeholder="Réalisateur">
       </span>
-      <select v-model="verif">
-        <option value="" disabled>--Choisir parmi la liste--</option>
-        <option v-for="user in administrator" :value="user.id" :key="user.id">{{ user.firstname }} {{ user.lastname }}</option>
-      </select>
       <span class="col-12 col-sm-6 col-lg-3">
-        <label class="formInput" for="admins-select">Choisir le film:</label>
+        <input class="formInput" type="number" v-model="duration" placeholder="Durée du film">
       </span>
-      <select v-model="movieId">
-        <option value="" disabled>--Choisir parmi la liste--</option>
-        <option v-for="movie in movies" :value="movie.id" :key="movie.id">{{ movie.title }}</option>
-      </select>
+      <span class="col-12 col-sm-6 col-lg-3">
+        <input class="formInput" type="date" v-model="releaseDate" placeholder="Date de sortie">
+      </span>
       <button class="buttonAdd">AJOUTER</button>    
     </form>
   </div>
