@@ -167,7 +167,7 @@ export default {
             try {
                 const token = (await stripe.createToken(cardElement)).token.id;
                 const id = route.params.id;
-                alert(token)
+                // alert(token)
                 const response = await fetch(`${API_URL}/payment/${id}`, {
                     method: "POST",
                     headers: {

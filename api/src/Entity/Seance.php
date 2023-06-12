@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\SeanceRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +19,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['seance:read']],
-    operations: [new GetCollection()],
+    operations: [
+        new Get(),
+        new GetCollection()
+    ],
 
 )]
 #[ApiFilter(SearchFilter::class, properties: ['date' => 'exact', 'movie' => 'exact'])]
