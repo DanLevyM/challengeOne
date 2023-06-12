@@ -67,6 +67,18 @@ async function handleLogout() {
                         class="nav-item"
                         :class="{
                             'router-link-active':
+                                $route.path === '/admin/movies',
+                        }"
+                    >
+                        <router-link class="nav-link" to="/admin/movies"
+                            >Create a movie</router-link
+                        >
+
+                    </li>
+                    <li
+                        class="nav-item"
+                        :class="{
+                            'router-link-active':
                                 $route.path === '/admin/review',
                         }"
                     >
