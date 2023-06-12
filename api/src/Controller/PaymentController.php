@@ -45,20 +45,16 @@ class PaymentController extends AbstractController
         }
 
         $today = new \DateTime();
-        // $seanceDate = $seance->getDate();
+        $seanceDateTime = $seance->getDate();
         $seanceDate = $seance->getDate()->format('Y-m-d');
-        $seanceDateTime = new \DateTime($seance->getDate()->format('Y-m-d') . ' ' . $seance->getStartTime());
 
-        $startTime = $seance->getStartTime();
         $seanceLimitDate = (new \DateTime())->modify('+7 days');
-        $diff = $today->diff($seanceDateTime);
-        $minutesDifference = $diff->format('%i');
 
-        if ($minutesDifference <= 15) {
-            return $this->json(['message' => 'Cette séance a lieu dans 15 min ou moins'], 400);
+        if ($seanceDate === $today->format('Y-m-d')) {
+            return $this->json(['message' => 'Cette séance a lieu aujourd\'hui, vous ne pouvez plus la réserver'], 400);
         }
 
-        if ($seanceDateTime < $today || $seanceDate > $seanceLimitDate) {
+        if ($seanceDateTime < $today || $seanceDateTime > $seanceLimitDate) {
             return $this->json(['message' => "La séance est dépassée ou aura lieu dans plus de 7 jours."], 400);
         }
 
