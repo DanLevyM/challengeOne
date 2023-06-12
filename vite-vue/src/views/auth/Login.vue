@@ -1,27 +1,20 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
         <main class="form-signin w-100 p-4" style="background-color:#1a191f">
+            <div class="alert alert-danger" role="alert" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
+
             <form v-on:submit.prevent="handleLoginForm">
                 <h1 class="h3 mb-3 fw-bold text-center"><span style="color: #f9ab00;">DROL</span> CINEMA</h1>
                 <div class="form-floating">
-                    <input
-                        type="email"
-                        v-model="email"
-                        class="formInput"
-                        id="floatingInput"
-                        placeholder="Email"
-                    />
-                   
+                    <input type="email" v-model="email" class="formInput" id="floatingInput" placeholder="Email" />
+
                 </div>
                 <div class="form-floating">
-                    <input
-                        type="password"
-                        v-model="password"
-                        class="formInput"
-                        id="floatingPassword"
-                        placeholder="Mot de passe"
-                    />
-                  
+                    <input type="password" v-model="password" class="formInput" id="floatingPassword"
+                        placeholder="Mot de passe" />
+
                 </div>
 
                 <div class="checkbox mb-3">
@@ -30,9 +23,7 @@
                     </label>
                 </div>
                 <div class="w-50 m-auto mb-2 text-center" style="color: #f9ab00;">
-                    <router-link to="/register"
-                        >Pas encore inscrit ?</router-link
-                    >
+                    <router-link to="/register">Pas encore inscrit ?</router-link>
                 </div>
                 <button class="w-100 btn-lg buttonAdd" type="submit">
                     SE CONNECTER
@@ -55,29 +46,38 @@ export default {
         return {
             email: "",
             password: "",
+            errorMessage: ""
         };
     },
     methods: {
         async handleLoginForm() {
-            const hasLoggedIn = await login({
-                email: this.email,
-                password: this.password,
-            });
-            if (hasLoggedIn) {
-                this.$router.push("/");
+            try {
+                const hasLoggedIn = await login({
+                    email: this.email,
+                    password: this.password
+                });
+                if (hasLoggedIn) {
+                    this.$router.push("/");
+                }
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error) {
+                    if (error instanceof Error) {
+                        this.errorMessage = error.message;
+
+                    }
+                }
             }
         },
     },
-    mounted() {
-        console.log("Login mounted");
-    },
 };
+
 </script>
 
 <style>
 ::placeholder {
     color: white;
-    opacity: 1; 
+    opacity: 1;
 }
 
 
@@ -134,6 +134,6 @@ export default {
 }
 
 .labelLogin {
-    background-color:#222028;
+    background-color: #222028;
 }
 </style>

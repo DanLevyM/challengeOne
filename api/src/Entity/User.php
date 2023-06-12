@@ -7,12 +7,8 @@ use App\Entity\Subscription;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
@@ -24,23 +20,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
-
 #[ApiResource(
     operations: [
-        new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
-        new Delete(),
     ],
     normalizationContext: ['groups' => ['user:read', 'review:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+
 #[UniqueEntity('email')]
 #[ApiFilter(SearchFilter::class, properties: ['email' => 'exact', 'roles' => 'exact'])]
+#[UniqueEntity('email', 'Cet email est déjà utilisé')]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -50,8 +43,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message:"L'email n'est pas valide.")]
     #[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
@@ -59,18 +52,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['user:create'])]
+    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
+    #[Assert\Length(
+        min: 8,
+        max: 10,
+        minMessage: "Le mot de passe doit comporter au moins 8 caractères.",
+        maxMessage: "Le mot de passe doit comporter au maximum 10 caractères."
+    )]
     #[Groups(['user:create', 'user:update'])]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
     #[Groups(['user:read', 'user:create', 'user:update'])]
-    private array $roles = [];
+    private array $roles = ['ROLE_USER'];
 
+    #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $firstname = null;
 
+    #[Assert\NotBlank(message: "Le nom de famille est obligatoire.")]
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $lastname = null;
@@ -81,19 +82,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Ticket::class)]
     private Collection $tickets;
     
-
-/*  #[ORM\OneToMany(mappedBy: 'user_admin_check', targetEntity: Review::class)]
-    #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
-    private Collection $reviews;
-
     #[ORM\OneToMany(mappedBy: 'user_sub', targetEntity: Subscription::class)]
-    private Collection $subscriptions; */
+    private Collection $subscriptions;
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
-
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Subscription $subscription_id = null;
 
     #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
@@ -291,18 +284,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $moderation->setUserId(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getSubscriptionId(): ?Subscription
-    {
-        return $this->subscription_id;
-    }
-
-    public function setSubscriptionId(?Subscription $subscription_id): self
-    {
-        $this->subscription_id = $subscription_id;
 
         return $this;
     }

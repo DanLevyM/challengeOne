@@ -1,6 +1,9 @@
 <template>
     <div class="col-lg-4 col-xs-12 m-auto mt-5">
         <main class="form-signin w-100 p-4" style="background-color:#1a191f">
+            <div class="alert alert-danger" role="alert" v-if="errorMessage">
+                {{ errorMessage }}
+            </div>
             <form v-on:submit.prevent="handleRegisterForm">
                 <h1 class="h3 mb-3 fw-normal text-center">S'inscrire</h1>
 
@@ -44,16 +47,10 @@
                     />
                 </div>
 
-                <div class="checkbox mb-3">
-                    <label style="color: #f9ab00;">
-                        <input type="checkbox" value="remember-me" /> Se souvenir de 
-                        moi
-                    </label>
-                </div>
                 <div class="w-50 m-auto mb-2 text-warning text-center">
                     <router-link to="/login"
-                        >Déjà un compte ?</router-link
-                    >
+                        >Déjà un compte ?
+                    </router-link>
                 </div>
                 <button class="w-100 btn-lg buttonAdd" type="submit">
                     Créer un compte
@@ -76,20 +73,29 @@ export default {
             password: "",
             firstname: "",
             lastname: "",
+            errorMessage: ""
         };
     },
     methods: {
         async handleRegisterForm() {
-            const hasRegister = await register({
-                email: this.email,
-                plainPassword: this.password,
-                firstname: this.firstname,
-                lastname: this.lastname,
-            });
-            if (hasRegister) {
-                this.$router.push("/login");
+            try {
+                const hasRegister = await register({
+                    email: this.email,
+                    plainPassword: this.password,
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                });
+                if (hasRegister) {
+                    this.$router.push("/login");
+                }
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error) {
+                    this.errorMessage = error.message;
+                }
             }
-        },
+        }
+
     },
     mounted() {
         console.log("Register mounted");

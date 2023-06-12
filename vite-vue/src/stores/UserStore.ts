@@ -11,8 +11,8 @@ interface User {
   isAuthenticate: boolean;
 }
 const API_URL = import.meta.env.VITE_API_URL;
+// const isLoggedIn = jsCookie.get('jwt') ? true : false;
 const isLoggedIn = localStorage.getItem("access_token") ? true : false;
-console.log("IsLoggedIn:", isLoggedIn);
 
 export const useUserStore = defineStore("UserStore", {
   state: (): State => ({ user: {} as User, isLoggedIn }),
@@ -24,18 +24,16 @@ export const useUserStore = defineStore("UserStore", {
       email: string;
       password: string;
     }): Promise<boolean | void> {
-      console.log(credentials);
 
       try {
-        const response = await fetch(`${API_URL}/authentication_token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+          const response = await fetch(`${API_URL}/authentication_token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
           },
           body: JSON.stringify(credentials),
         });
         const data = await response.json();
-        console.log("data received:", data);
 
         if (response.status !== 200 || !response.ok) {
           throw new Error(data.message);
@@ -47,15 +45,18 @@ export const useUserStore = defineStore("UserStore", {
           isAuthenticate: true,
         };
         this.isLoggedIn = true;
-        console.log("user:", this.user);
-        jsCookie.set('jwt', data.token, { expires: 1 })
         localStorage.setItem("access_token", data.token);
+        // jsCookie.set('jwt', data.token, { expires: 1 })
         return true;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
-
+    isLogged() {
+      return localStorage.getItem("access_token") ? true : false;
+    },
+    
     async register(credentials: {
       email: string;
       plainPassword: string;
@@ -63,8 +64,6 @@ export const useUserStore = defineStore("UserStore", {
       lastname: string;
     }) {
       try {
-        console.log("req", credentials);
-
         const response = await fetch(`${API_URL}/users`, {
           method: "POST",
           headers: {
@@ -73,33 +72,29 @@ export const useUserStore = defineStore("UserStore", {
           body: JSON.stringify(credentials),
         });
         const data = await response.json();
-        console.log(data);
-        if (response.status !== 201 || !response.ok) {
-          throw new Error(data.message);
+        if (!response.ok && response.status !== 500) {
+          throw new Error(data.violations.map((v: { message: string }) => v.message).join("\n"));
+        } else if(response.status === 500) {
+          return false
         }
         return true;
       } catch (error) {
         console.error(error);
+        throw error;
       }
     },
 
     async logout() {
-      // const response = await fetch("http://localhost:3003/api/logout", {
-      //   method: "DELETE",
-      // });
-      // console.log("logout", response);
-
       this.user = null;
       this.isLoggedIn = false;
+      // jsCookie.remove('jwt');
       localStorage.removeItem("access_token");
-    },
 
-    isLogged() {
-      return localStorage.getItem("access_token") ? true : false;
     },
 
     async id() {
       const API_URL = import.meta.env.VITE_API_URL;
+      // const userData = jsCookie.get("jwt");
       const userData = localStorage.getItem("access_token");
       let id_connected;
       if (userData) {
@@ -120,7 +115,9 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     isAdmin() {
+      // const token = jsCookie.get("jwt");
       const token = localStorage.getItem("access_token");
+
       if (token) {
         const payload = token?.split(".")[1];
         const tokenTest = window.atob(payload!);
@@ -128,6 +125,24 @@ export const useUserStore = defineStore("UserStore", {
 
         for (let element of values.roles) {
           if (element === "ROLE_ADMIN") {
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+
+    isCompany() {
+      // const token = jsCookie.get("jwt");
+      const token = localStorage.getItem("access_token");
+
+      if (token) {
+        const payload = token?.split(".")[1];
+        const tokenTest = window.atob(payload!);
+        const values = JSON.parse(tokenTest);
+
+        for (let element of values.roles) {
+          if (element === "ROLE_COMPANY") {
             return true;
           }
         }

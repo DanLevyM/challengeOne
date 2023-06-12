@@ -8,11 +8,15 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\Patch;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource]
+#[Get]
+#[Patch(security: "is_granted('ROLE_COMPANY')")]
+#[GetCollection]
+#[Post(security: "is_granted('ROLE_COMPANY')")]
+
 class Product
 {
     #[ORM\Id]

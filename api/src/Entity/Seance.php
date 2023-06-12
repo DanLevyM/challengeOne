@@ -10,13 +10,21 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\SeanceRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
-#[ApiResource (normalizationContext: ['groups' => ['seance:read']])]
-#[ApiResource ()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['seance:read']],
+    operations: [
+        new Get(),
+        new GetCollection()
+    ],
+
+)]
 #[ApiFilter(SearchFilter::class, properties: ['date' => 'exact', 'movie' => 'exact'])]
 class Seance
 {
@@ -37,7 +45,7 @@ class Seance
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     #[ORM\JoinColumn(nullable: false)]
-    
+
     #[Groups(['seance:read', 'movie'])]
     private ?MovieRoom $movieroom_id = null;
 
@@ -183,8 +191,7 @@ class Seance
         $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
         $date_str = $this->date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
         $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
-        
+
         return $date_str;
     }
-
 }
