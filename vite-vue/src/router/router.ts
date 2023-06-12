@@ -31,13 +31,7 @@ const routes = [
     path: "/company/products",
     name: "company",
     component: () => import("../views/company/List.vue"),
-<<<<<<< HEAD
     meta: { requiresCompanyRole: true }
-=======
-    meta: {
-      requiresAuthAdmin: true
-    }
->>>>>>> add security back and frontfront error message login and register
   },
   {
     path: "/movies/:id",
