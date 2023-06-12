@@ -22,7 +22,7 @@ export default {
         const movies = reactive([]);
 
      
-        async function createNewMovie(title, description, verif, movieId) {
+        async function createNewMovie(title, director, description, duration, releaseDate, img) {
           let payload = (userData).split('.')[1];
           let tokenTest = window.atob(payload);
           const values = JSON.parse(tokenTest);
@@ -36,10 +36,18 @@ export default {
               id_connected = element.id;
             }
           }
+
+          if(img = "") {
+            img = "https://www.cinehorizons.net/sites/default/files/default_images/affiches/default-movie.png";
+          }
             
           const formData = {};
           formData.title = title;
           formData.description = description;
+          formData.director = director;
+          formData.img = img;
+          formData.duration = duration;
+          formData.releaseDate = releaseDate;
           formData.userAdmin = "/users/"+id_connected;
           formData.userAdminCheck = "/users/"+verif;
           formData.movie_id = movieId;
@@ -54,114 +62,18 @@ export default {
          console.log(response.json);
           return await response.json();
         }
-        
-        onBeforeMount(async () => {
-          console.log(localStorage.getItem("access_token"));
-            try {
-                //TODO faire en sorte que la liste des users soient seulement des admins
-                const res_users = await fetch(`${API_URL}/users`);
-                const data_users = await res_users.json();
-                users.value = data_users;
-                users.value = users["value"]["hydra:member"];
-                const res_reviews = await fetch(`${API_URL}/reviews`);
-                const data_reviews = await res_reviews.json();
-                reviews.value = data_reviews;
-                reviews.value = reviews["value"]["hydra:member"];
-                
-
-                let payload = (userData).split('.')[1];
-                let tokenTest = window.atob(payload);
-                const values = JSON.parse(tokenTest);
-                //get the id of the logged user 
-                const all_user = await fetch(`${API_URL}/users`);
-                const data_allUser = await all_user.json();
-                for (let element of data_allUser["hydra:member"]) {
-                  if(element.email === values.email) {
-                    id_connected = element.id;
-                  }
-                }
-            
-                //enlever le user connecté de la liste des admin 
-                for (let admin of users.value) {
-                  if (admin.roles.includes('ROLE_ADMIN')){
-                    administrator.push(admin);
-                  } 
-                }
-                administrator.splice(administrator.indexOf(id_connected), 1); 
-
-                //afficher que les reviews que l'utilisateur loggé a créé
-                for (let element of reviews.value){
-                  if(element.userId == `/users/${id_connected}`){
-                    data.push(element);
-                  }
-                }
-                
-                const res_user = await fetch(`${API_URL}/users/${id_connected}`);
-                const data_user = await res_user.json();
-                user.value = data_user;
-                reviews_urls.value = user.value.reviews;
-                for (const review of reviews_urls.value) {
-                  await fetch(`${API_URL}${review}`)
-                  .then(response => response.json())
-                  .then(data => {
-                    reviews_array.push(data);
-                    }) }
-                  //afficher les reviews qu'il doit valider je crois 
-                let i = 0;
-                for (let userNames of reviews_array){
-                    
-                  const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
-                  const data_userNames = await res_userNames.json();
-                        
-                  let userName = data_userNames.firstname + " " + data_userNames.lastname; 
-                  data[i].userVerif = userName;
-                  i++;
-                  }
-                const res_movies = await fetch(`${API_URL}/movies`)
-                        .then(response => response.json())
-                        .then(result => {
-                          movies.value = result
-                        })
-                        movies.value = movies["value"]["hydra:member"];
-
-                        console.log("movies");
-                        console.log(movies);
-                        console.log("movies type");
-                        console.log(typeof(movies.value));
-                  
-                        for(let i=0; i>movies.value.length; i++){
-                          if(movies.value.review_id.length === 0){
-                            //movies.value.slice(-1)[0];
-                            console.log("element")
-                            console.log(movies.value[i].review_id)
-                            console.log("slice element")
-                            console.log()
-                          }
-                        }
-                        //TODO faire la verif des films dans la liste deroulantes qu'ils n'aient pas deja une review
-            } catch (error) {
-                console.log(error);
-            }
-
-           
-        
-        });
 
 
         return {
             reviews,
             data,
-            createNewReview,
+            createNewMovie,
             users,
             administrator,
-            reviews_array,
             movies,
-            verif: '',
-            movieId: ''
         }
     }      
          
-
 };
 
 </script>

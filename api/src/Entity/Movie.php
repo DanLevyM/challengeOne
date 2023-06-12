@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource (normalizationContext: ['groups' => ['movie']])]
+#[ApiResource(normalizationContext: ['groups' => ['movie']])]
 #[Vich\Uploadable]
 class Movie
 {
@@ -191,7 +191,7 @@ class Movie
         return $this;
     }
 
-     /**
+    /**
      * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
      * of 'UploadedFile' is injected into this setter to trigger the update. If this
      * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
@@ -201,7 +201,7 @@ class Movie
      * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imgFile
      */
 
-     public function setImgFile(?File $imgFile = null): void
+    public function setImgFile(?File $imgFile = null): void
     {
         $this->imgFile = $imgFile;
 
@@ -263,13 +263,13 @@ class Movie
 
     #[Groups("movie")]
     public function getReleaseDateFormatted(): ?string
-    {   
-        
+    {
+
         $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
         $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
         $date_str = $this->release_date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
         $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
-        
+
         return $date_str;
     }
 }
