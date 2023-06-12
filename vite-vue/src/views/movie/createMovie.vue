@@ -24,9 +24,9 @@ export default {
 
      
         async function createNewMovie() {
-          
           console.log("title:", this.title, this.description, this.director, this.title)
-          const r = await fetch(`${API_URL}/movies`, {
+          
+          const response = await fetch(`${API_URL}/movies`, {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
@@ -42,46 +42,6 @@ export default {
             )
           })
 
-          console.log(r)
-          return
-
-          let payload = (userData).split('.')[1];
-          let tokenTest = window.atob(payload);
-          const values = JSON.parse(tokenTest);
-                
-          //get the id of the logged user 
-          const all_user = await fetch(`${API_URL}/users`);
-          const data_allUser = await all_user.json();
-                
-          for (let element of data_allUser["hydra:member"]) {
-            if(element.email === values.email) {
-              id_connected = element.id;
-            }
-          }
-
-          if(img = "" || img == null) {
-            img = "https://www.cinehorizons.net/sites/default/files/default_images/affiches/default-movie.png";
-          }
-            
-          const formData = {};
-          formData.title = title;
-          formData.description = description;
-          formData.director = director;
-          formData.img = img;
-          formData.duration = duration;
-          formData.releaseDate = releaseDate;
-          formData.userAdmin = "/users/"+id_connected;
-          formData.userAdminCheck = "/users/"+verif;
-          formData.movie_id = movieId;
-          formData.validate = false;
-          const response = await fetch(`${API_URL}/movies`, {
-            method: 'POST',
-            headers: {
-              'Content-type': 'application/json; charset=UTF-8' 
-            },
-            body: JSON.stringify(formData)
-          });
-         console.log(response.json);
           return await response.json();
         }
 
@@ -108,7 +68,7 @@ export default {
   <div class="bodyclass">
     <table class="mainTable">
     </table>
-    <form @submit.prevent="createNewMovie()">
+    <form @submit.prevent="createNewMovie()" class="form-class">
       <span class="col-12 col-sm-6 col-lg-3">
         <input class="formInput" type="text" v-model="title" placeholder="Titre">
       </span>
@@ -134,5 +94,15 @@ export default {
 form {
   padding: 30px;
   margin-bottom: 30px;
+}
+
+.title {
+  padding: 1em;
+  text-align: center;
+}
+
+.form-class {
+  width: 50%;
+  margin: auto;
 }
 </style>
