@@ -12,7 +12,7 @@ export default {
 // Vérification si les données existent dans le localStorage
 
         const data = reactive([]);
-        const user = ref({});
+        const user_reviews = ref({});
         const reviews_urls = ref({});
         const reviews = ref({});
         const reviews_array = reactive([]);
@@ -44,6 +44,8 @@ export default {
           formData.userAdminCheck = "/users/"+verif;
           formData.movie_id = movieId;
           formData.validate = false;
+          console.log("formData");
+          console.log(formData)
           const response = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: {
@@ -63,11 +65,14 @@ export default {
                 const data_users = await res_users.json();
                 users.value = data_users;
                 users.value = users["value"]["hydra:member"];
+        
+               
                 const res_reviews = await fetch(`${API_URL}/reviews`);
                 const data_reviews = await res_reviews.json();
                 reviews.value = data_reviews;
                 reviews.value = reviews["value"]["hydra:member"];
-                
+                console.log('reviews')
+                console.log(reviews)
 
                 let payload = (userData).split('.')[1];
                 let tokenTest = window.atob(payload);
@@ -80,7 +85,7 @@ export default {
                     id_connected = element.id;
                   }
                 }
-            
+            console.log("id connected")
                 //enlever le user connecté de la liste des admin 
                 for (let admin of users.value) {
                   if (admin.roles.includes('ROLE_ADMIN')){
@@ -88,20 +93,26 @@ export default {
                   } 
                 }
                 administrator.splice(administrator.indexOf(id_connected), 1); 
-
+                console.log("administrator")
                 //afficher que les reviews que l'utilisateur loggé a créé
                 for (let element of reviews.value){
-                  if(element.userId == `/users/${id_connected}`){
+                  if(element.user == `/users/${id_connected}`){
+                    console.log("element")
+                    console.log(element)
                     data.push(element);
                   }
                 }
-                
+                console.log("data")
+                console.log(data)
+                console.log("reviews")
                 const res_user = await fetch(`${API_URL}/reviews?user_admin=/users/${id_connected}`);
                 const data_user = await res_user.json();
-                user.value = data_user;
+                user_reviews.value = data_user;
                
-                user.value = user["value"]["hydra:member"];
-                 
+                user_reviews.value = user_reviews["value"]["hydra:member"];
+                 console.log("here")
+                 console.log(user_reviews.value)
+                  
                 //reviews_urls.value = user.value.reviews;
                 
                 /*for (const review of reviews_urls.value) {
@@ -111,31 +122,33 @@ export default {
                     reviews_array.push(data);
                     }) }*/
                   //afficher les reviews qu'il doit valider je crois 
-                let i = 0;
-                for (let userNames of user.value){
-                   
-                  const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
+                //let i = 0;
+                /*for (let userNames of user.value){
+                   console.log(user.value)
+                   console.log(userNames)
+                  const res_userNames = await fetch(`${API_URL}${userNames["user_admin_check"]}`);
                   const data_userNames = await res_userNames.json();
                         
                   let userName = data_userNames.firstname + " " + data_userNames.lastname; 
+                  console.log("data")
+                  console.log(data)
+                  console.log(data[i])
                   data[i].userVerif = userName;
                   i++;
-                  }
+                  }*/
+                  console.log("user avec nom")
                 const res_movies = await fetch(`${API_URL}/movies`);
                 const data_movies = await res_movies.json();
+                console.log("res_movies")
+                console.log(res_movies)
                 movies.value = data_movies;
-             
+                console.log("movieresponse")
                         
                         movies.value = movies["value"]["hydra:member"];
-
-                  
-                        for(let i=0; i>movies.value.length; i++){
-                          if(movies.value.review_id.length === 0){
-                            //movies.value.slice(-1)[0];
-                         
-                          }
-                        }
-                        //TODO faire la verif des films dans la liste deroulantes qu'ils n'aient pas deja une review
+                        console.log("movie value")
+                
+                        console.log(movies.value)
+ 
             } catch (error) {
                 console.log(error);
             }
@@ -151,7 +164,7 @@ export default {
             createNewReview,
             users,
             administrator,
-            reviews_array,
+            user_reviews,
             movies,
             verif: '',
             movieId: ''
@@ -175,7 +188,7 @@ export default {
         </tr>
       </thead>
       <tbody class="w-auto">
-        <tr v-for="review of reviews_array" :key="review.id" class="fit">
+        <tr v-for="review of user_reviews" :key="review.id" class="fit">
           <td><div class="tableText">{{ review.title }}</div></td>
           <td><div class="tableText">{{ review.description }}</div></td>
           <td><div class="tableText">{{ review.user_admin_check }}</div></td>
@@ -187,7 +200,7 @@ export default {
         <input class="formInput" type="text" v-model="title" placeholder="Titre">
       </span>
       <span class="col-12 col-sm-6 col-lg-3">
-        <input class="formInput" type="text" v-model="description" placeholder="Ecrire ici">
+        <textarea class="formInput" type="text" v-model="description" placeholder="Ecrire ici" contenteditable></textarea>
       </span>
       <span class="col-12 col-sm-6 col-lg-3">
         <label class="formInput space-label" for="admins-select">Choisir le modérateur:</label>
@@ -201,10 +214,11 @@ export default {
       </span>
       <select style="margin-right: 1%" v-model="movieId">
         <option value="" disabled>--Choisir parmi la liste--</option>
-        <option v-for="movie in movies" :value="movie.id" :key="movie.id">{{ movie.title }}</option>
+        <option v-for="movie in movies.value" :value="movie.id" :key="movie.id"> {{ movie.title }}</option>
       </select>
       <button class="buttonAdd">AJOUTER</button>    
     </form>
+     
   </div>
 </template>
 

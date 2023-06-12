@@ -44,12 +44,6 @@
                     />
                 </div>
 
-                <div class="checkbox mb-3">
-                    <label style="color: #f9ab00;">
-                        <input type="checkbox" value="remember-me" /> Se souvenir de 
-                        moi
-                    </label>
-                </div>
                 <div class="w-50 m-auto mb-2 text-warning text-center">
                     <router-link to="/login"
                         >Déjà un compte ?</router-link

@@ -405,7 +405,7 @@ console.log("movie.seance.length")
                             comments.push(data);
                         });
                 }
-
+console.log("finish")
                
         });
 
