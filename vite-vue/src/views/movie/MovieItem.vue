@@ -155,15 +155,14 @@
                                         Envoyer
                                     </button>
                                 </form>
-                                <!-- REVIEW --> 
+                                <!-- REVIEW -->
                                 <div v-if="review.length > 0">
-                                    <p>{{review[0].title}}</p>
-                                    <p>{{review[0].description}}</p>
-                                    
+                                    <p>{{ review[0].title }}</p>
+                                    <p>{{ review[0].description }}</p>
+
                                 </div>
                                 <div v-else>
                                     Aucune critique n'a été rédigée pour le moment
-                                    <!-- <p>{{review.descritpion}}{{review[0].description}}</p> -->
                                 </div>
                                 <!-- LIST COMMENTS -->
                                 <div v-if="movie.comments &&
@@ -330,43 +329,36 @@ export default {
                 );
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
-                console.log(movie.value);
- //get review
-                const res_review = await fetch(`${API_URL}/reviews?validate=true&movie_id=${route.params.id}`);
+                //get review
+                const res_review = await fetch(`${API_URL}/reviews?validate=true&movie=${route.params.id}`);
                 const data_review = await res_review.json();
                 review.value = data_review;
                 review.value = review['value']['hydra:member'];
-                console.log("review")
-                console.log(review)
             } catch (error) {
                 console.log(error);
             }
 
-              
-                showModals = Array(movie.seance.length).fill(false);
-                seances_urls.value = movie.value.seance;
-            
-                
-                
 
-                // get comments
-                comments_url.value = movie.value.comments;
-                for (const comment of comments_url.value) {
-                    await fetch(`${API_URL}${comment}`)
-                        .then((response) => response.json())
-                        .then((data) => {
-                            comments.push(data);
-                        });
-                }
+            showModals = Array(movie.seance.length).fill(false);
+            seances_urls.value = movie.value.seance;
 
-               
+
+
+
+            // get comments
+            comments_url.value = movie.value.comments;
+            for (const comment of comments_url.value) {
+                await fetch(`${API_URL}${comment}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        comments.push(data);
+                    });
+            }
+
+
         });
 
         async function handleAddComment() {
-            // if (this.commentTitle == "" || this.commentDescription == "") {
-            //     alert("Veuillez remplir tous les champs");
-            //     return;
-            // }
             const movieId = route.params.id;
             const userId = await user.id();
             const jwtToken = localStorage.getItem("access_token");
@@ -392,7 +384,6 @@ export default {
                 if (res_post_comment.status === 401) {
                     this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
                 }
-                // alert(JSON.stringify(res_post_comment.status))
 
                 const res_movie = await fetch(`${API_URL}/movies/${movieId}`);
                 const data_movie = await res_movie.json();
@@ -407,6 +398,7 @@ export default {
                             comments.push(data);
                         });
                 }
+
             } catch (error) {
                 this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
 
@@ -418,7 +410,6 @@ export default {
             const userId = await user.id();
             const commentId = comment["@id"];
             const jwtToken = localStorage.getItem("access_token")
-            console.log("commentId = ", commentId);
             // Check if comment is already signaled
             const res = await fetch(`${API_URL}/moderations`, {
                 headers: {
@@ -507,7 +498,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 label {
     color: black;
 }

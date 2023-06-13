@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import jsCookie from "js-cookie";
 
 interface State {
   user: User | null;
@@ -11,8 +10,8 @@ interface User {
   isAuthenticate: boolean;
 }
 const API_URL = import.meta.env.VITE_API_URL;
-// const isLoggedIn = jsCookie.get('jwt') ? true : false;
 const isLoggedIn = localStorage.getItem("access_token") ? true : false;
+const jwtToken = localStorage.getItem("access_token");
 
 export const useUserStore = defineStore("UserStore", {
   state: (): State => ({ user: {} as User, isLoggedIn }),
@@ -29,7 +28,7 @@ export const useUserStore = defineStore("UserStore", {
           const response = await fetch(`${API_URL}/authentication_token`, {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json"
           },
           body: JSON.stringify(credentials),
         });
@@ -46,7 +45,6 @@ export const useUserStore = defineStore("UserStore", {
         };
         this.isLoggedIn = true;
         localStorage.setItem("access_token", data.token);
-        // jsCookie.set('jwt', data.token, { expires: 1 })
         return true;
       } catch (error) {
         console.error(error);
@@ -68,6 +66,7 @@ export const useUserStore = defineStore("UserStore", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + jwtToken
           },
           body: JSON.stringify(credentials),
         });
@@ -94,7 +93,6 @@ export const useUserStore = defineStore("UserStore", {
 
     async id() {
       const API_URL = import.meta.env.VITE_API_URL;
-      // const userData = jsCookie.get("jwt");
       const userData = localStorage.getItem("access_token");
       let id_connected;
       if (userData) {
@@ -102,7 +100,9 @@ export const useUserStore = defineStore("UserStore", {
         let tokenTest = window.atob(payload);
         const values = JSON.parse(tokenTest);
         //get the id of the logged user
-        const all_user = await fetch(`${API_URL}/users`);
+        const all_user = await fetch(`${API_URL}/users`, {
+          headers: {'Authorization': 'Bearer ' + jwtToken}
+        });
         const data_allUser = await all_user.json();
 
         for (let element of data_allUser["hydra:member"]) {
@@ -115,7 +115,6 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     isAdmin() {
-      // const token = jsCookie.get("jwt");
       const token = localStorage.getItem("access_token");
 
       if (token) {
@@ -133,7 +132,6 @@ export const useUserStore = defineStore("UserStore", {
     },
 
     isCompany() {
-      // const token = jsCookie.get("jwt");
       const token = localStorage.getItem("access_token");
 
       if (token) {

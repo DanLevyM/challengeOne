@@ -28,7 +28,13 @@ export default {
       const values = JSON.parse(tokenTest);
 
       //get the id of the logged user 
-      const all_user = await fetch(`${API_URL}/users`);
+      const all_user = await fetch(`${API_URL}/users`,
+        {
+          headers: {
+            'Authorization': 'Bearer ' + userData
+          }
+        }
+      );
       const data_allUser = await all_user.json();
 
       for (let element of data_allUser["hydra:member"]) {
@@ -42,12 +48,13 @@ export default {
       formData.description = description;
       formData.userAdmin = "/users/" + id_connected;
       formData.userAdminCheck = "/users/" + verif;
-      formData.movie_id = movieId;
+      formData.movie = "/movies/" + movieId;
       formData.validate = false;
       const response = await fetch(`${API_URL}/reviews`, {
         method: 'POST',
         headers: {
-          'Content-type': 'application/json; charset=UTF-8'
+          'Content-type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ' + userData
         },
         body: JSON.stringify(formData)
       });
@@ -56,10 +63,13 @@ export default {
     }
 
     onBeforeMount(async () => {
-      console.log(localStorage.getItem("access_token"));
       try {
         //TODO faire en sorte que la liste des users soient seulement des admins
-        const res_users = await fetch(`${API_URL}/users`);
+        const res_users = await fetch(`${API_URL}/users`, {
+          headers: {
+            'Authorization': 'Bearer ' + userData
+          }
+        });
         const data_users = await res_users.json();
         users.value = data_users;
         users.value = users["value"]["hydra:member"];
@@ -68,12 +78,15 @@ export default {
         reviews.value = data_reviews;
         reviews.value = reviews["value"]["hydra:member"];
 
-
         let payload = (userData).split('.')[1];
         let tokenTest = window.atob(payload);
         const values = JSON.parse(tokenTest);
         //get the id of the logged user 
-        const all_user = await fetch(`${API_URL}/users`);
+        const all_user = await fetch(`${API_URL}/users`, {
+          headers: {
+            'Authorization': 'Bearer ' + userData
+          }
+        });
         const data_allUser = await all_user.json();
         for (let element of data_allUser["hydra:member"]) {
           if (element.email === values.email) {
@@ -83,13 +96,15 @@ export default {
 
         //enlever le user connecté de la liste des admin 
         for (let admin of users.value) {
-          if (admin.roles.includes('ROLE_ADMIN')) {
+          if (admin.roles.includes('ROLE_ADMIN') && admin.id !== id_connected) {
             administrator.push(admin);
           }
         }
-        administrator.splice(administrator.indexOf(id_connected), 1);
+        const res_movies = await fetch(`${API_URL}/movies`);
+        const data_movies = await res_movies.json();
+        movies.value = data_movies;
+        movies.value = movies["value"]["hydra:member"];
 
-        //afficher que les reviews que l'utilisateur loggé a créé
         for (let element of reviews.value) {
           if (element.userId == `/users/${id_connected}`) {
             data.push(element);
@@ -107,37 +122,16 @@ export default {
               reviews_array.push(data);
             })
         }
+        
         //afficher les reviews qu'il doit valider je crois 
         let i = 0;
         for (let userNames of reviews_array) {
-
-          const res_userNames = await fetch(`${API_URL}${userNames["User_verif"]}`);
+          const res_userNames = await fetch(`${API_URL}${userNames["user_admin_check"]}`);
           const data_userNames = await res_userNames.json();
 
           let userName = data_userNames.firstname + " " + data_userNames.lastname;
           data[i].userVerif = userName;
           i++;
-        }
-        const res_movies = await fetch(`${API_URL}/movies`)
-          .then(response => response.json())
-          .then(result => {
-            movies.value = result
-          })
-        movies.value = movies["value"]["hydra:member"];
-
-        console.log("movies");
-        console.log(movies);
-        console.log("movies type");
-        console.log(typeof (movies.value));
-
-        for (let i = 0; i > movies.value.length; i++) {
-          if (movies.value.review_id.length === 0) {
-            //movies.value.slice(-1)[0];
-            console.log("element")
-            console.log(movies.value[i].review_id)
-            console.log("slice element")
-            console.log()
-          }
         }
         //TODO faire la verif des films dans la liste deroulantes qu'ils n'aient pas deja une review
       } catch (error) {
@@ -193,7 +187,7 @@ export default {
             <div class="tableText">{{ review.description }}</div>
           </td>
           <td>
-            <div class="tableText">{{ review.user_admin_check }}</div>
+            <div class="tableText">{{ review.firstName + " " + review.lastName }}</div>
           </td>
         </tr>
       </tbody>
@@ -218,14 +212,17 @@ export default {
       </span>
       <select v-model="movieId">
         <option value="" disabled>--Choisir parmi la liste--</option>
-        <option v-for="movie in movies" :value="movie.id" :key="movie.id">{{ movie.title }}</option>
-    </select>
-    <button class="buttonAdd">AJOUTER</button>
-  </form>
-</div></template>
+        <option v-for="movie in movies.value" :value="movie.id" :key="movie.id">{{ movie.title }}</option>
+      </select>
+      <button class="buttonAdd">AJOUTER</button>
+    </form>
+  </div>
+</template>
 
 
-<style lang="css">form {
+<style lang="css">
+form {
   padding: 30px;
   margin-bottom: 30px;
-}</style>
+}
+</style>

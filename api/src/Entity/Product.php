@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Get;
@@ -16,6 +17,7 @@ use ApiPlatform\Metadata\Patch;
 #[Patch(security: "is_granted('ROLE_COMPANY')")]
 #[GetCollection]
 #[Post(security: "is_granted('ROLE_COMPANY')")]
+#[Delete(security: "is_granted('ROLE_COMPANY')")]
 
 class Product
 {

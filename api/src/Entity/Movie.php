@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['movie']])]
+#[ApiResource(normalizationContext: ['groups' => ['movie', 'read:review']])]
 #[Get()]
 #[GetCollection()]
 #[Post(security: 'is_granted("ROLE_ADMIN")')]
@@ -53,9 +53,9 @@ class Movie
     #[Groups('movie')]
     private Collection $comments;
 
-    #[ORM\OneToMany(mappedBy: 'movie_id', targetEntity: Review::class)]
-    #[Groups('movie')]
-    private Collection $reviews;
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]
+    #[Groups(['movie', 'read:review'])]
+    private Collection $reviewed_movies;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
     #[Groups('movie')]
@@ -64,7 +64,7 @@ class Movie
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
+        $this->reviewed_movies = new ArrayCollection();
         $this->seance = new ArrayCollection();
     }
 
@@ -194,18 +194,18 @@ class Movie
     }
 
     /**
-     * @return Collection<int, Comment>
+     * @return Collection<int, Review>
      */
     public function getReviews(): Collection
     {
-        return $this->reviews;
+        return $this->reviewed_movies;
     }
 
-    public function addReviews(Review $review): self
+    public function addReviews(Review $reviewed_movies): self
     {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setMovie($this);
+        if (!$this->reviewed_movies->contains($reviewed_movies)) {
+            $this->reviewed_movies->add($reviewed_movies);
+            $reviewed_movies->setMovie($this);
         }
 
         return $this;
@@ -213,7 +213,7 @@ class Movie
 
     public function removeReview(Review $review): self
     {
-        if ($this->reviews->removeElement($review)) {
+        if ($this->reviewed_movies->removeElement($review)) {
             // set the owning side to null (unless already changed)
             if ($review->getMovie() === $this) {
                 $review->setMovie(null);

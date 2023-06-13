@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Dashboard Moderation</h1>
+        <h1>Modération</h1>
         <table class="tab">
             <thead>
                 <tr class="tab">
@@ -25,20 +25,20 @@
                             class="keep"
                             @click="ignoreReporting(dashboardItem.modId)"
                         >
-                            Ignore
+                            Ignorer
                         </p>
                         <p
                             class="ban"
                             @click="banReporting(dashboardItem.modId)"
                         >
-                            Ban
+                            Bannir
                         </p>
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div v-if="showMessage" class="message">{{ message }}</div>
     </div>
-    <div v-if="showMessage" class="message">{{ message }}</div>
 </template>
 
 <script lang="ts">
@@ -93,7 +93,6 @@ export default {
                             description: data_comment.description,
                             modId: moderation["@id"],
                         });
-                        // console.log(dashboardList);
                     }
                 }
             } catch (error) {
@@ -156,7 +155,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 th,
 td {
     color: black;

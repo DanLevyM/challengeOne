@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext:['groups' => ['read:item:ticket']],
     operations: [
         new Get(
-            security: 'is_granted("ROLE_USER") or user.getId() == userId',
+            security: 'is_granted("ROLE_USER")',
         ),
         new Post(
             name: 'checkout',

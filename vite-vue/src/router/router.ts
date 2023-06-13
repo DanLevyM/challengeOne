@@ -8,11 +8,6 @@ const routes = [
     component: () => import("../views/movie/Movies.vue"),
   },
   {
-    path: "/about",
-    name: "about",
-    component: () => import("../views/about/About.vue"),
-  },
-  {
     path: "/login",
     name: "login",
     component: () => import("../views/auth/Login.vue"),
@@ -112,7 +107,8 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-  } else if (to.meta.requiresAuthAdmin) {
+  } 
+  if (to.meta.requiresAuthAdmin) {
     if (token) {
       const decodedToken: DecodedToken = jwt(token);
       if (decodedToken.roles.includes('ROLE_ADMIN')) {
@@ -123,7 +119,8 @@ router.beforeEach((to, from, next) => {
     } else{
       next('/login');
     }
-  } else if (to.meta.requiresCompanyRole) {
+  } 
+  if (to.meta.requiresCompanyRole) {
     if (token) {
       const decodedToken : DecodedToken = jwt(token);
       if (decodedToken.roles.includes('ROLE_COMPANY')) {
@@ -134,8 +131,7 @@ router.beforeEach((to, from, next) => {
     } else{
       next('/login');
     }
-  }
-  else {
+  }else {
     next();
   }
 });

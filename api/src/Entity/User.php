@@ -19,13 +19,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ApiResource(
     operations: [
         new Post(processor: UserPasswordHasher::class),
         new Get(),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')")
     ],
-    normalizationContext: ['groups' => ['user:read', 'review:read']],
+    normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -88,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
+
     #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private Collection $reviews;
@@ -96,7 +99,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->comments = new ArrayCollection();
         $this->tickets = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
         $this->moderations = new ArrayCollection();
     }
 

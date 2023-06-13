@@ -78,10 +78,10 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { ref, onBeforeMount } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import jsCookie from "js-cookie";
 
 const API_URL = import.meta.env.VITE_API_URL;
-const jwtToken = localStorage.getItem("access_token");//jsCookie.get('jwt')
+const jwtToken = localStorage.getItem("access_token");
+
 const style = {
     style: {
         base: {

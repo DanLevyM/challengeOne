@@ -10,15 +10,17 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
 #[Post(security: "is_granted('ROLE_ADMIN')")]
-#[Get()]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
 #[GetCollection()]
-#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie_id' => 'exact', 'user_admin' => 'exact'])]
+#[Get(normalizationContext: ['groups' => 'read:review'])]
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie' => 'exact', 'user_admin' => 'exact'])]
 
 class Review
 {
@@ -28,26 +30,30 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('movie')]
+    #[Groups('read:review')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('read:review')]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[Groups('read:review')]
     private ?User $user_admin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne()]
+    #[Groups('read:review')]
     private ?User $user_admin_check = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('read:review')]
     private ?bool $validate = null;
 
 
-    #[ORM\OneToOne(inversedBy: 'review_id', cascade: ['persist', 'remove'])]
-    
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
-    private ?Movie $movie_id = null;
+    #[ORM\ManyToOne(inversedBy: 'reviewed_movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups('read:review')]
+    private ?Movie $movie = null;
 
     public function getId(): ?int
     {
@@ -116,13 +122,25 @@ class Review
 
     public function getMovie(): ?Movie
     {
-        return $this->movie_id;
+        return $this->movie;
     }
 
-    public function setMovie(?Movie $movie_id): self
+    public function setMovie(?Movie $movie): self
     {
-        $this->movie_id = $movie_id;
+        $this->movie = $movie;
 
         return $this;
+    }
+
+    #[Groups('read:review')]
+    public function getFirstName(): ?string
+    {
+        return $this->user_admin_check ? $this->user_admin_check->getFirstName() : null;
+    }
+    
+    #[Groups('read:review')]
+    public function getLastName(): ?string
+    {
+        return $this->user_admin_check ? $this->user_admin_check->getLastName() : null;
     }
 }

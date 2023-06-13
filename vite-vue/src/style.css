@@ -191,7 +191,7 @@ td {
     border: 2px solid #f9ab00;
     margin-top: 10px; 
     color: #fff;
-    /* background-color: #1a191f; */
+    background-color: #1a191f;
     font-size: 14px;
 }
 
@@ -223,7 +223,7 @@ td {
     outline: none;
     margin-right: 2em;
 }
- 
+
 .buttonAdd {
     display: flex;
     flex-direction: row;
@@ -236,8 +236,8 @@ td {
     text-transform: uppercase;
     border: 2px solid #f9ab00;
     margin-top: 10px; 
-    color: #fff;
-    /* background-color: #1a191f; */
+    color: white;
+    background-color: #1a191f;
 }
 
 form {
@@ -273,12 +273,10 @@ input[type=number] {
 }
 
 .modalTitle {
-    color: #fff;
     font-weight: 400;
     font-size: 30px;
     line-height: 100%;
     margin-bottom: 15px;
-    font-display: center;
     display: flex;
     left: 50%;
 }
