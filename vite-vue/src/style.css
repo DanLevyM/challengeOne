@@ -13,7 +13,8 @@
 
 body {
     min-height: 100vh;
-    background-color: #1a191f;
+    background-color: #111;
+    /* #1a191f; */
     /* //#090a0b; */
     color: #ffffff;
 }
@@ -134,6 +135,8 @@ select {
     min-width: 1050px;
     border-spacing: 0;
     background-color: #1a191f;
+    padding: 1em;
+    margin-bottom: 1em;
 }
 
 .tableText {
@@ -151,8 +154,9 @@ select {
     margin: 0;
 }
 
+
 tr {
-    border-bottom: 10px solid #1a191f;
+    /* border-bottom: 10px solid #1a191f; */
      
 }
 
@@ -219,7 +223,7 @@ td {
     outline: none;
     margin-right: 2em;
 }
- 
+
 .buttonAdd {
     display: flex;
     flex-direction: row;
@@ -232,12 +236,12 @@ td {
     text-transform: uppercase;
     border: 2px solid #f9ab00;
     margin-top: 10px; 
-    color: #fff;
+    color: white;
     background-color: #1a191f;
 }
 
 form {
-    background-color: #1a191f;
+    /* background-color: #1a191f; */
     display: inline-flexbox ;
 }
 
@@ -269,12 +273,10 @@ input[type=number] {
 }
 
 .modalTitle {
-    color: #fff;
     font-weight: 400;
     font-size: 30px;
     line-height: 100%;
     margin-bottom: 15px;
-    font-display: center;
     display: flex;
     left: 50%;
 }

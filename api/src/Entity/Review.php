@@ -4,13 +4,24 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ReviewRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ApiResource]
+#[Post(security: "is_granted('ROLE_ADMIN')")]
+#[Patch(security: "is_granted('ROLE_ADMIN')")]
+#[GetCollection()]
+#[Get(normalizationContext: ['groups' => 'read:review'])]
+#[ApiFilter(SearchFilter::class, properties: ['validate' => 'exact', 'user_admin_check' => 'exact', 'movie' => 'exact', 'user_admin' => 'exact'])]
+
 class Review
 {
     #[ORM\Id]
@@ -19,16 +30,30 @@ class Review
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('read:review')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('read:review')]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[Groups('read:review')]
     private ?User $user_admin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\ManyToOne()]
+    #[Groups('read:review')]
     private ?User $user_admin_check = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Groups('read:review')]
+    private ?bool $validate = null;
+
+
+    #[ORM\ManyToOne(inversedBy: 'reviewed_movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups('read:review')]
+    private ?Movie $movie = null;
 
     public function getId(): ?int
     {
@@ -83,4 +108,39 @@ class Review
         return $this;
     }
 
+    public function isValidate(): ?bool
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?bool $validate): self
+    {
+        $this->validate = $validate;
+
+        return $this;
+    }
+
+    public function getMovie(): ?Movie
+    {
+        return $this->movie;
+    }
+
+    public function setMovie(?Movie $movie): self
+    {
+        $this->movie = $movie;
+
+        return $this;
+    }
+
+    #[Groups('read:review')]
+    public function getFirstName(): ?string
+    {
+        return $this->user_admin_check ? $this->user_admin_check->getFirstName() : null;
+    }
+    
+    #[Groups('read:review')]
+    public function getLastName(): ?string
+    {
+        return $this->user_admin_check ? $this->user_admin_check->getLastName() : null;
+    }
 }

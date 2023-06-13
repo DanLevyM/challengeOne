@@ -9,24 +9,28 @@ use ApiPlatform\Metadata\Post;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TicketRepository;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GetCollection;
 use App\Controller\PaymentController;
 use Symfony\Component\Serializer\Annotation\Groups;
-
-// use ApiPlatform\Core\Annotation\ApiResource;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 #[ApiResource(
     normalizationContext:['groups' => ['read:item:ticket']],
     operations: [
-        new Get(),
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+        ),
         new Post(
+            name: 'checkout',
+            security: 'is_granted("ROLE_USER") ',
             controller: PaymentController::class,
             uriTemplate: "/payment/{id}",
             uriVariables: ['id' => new Link(
                 fromClass: Seance::class,
                 toProperty: 'seance_id',
             )],
+            normalizationContext: ['groups' => ['none']],
+            denormalizationContext: ['groups' => ['none']],
+            read: false
         )
     ]
 )]

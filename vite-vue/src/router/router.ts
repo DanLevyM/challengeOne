@@ -1,20 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../views/home/Home.vue";
-import filmDb from "../../films.json";
-import ErrorView from "../views/stripe/Error.vue";
-import SuccessView from "../views/stripe/Success.vue";
-import Stripe from "../views/stripe/Stripe.vue";
+import jwt from 'jwt-decode' 
 
 const routes = [
   {
     path: "/",
     name: "home",
     component: () => import("../views/movie/Movies.vue"),
-  },
-  {
-    path: "/about",
-    name: "about",
-    component: () => import("../views/about/About.vue"),
   },
   {
     path: "/login",
@@ -35,6 +26,7 @@ const routes = [
     path: "/company/products",
     name: "company",
     component: () => import("../views/company/List.vue"),
+    meta: { requiresCompanyRole: true }
   },
   {
     path: "/movies/:id",
@@ -45,22 +37,23 @@ const routes = [
     path: "/products",
     name: "products",
     component: () => import("../views/product/ProductList.vue"),
+
   },
   {
     path: "/admin/review",
     name: "review",
     component: () => import("../views/review/ReviewForm.vue"),
+    meta: {
+      requiresAuthAdmin: true
+    }
   },
   {
-    path: "/demo/:id",
-    name: "demo.show",
-    component: () => import("../views/Demo.vue"),
-    beforeEnter(to: any, from: any) {
-      const exists = filmDb.find((film) => film.id === parseInt(to.params.id));
-      if (!exists) {
-        return { name: "not-found" };
-      }
-    },
+    path: "/admin/review_validation",
+    name: "review_validation",
+    component: () => import("../views/review/ReviewToValidate.vue"),
+    meta: {
+      requiresAuthAdmin: true
+    }
   },
   {
     path: "/:pathMatch(.*)*",
@@ -68,49 +61,104 @@ const routes = [
     component: () => import("../views/NotFound.vue"),
   },
   {
-    path: "/reservation",
-    name: "reservation",
-    component: () => import("../views/movie/Reservation.vue"),
-  },
-  {
-    path: "/purchase",
-    name: "purchase",
-    component: () => import("../views/movie/Reservation.vue"),
-  },
-  {
     path: "/admin/dashboard",
     name: "admin-dashboard",
     component: () => import("../views/adm/Dashboard.vue"),
+    meta: {
+      requiresAuthAdmin: true
+    }
   },
   {
     path: "/success",
     name: "successview",
-    component: SuccessView,
+    component: () => import("../views/stripe/Success.vue"),
   },
   {
     path: "/error",
     name: "errorview",
-    component: ErrorView,
+    component: () => import("../views/stripe/Error.vue"),
   },
   {
     path: "/payment/:id",
     name: "Payment",
-    component: Stripe,
+    component: () => import("../views/stripe/Stripe.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
+  {
+    path: "/offres/",
+    name: "offers",
+    component: () => import("../views/stripe/Offers.vue"),
+  }
 ];
 
 export const router = createRouter({
   history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    return (
-      savedPosition ||
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ top: 0, left: 0 });
-        }, 200);
-        // TIMING DEPENDS ON CSS TRANSITION ANIMATION
-      })
-    );
-  },
+  routes
+})
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('access_token');
+
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      next('/login');
+    } else {
+      next();
+    }
+  } 
+  if (to.meta.requiresAuthAdmin) {
+    if (token) {
+      const decodedToken: DecodedToken = jwt(token);
+      if (decodedToken.roles.includes('ROLE_ADMIN')) {
+        next();
+      } else{
+        next('/login');
+      }
+    } else{
+      next('/login');
+    }
+  } 
+  if (to.meta.requiresCompanyRole) {
+    if (token) {
+      const decodedToken : DecodedToken = jwt(token);
+      if (decodedToken.roles.includes('ROLE_COMPANY')) {
+        next();
+      } else{
+        next('/login');
+      }
+    } else{
+      next('/login');
+    }
+  }else {
+    next();
+  }
 });
+
+/*
+
+router.beforeEach((to, from, next) => {
+  const requiresCompanyRole = to.matched.some(record => record.meta.requiresCompanyRole)
+  const token = localStorage.getItem("access_token");
+  if (token) {
+  let payload = (token).split('.')[1];
+  let tokenTest = window.atob(payload);
+  const values = JSON.parse(tokenTest);
+  const roles = values.roles;
+  
+  if (requiresCompanyRole && roles.includes('ROLE_COMPANY') ){
+     
+      next() 
+    } else {
+    
+      next('/login')
+    }              
+  }
+})
+
+*/
+
+interface DecodedToken {
+  roles: string[];
+}

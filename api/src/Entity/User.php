@@ -7,12 +7,8 @@ use App\Entity\Subscription;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use App\State\UserPasswordHasher;
@@ -21,23 +17,25 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ApiResource(
     operations: [
-        new GetCollection(),
         new Post(processor: UserPasswordHasher::class),
         new Get(),
-        new Put(processor: UserPasswordHasher::class),
-        new Patch(processor: UserPasswordHasher::class),
-        new Delete(),
+        new GetCollection(security: "is_granted('ROLE_ADMIN')")
     ],
-    normalizationContext: ['groups' => ['user:read', 'review:read']],
+    normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:create', 'user:update']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+
 #[UniqueEntity('email')]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact', 'roles' => 'exact'])]
+#[UniqueEntity('email', 'Cet email est déjà utilisé')]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -47,8 +45,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[Assert\Email]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message:"L'email n'est pas valide.")]
     #[Groups(['user:read', 'user:create', 'user:update'])]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
@@ -56,17 +54,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank(groups: ['user:create'])]
+    #[Assert\NotBlank(message: "Le mot de passe est obligatoire")]
+    #[Assert\Length(
+        min: 8,
+        max: 10,
+        minMessage: "Le mot de passe doit comporter au moins 8 caractères.",
+        maxMessage: "Le mot de passe doit comporter au maximum 10 caractères."
+    )]
     #[Groups(['user:create', 'user:update'])]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: 'json')]
-    private array $roles = [];
+    #[Groups(['user:read', 'user:create', 'user:update'])]
+    private array $roles = ['ROLE_USER'];
 
+    #[Assert\NotBlank(message: "Le prénom est obligatoire.")]
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $firstname = null;
 
+    #[Assert\NotBlank(message: "Le nom de famille est obligatoire.")]
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private ?string $lastname = null;
@@ -76,14 +83,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Ticket::class)]
     private Collection $tickets;
+    
+    #[ORM\OneToMany(mappedBy: 'user_sub', targetEntity: Subscription::class)]
+    private Collection $subscriptions;
 
     #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Moderation::class)]
     private Collection $moderations;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?Subscription $subscription_id = null;
 
-    #[ORM\OneToMany(mappedBy: 'user_admin_check', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'user_admin', targetEntity: Review::class)]
     #[Groups(['user:read', 'user:create', 'user:update', 'read:item:ticket'])]
     private Collection $reviews;
 
@@ -92,7 +100,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->comments = new ArrayCollection();
         $this->tickets = new ArrayCollection();
         $this->moderations = new ArrayCollection();
-        $this->reviews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,6 +253,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    /**
      * @return Collection<int, Moderation>
      */
     public function getModerations(): Collection
@@ -275,18 +290,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getSubscriptionId(): ?Subscription
-    {
-        return $this->subscription_id;
-    }
-
-    public function setSubscriptionId(?Subscription $subscription_id): self
-    {
-        $this->subscription_id = $subscription_id;
-
-        return $this;
-    }
-
     /* A visual identifier that represents this user.
      *
      * @see UserInterface
@@ -304,33 +307,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Review>
-     */
-    public function getReviews(): Collection
-    {
-        return $this->reviews;
-    }
 
-    public function addReview(Review $review): self
-    {
-        if (!$this->reviews->contains($review)) {
-            $this->reviews->add($review);
-            $review->setUserAdminCheck($this);
-        }
+    // /**
+    //  * @return Collection<int, Review>
+    //  */
+    // public function getReviews(): Collection
+    // {
+    //     return $this->reviews;
+    // }
 
-        return $this;
-    }
+    // public function addReview(Review $review): self
+    // {
+    //     if (!$this->reviews->contains($review)) {
+    //         $this->reviews->add($review);
+    //         $review->setUserAdminCheck($this);
+    //     }
 
-    public function removeReview(Review $review): self
-    {
-        if ($this->reviews->removeElement($review)) {
-            // set the owning side to null (unless already changed)
-            if ($review->getUserAdminCheck() === $this) {
-                $review->setUserAdminCheck(null);
-            }
-        }
+    //     return $this;
+    // }
 
-        return $this;
-    }
+    // public function removeReview(Review $review): self
+    // {
+    //     if ($this->reviews->removeElement($review)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($review->getUserAdminCheck() === $this) {
+    //             $review->setUserAdminCheck(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
+
+    // /**
+    //  * @return Collection<int, Subscription>
+    //  */
+    // public function getSubscriptions(): Collection
+    // {
+    //     return $this->subscriptions;
+    // }
+
+    // public function addSubscription(Subscription $subscription): self
+    // {
+    //     if (!$this->subscriptions->contains($subscription)) {
+    //         $this->subscriptions->add($subscription);
+    //         $subscription->setUserSub($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeSubscription(Subscription $subscription): self
+    // {
+    //     if ($this->subscriptions->removeElement($subscription)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($subscription->getUserSub() === $this) {
+    //             $subscription->setUserSub(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
 }

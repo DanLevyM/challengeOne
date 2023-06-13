@@ -7,12 +7,21 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MovieRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
-#[ApiResource (normalizationContext: ['groups' => ['movie']])]
+#[ApiResource(normalizationContext: ['groups' => ['movie', 'read:review']])]
+#[Get()]
+#[GetCollection()]
+#[Post(security: 'is_granted("ROLE_ADMIN")')]
+#[Patch(security: 'is_granted("ROLE_ADMIN")')]
+
 class Movie
 {
     #[ORM\Id]
@@ -22,7 +31,7 @@ class Movie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('movie')]
+    #[Groups('movie', 'seance:read')]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
@@ -44,8 +53,9 @@ class Movie
     #[Groups('movie')]
     private Collection $comments;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Review $review_id = null;
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Review::class)]
+    #[Groups(['movie', 'read:review'])]
+    private Collection $reviewed_movies;
 
     #[ORM\OneToMany(mappedBy: 'movie', targetEntity: Seance::class)]
     #[Groups('movie')]
@@ -54,6 +64,7 @@ class Movie
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->reviewed_movies = new ArrayCollection();
         $this->seance = new ArrayCollection();
     }
 
@@ -152,18 +163,6 @@ class Movie
         return $this;
     }
 
-    public function getReviewId(): ?Review
-    {
-        return $this->review_id;
-    }
-
-    public function setReviewId(?Review $review_id): self
-    {
-        $this->review_id = $review_id;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Seance>
      */
@@ -194,15 +193,45 @@ class Movie
         return $this;
     }
 
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviewed_movies;
+    }
+
+    public function addReviews(Review $reviewed_movies): self
+    {
+        if (!$this->reviewed_movies->contains($reviewed_movies)) {
+            $this->reviewed_movies->add($reviewed_movies);
+            $reviewed_movies->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): self
+    {
+        if ($this->reviewed_movies->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getMovie() === $this) {
+                $review->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
     #[Groups("movie")]
     public function getReleaseDateFormatted(): ?string
-    {   
-        
+    {
+
         $english_months = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
         $french_months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
         $date_str = $this->release_date->format('j F Y'); // formatte la date en utilisant le nom complet du mois en anglais
         $date_str = str_replace($english_months, $french_months, $date_str); // remplace les noms de mois anglais par leurs équivalents français
-        
+
         return $date_str;
     }
 }

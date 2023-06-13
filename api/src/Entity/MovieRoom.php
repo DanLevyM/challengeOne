@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MovieRoomRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MovieRoomRepository::class)]
 #[ApiResource]
+#[Get()]
 class MovieRoom
 {
     #[ORM\Id]
@@ -18,10 +21,15 @@ class MovieRoom
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['seance:read'])]
     private ?int $number_places = null;
 
     #[ORM\OneToMany(mappedBy: 'movieroom_id', targetEntity: Seance::class)]
     private Collection $seances;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(['seance:read'])]
+    private ?string $room_name = null;
 
     public function __construct()
     {
@@ -74,5 +82,17 @@ class MovieRoom
 
         return $this;
     }
-   
+
+    public function getRoomName(): ?string
+    {
+        return $this->room_name;
+    }
+
+    public function setRoomName(?string $room_name): self
+    {
+        $this->room_name = $room_name;
+
+        return $this;
+    }
+
 }

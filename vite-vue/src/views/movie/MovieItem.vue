@@ -9,14 +9,10 @@
                     <div class="col-12">
                         <div class="card card--details">
                             <div class="row">
-                                <div
-                                    class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3"
-                                >
+                                <div class="col-12 col-sm-5 col-md-4 col-lg-3 col-xl-3">
                                     <div class="card-cover">
-                                        <img
-                                            src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
-                                            alt="{{movie.title}}"
-                                        />
+                                        <img src="https://www.pathe.fr/media/movie/alex/HO00000177/poster/md/137/movie&amp;uuid=A3B5DFE6-E76F-4864-AE72-421961676CD3"
+                                            alt="{{movie.title}}" />
                                     </div>
                                 </div>
 
@@ -34,12 +30,10 @@
                                                 }}</span>
                                             </li>
                                             <li>
-                                                Durée:<span
-                                                    >{{
-                                                        movie.duration
-                                                    }}
-                                                    min</span
-                                                >
+                                                Durée:<span>{{
+                                                    movie.duration
+                                                }}
+                                                    min</span>
                                             </li>
                                         </ul>
                                         <div>
@@ -65,43 +59,22 @@
 
                             <div>
                                 <ul class="nav nav-tabs">
-                                    <li
-                                        class="nav-item"
-                                        v-for="(tab, index) in tabs"
-                                        :key="index"
-                                    >
-                                        <a
-                                            style="cursor: pointer"
-                                            class="nav-link"
-                                            :class="{
-                                                active: activeTab === index,
-                                            }"
-                                            @click="selectTab(index)"
-                                            >{{ tab }}</a
-                                        >
+                                    <li class="nav-item" v-for="(tab, index) in tabs" :key="index">
+                                        <a style="cursor: pointer" class="nav-link" :class="{
+                                            active: activeTab === index,
+                                        }" @click="selectTab(index)">{{ tab }}</a>
                                     </li>
                                 </ul>
                                 <div class="tab-content mt-3">
-                                    <div
-                                        class="row"
-                                        v-if="seances['hydra:totalItems'] > 0"
-                                    >
-                                        <div
-                                            v-for="(seance, index) in seances[
-                                                'hydra:member'
-                                            ]"
-                                            :key="index"
-                                            :class="{
-                                                active: activeTab === index,
-                                            }"
-                                            class="col-sm-3 pad"
-                                        >
-                                            <button
-                                                @click="
-                                                    showModals[index] = true
-                                                "
-                                                class="btn btn-block my-2 card-session"
-                                            >
+                                    <div class="row" v-if="seances['hydra:totalItems'] > 0">
+                                        <div v-for="(seance, index) in seances[
+                                            'hydra:member'
+                                            ]" :key="index" :class="{
+        active: activeTab === index,
+    }" class="col-sm-3 pad">
+                                            <button @click="
+                                                showModals[index] = true
+                                                " class="btn btn-block my-2 card-session">
                                                 <div class="screening-start">
                                                     {{
                                                         seance.startTimeFormatted
@@ -115,37 +88,42 @@
                                                 </div>
                                             </button>
 
-                                            <modal
-                                                v-if="showModals[index]"
-                                                @close="
-                                                    showModals[index] = false
-                                                "
-                                            >
+                                            <modal v-if="showModals[index]" @close="showModals[index] = false">
                                                 <template v-slot:header>
-                                                    <h2>{{ movie.title }}</h2>
+                                                    <h3>{{ seance.dateFormatted }}</h3>
+                                                    <p>{{ seance.startTimeFormatted }}</p>
                                                 </template>
                                                 <template v-slot:body>
-                                                    <h3>
-                                                        {{
-                                                            seance.startTimeFormatted
-                                                        }}
-                                                    </h3>
-                                                    <h3>{{ seance.price }}€</h3>
+
+                                                    <div class="booking-movie box">
+                                                        <div class="wrap">
+                                                            <h3 class="h3">{{ movie.title }}</h3>
+                                                            <p class="duration">Durée: {{ movie.duration }} min
+                                                                <span class="label label--light"> Fin prévue à {{
+                                                                    seance.endTimeFormatted }}</span>
+                                                            </p>
+                                                        </div>
+                                                        <div class="ft-center wrap">
+                                                            <span class="booking__room">
+                                                                Salle
+                                                                <b class="ft-up">
+                                                                    {{ seance.movieroom_id['room_name'] }}
+                                                                </b>
+
+                                                            </span>
+                                                            <div class="ft-xss">
+                                                                {{ seance.movieroom_id['number_places'] }} places
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                 </template>
                                                 <template v-slot:footer>
-                                                    <a
-                                                        @click="
-                                                            emitDataEvent(
-                                                                seance.price
-                                                            )
-                                                        "
-                                                        :href="
-                                                            '/payment/' +
-                                                            seance.id
-                                                        "
-                                                        class="button-cta cta-button"
-                                                        >Réserver</a
-                                                    >
+                                                    <router-link @click="emitDataEvent(seance.price)"
+                                                        :to="'/payment/' + seance.id"
+                                                        class="btn-cta btn--full btn--center">Réserver pour {{ seance.price
+                                                        }}€</router-link>
+
                                                 </template>
                                             </modal>
                                         </div>
@@ -158,49 +136,39 @@
 
                             <div class="comment-contents">
                                 <h2 class="content-title">Commentaires</h2>
-
+                                <div class="alert alert-danger" role="alert" v-if="error_comment">
+                                    {{ error_comment }}
+                                </div>
                                 <!-- INPUT COMMENT -->
                                 <form v-on:submit.prevent="handleAddComment">
                                     <div class="form-floating">
-                                        <input
-                                            type="text"
-                                            v-model="commentTitle"
-                                            class="form-control"
-                                            id="titleCommentInput"
-                                        />
+                                        <input type="text" v-model="commentTitle" class="form-control"
+                                            id="titleCommentInput" />
                                         <label for="floatingInput">Titre</label>
                                     </div>
                                     <div class="form-floating">
-                                        <input
-                                            type="text"
-                                            v-model="commentDescription"
-                                            class="form-control"
-                                            id="descCommentInput"
-                                        />
-                                        <label for="floatingPassword"
-                                            >Description</label
-                                        >
+                                        <input type="text" v-model="commentDescription" class="form-control"
+                                            id="descCommentInput" />
+                                        <label for="floatingPassword">Description</label>
                                     </div>
-                                    <button
-                                        class="w-100 btn btn-lg"
-                                        type="submit"
-                                        id="button-send-comment"
-                                    >
+                                    <button class="w-100 btn btn-lg" type="submit" id="button-send-comment">
                                         Envoyer
                                     </button>
                                 </form>
+                                <!-- REVIEW -->
+                                <div v-if="review.length > 0">
+                                    <p>{{ review[0].title }}</p>
+                                    <p>{{ review[0].description }}</p>
 
+                                </div>
+                                <div v-else>
+                                    Aucune critique n'a été rédigée pour le moment
+                                </div>
                                 <!-- LIST COMMENTS -->
-                                <div
-                                    v-if="
-                                        movie.comments &&
-                                        movie.comments.length > 0
-                                    "
-                                >
-                                    <div
-                                        v-for="comment in movie.comments"
-                                        :key="comment.id"
-                                    >
+                                <div v-if="movie.comments &&
+                                    movie.comments.length > 0
+                                    ">
+                                    <div v-for="comment in movie.comments" :key="comment.id">
                                         <div class="comment">
                                             <div>
                                                 <h3 class="comment-content">
@@ -210,15 +178,12 @@
                                                     {{ comment.description }}
                                                 </p>
                                             </div>
-                                            <i
-                                                class="bi bi-flag-fill"
-                                                @click="signalComment(comment)"
-                                            ></i>
+                                            <i class="bi bi-flag-fill" @click="signalComment(comment)"></i>
                                         </div>
                                     </div>
                                 </div>
                                 <div v-else>
-                                    Aucune commentaire pour le moment
+                                    Aucun commentaire pour le moment
                                 </div>
                             </div>
                         </div>
@@ -226,8 +191,8 @@
                 </div>
             </div>
         </section>
+        <div v-if="showMessage" class="message">{{ message }}</div>
     </div>
-    <div v-if="showMessage" class="message">{{ message }}</div>
 </template>
 
 <script>
@@ -247,13 +212,17 @@ export default {
             comments: null,
         };
     },
-    created() {},
-    methods: {},
+    created() { },
+    methods: {
+
+    },
     components: {
         modal,
         Stripe,
     },
     setup() {
+        const error_comment = ref('');
+
         const user = useUserStore();
 
         const jours = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
@@ -278,6 +247,7 @@ export default {
         const contents = [];
 
         const movie = ref({});
+        const review = ref({});
         const seances = ref({});
         const comments = reactive([]);
         const comments_url = ref({});
@@ -347,7 +317,6 @@ export default {
             const data_seances = await res_seances.json();
 
             seances.value = data_seances;
-            // console.log(seances.value)
             return seances;
         }
 
@@ -360,38 +329,46 @@ export default {
                 );
                 const data_movie = await res_movie.json();
                 movie.value = data_movie;
-                console.log(movie.value);
-
-                showModals = Array(movie.seance.length).fill(false);
-                seances_urls.value = movie.value.seance;
-
-                // get comments
-                comments_url.value = movie.value.comments;
-                for (const comment of comments_url.value) {
-                    await fetch(`${API_URL}${comment}`)
-                        .then((response) => response.json())
-                        .then((data) => {
-                            comments.push(data);
-                        });
-                }
+                //get review
+                const res_review = await fetch(`${API_URL}/reviews?validate=true&movie=${route.params.id}`);
+                const data_review = await res_review.json();
+                review.value = data_review;
+                review.value = review['value']['hydra:member'];
             } catch (error) {
                 console.log(error);
             }
+
+
+            showModals = Array(movie.seance.length).fill(false);
+            seances_urls.value = movie.value.seance;
+
+
+
+
+            // get comments
+            comments_url.value = movie.value.comments;
+            for (const comment of comments_url.value) {
+                await fetch(`${API_URL}${comment}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        comments.push(data);
+                    });
+            }
+
+
         });
 
         async function handleAddComment() {
-            if (this.commentTitle == "" || this.commentDescription == "") {
-                alert("Veuillez remplir tous les champs");
-                return;
-            }
             const movieId = route.params.id;
             const userId = await user.id();
+            const jwtToken = localStorage.getItem("access_token");
 
             try {
-                await fetch(`${API_URL}/comments`, {
+                const res_post_comment = await fetch(`${API_URL}/comments`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "Authorization": "Bearer " + jwtToken
                     },
                     body: JSON.stringify({
                         title: this.commentTitle,
@@ -403,6 +380,10 @@ export default {
                         counter: 0,
                     }),
                 });
+
+                if (res_post_comment.status === 401) {
+                    this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
+                }
 
                 const res_movie = await fetch(`${API_URL}/movies/${movieId}`);
                 const data_movie = await res_movie.json();
@@ -417,7 +398,10 @@ export default {
                             comments.push(data);
                         });
                 }
+
             } catch (error) {
+                this.error_comment = "Veuillez vous connecter pour envoyer un commentaire"
+
                 console.error(error);
             }
         }
@@ -425,10 +409,13 @@ export default {
         async function signalComment(comment) {
             const userId = await user.id();
             const commentId = comment["@id"];
-
-            console.log("commentId = ", commentId);
+            const jwtToken = localStorage.getItem("access_token")
             // Check if comment is already signaled
-            const res = await fetch(`${API_URL}/moderations`);
+            const res = await fetch(`${API_URL}/moderations`, {
+                headers: {
+                    'Authorization': "Bearer " + jwtToken
+                }
+            });
             const commentsInDb = await res.json();
 
             try {
@@ -438,8 +425,15 @@ export default {
 
                 if (isCommentAlreadySignaled) {
                     const moderationresp = await fetch(
-                        `${API_URL}/moderations/${isCommentAlreadySignaled.id}`
-                    );
+                        `${API_URL}/moderations/${isCommentAlreadySignaled.id}`,
+                        {
+                            headers: {
+                                "Content-Type": "application/merge-patch+json",
+                                "Authorization": "Bearer " + jwtToken
+                            }
+                        }
+
+                    )
                     const moderationdata = await moderationresp.json();
                     const numberOfSignal = moderationdata.counterUserBan;
 
@@ -447,6 +441,7 @@ export default {
                         method: "PATCH",
                         headers: {
                             "Content-Type": "application/merge-patch+json",
+                            "Authorization": "Bearer " + jwtToken
                         },
                         body: JSON.stringify({
                             counterUserBan: numberOfSignal + 1,
@@ -459,6 +454,7 @@ export default {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            'Authorization': 'Bearer ' + jwtToken
                         },
                         body: JSON.stringify({
                             counterUserBan: 0,
@@ -495,12 +491,14 @@ export default {
             signalComment,
             showMessage,
             message,
+            review,
+            error_comment
         };
     },
 };
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 label {
     color: black;
 }
@@ -579,7 +577,7 @@ label {
 
 // Section decouverte
 .content-head {
-    background-color: #1a191f;
+    // background-color: #1a191f;
     margin-bottom: 20px;
     padding: 20px 0;
     position: relative;
@@ -617,7 +615,6 @@ label {
 
 .btn:hover {
     background-color: #ff9900;
-    // color: black;
 }
 
 .screening-start {
@@ -637,6 +634,126 @@ label {
 
 .nav-tabs .nav-link.active {
     color: black !important;
+}
+
+// Modal
+.box {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px lightblue;
+    border-radius: 6px;
+    transition: box-shadow .3s cubic-bezier(.25, .1, .25, 1);
+    background-color: white;
+}
+
+.booking-movie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 95px;
+    padding-left: 16px;
+    overflow: visible;
+}
+
+.wrap {
+    word-wrap: break-word;
+    hyphens: none;
+}
+
+.h3 {
+    font-weight: 700;
+}
+
+.duration {
+    color: rgba(9, 10, 11, .5);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.label--light {
+    color: var(--black);
+    background-color: rgba(9, 10, 11, .1);
+}
+
+.label {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 4px;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: black;
+    border-radius: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+.ft-center {
+    text-align: center;
+    margin-right: 10px;
+}
+
+.booking__room {
+    display: block;
+    background: #f3d269;
+    padding: 4px 8px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.ft-up {
+    text-transform: uppercase;
+    display: block;
+}
+
+.ft-xss {
+    font-size: 10px;
+    line-height: 16px;
+}
+
+.btn--center {
+    justify-content: center;
+}
+
+.btn--full,
+.btn-sm--full {
+    width: 100%;
+}
+
+.btn-cta {
+    display: inline-block;
+    align-items: center;
+    justify-content: space-between;
+    vertical-align: middle;
+    height: 48px;
+    min-width: 56px;
+    line-height: 48px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all .15s ease-out;
+    cursor: pointer;
+    color: white;
+    padding: 0 20px;
+    outline: none;
+    text-decoration: none;
+    background: #1c2129;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+@media (min-width: 1080px) {
+
+    .h3 {
+        font-size: 24px;
+        line-height: 28px;
+    }
 }
 
 i {
@@ -662,7 +779,7 @@ form {
     padding: 1em 0;
 }
 
-form > div {
+form>div {
     margin-bottom: 0.5em;
 }
 
