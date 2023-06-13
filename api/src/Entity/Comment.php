@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Repository\CommentRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -19,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Post(security: 'is_granted("ROLE_USER")')]
 #[Delete(security: 'is_granted("ROLE_ADMIN")')]
 #[Get]
+#[GetCollection()]
 
 class Comment
 {

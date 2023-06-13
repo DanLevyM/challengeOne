@@ -101,7 +101,7 @@ export const useUserStore = defineStore("UserStore", {
         const values = JSON.parse(tokenTest);
         //get the id of the logged user
         const all_user = await fetch(`${API_URL}/users`, {
-          headers: {'Authorization': 'Bearer ' + jwtToken}
+          headers: {'Authorization': 'Bearer ' + userData}
         });
         const data_allUser = await all_user.json();
 

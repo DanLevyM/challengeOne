@@ -417,7 +417,6 @@ export default {
             const movieId = route.params.id;
             const userId = await user.id();
             const jwtToken = localStorage.getItem("access_token");
-
             try {
                 const res_post_comment = await fetch(`${API_URL}/comments`, {
                     method: "POST",
@@ -434,6 +433,7 @@ export default {
                         date: new Date(),
                         counter: 0,
                     }),
+
                 });
 
                 if (res_post_comment.status === 401) {
